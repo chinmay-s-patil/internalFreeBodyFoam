@@ -195,7 +195,7 @@ def main():
     ax.set_title(r"Aerodynamic Coefficients (Settling Formula vs. Resultant Force)", fontweight="bold", fontsize=12)
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel(r"Aerodynamic Coefficient ($C_D$ / $C_{F,\mathrm{mag}}$)")
-    ax.set_ylim([0, 2.0])
+    ax.set_ylim([0, 2.4])
     ax.grid(True, ls=":", alpha=0.6)
     ax.legend(loc="upper right", fontsize=8.0)
 

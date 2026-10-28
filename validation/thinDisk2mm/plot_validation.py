@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 plot_validation.py — Post-processing & Experimental Validation for Thin Disk Falling in Air
-Reference: Tinklenberg, Guala, Coletti (2023), J. Fluid Mech. (Vol 972, A17)
+Reference: Tinklenberg, Guala, Coletti (2023), J. Fluid Mech., vol. 962, A3; doi:10.1017/jfm.2023.209
 
 Compares OpenFOAM freeBody6DoFPimpleFoam simulation results against experimental benchmarks:
   - Terminal descent velocity: V_t = 1.23 ± 0.31 m/s
@@ -174,7 +174,8 @@ def main():
     if "Omega_y" in df_tumble.columns and "Omega_z" in df_tumble.columns:
         ax.plot(t_sim * 1e3, df_tumble["Omega_y"], color="#ff7f0e", lw=1.2, linestyle="--", label=r"$\Omega_y$ (Spin)")
         ax.plot(t_sim * 1e3, df_tumble["Omega_z"], color="#9467bd", lw=1.2, linestyle=":", label=r"$\Omega_z$ (Roll)")
-    ax.axhline(-exp_omega_t, color="#d62728", linestyle="--", lw=1.5, label=rf"Exp Mean $|\omega_t|={exp_omega_t}$ rad/s")
+    # For zero-spin release, disk undergoes damped rocking/flutter rather than continuous autorotation
+    ax.axhline(-exp_omega_t, color="#d62728", linestyle=":", lw=1.2, alpha=0.6, label=r"Exp Tumbling $|\omega_t| \approx 200$ rad/s (Fig. 18, tumbling mode)")
     ax.set_title(r"Angular Velocities $\mathbf{\Omega}(t)$", fontsize=13, fontweight="bold")
     ax.set_xlabel("Time (ms)", fontsize=11)
     ax.set_ylabel("Angular Velocity (rad/s)", fontsize=11)
