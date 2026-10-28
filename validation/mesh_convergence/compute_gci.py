@@ -52,7 +52,7 @@ def parse_case(case_dir):
     }
 
 def run_asme_vv20():
-    base_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence"
+    base_dir = os.path.dirname(os.path.realpath(__file__))
     
     N1 = 368760 # Fine (Grid 1)
     N2 = 212792 # Medium (Grid 2)

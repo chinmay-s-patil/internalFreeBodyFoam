@@ -148,7 +148,9 @@ def run_production_solver_diagnostics():
     print("=" * 85)
     
     # Try multiple standard paths for production log
+    script_dir = os.path.dirname(os.path.realpath(__file__))
     candidates = [
+        os.path.join(script_dir, "../thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam"),
         "validation/thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam",
         "../thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam",
         os.path.expanduser("~/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam")

@@ -42,7 +42,7 @@ def parse_case_at_time(case_dir, target_time=0.001000):
     }
 
 def run_temporal_asme():
-    base_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/temporal_convergence"
+    base_dir = os.path.dirname(os.path.realpath(__file__))
     target_time = 0.001000
     
     dt1 = 5.0e-6 # Quarter (Fine dt, Co = 0.25)

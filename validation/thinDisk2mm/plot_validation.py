@@ -85,7 +85,7 @@ def main():
     parser.add_argument("--output", type=str, default="validation_comparison.png", help="Output PNG path")
     args = parser.parse_args()
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = os.path.dirname(os.path.realpath(__file__))
     case_dir = os.path.join(script_dir, "case")
     
     df_tumble, df_falling = load_data(case_dir, skip_time=args.skip_time, skip_rows=args.skip_rows)

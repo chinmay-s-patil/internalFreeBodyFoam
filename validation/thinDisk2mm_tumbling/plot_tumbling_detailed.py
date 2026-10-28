@@ -14,7 +14,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 def main():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+    script_dir = os.path.dirname(os.path.realpath(__file__))
     case_dir = os.path.join(script_dir, "case")
     post_dir = os.path.join(case_dir, "postProcessing")
     
