@@ -1,0 +1,60 @@
+#!/bin/bash
+cd "${0%/*}" || exit 1   # run from this directory
+
+. "${WM_PROJECT_DIR:?}/bin/tools/RunFunctions"
+
+set -e
+
+# ============================================================
+#  src/Allwmake — freeBodyFoam core components
+#
+#  Build order:
+#    1. Boundary conditions (BCs/fallingInletVelocity)
+#    2. Shared models library (models -> libfreeFallingModels.so)
+#    3. Function objects (functionObjects/fallingMotion)
+#    4. Dynamic solvers (freeBodyPimpleFoam, freeBody6DoFPimpleFoam, freeBodyRhoPimpleFoam, freeBodyRhoCentralFoam)
+#    5. Utilities (writeFFDict)
+# ============================================================
+
+echo "========================================================"
+echo "  Building freeBodyFoam core src"
+echo "========================================================"
+
+# ---- 1. Boundary conditions --------------------------------
+echo ""
+echo "--- Building BCs ---"
+wmake "$PWD/BCs/fallingInletVelocity"
+
+# ---- 2. Shared Environmental & Physical Models -------------
+echo ""
+echo "--- Building Models (libfreeFallingModels.so) ---"
+wmake "$PWD/models"
+
+# ---- 3. Function objects -----------------------------------
+echo ""
+echo "--- Building Function Objects ---"
+wmake "$PWD/functionObjects/fallingMotion"
+
+# ---- 4. Motion Solvers -------------------------------------
+echo ""
+echo "--- Building Motion Solvers ---"
+wmake "$PWD/motion/sixDoFRotatingMotion"
+wmake "$PWD/motion/freeBodyRotationalMotion"
+
+# ---- 5. Dynamic Solvers ------------------------------------
+echo ""
+echo "--- Building dynamic solvers ---"
+wmake "$PWD/solvers/freeBodyPimpleFoam"
+wmake "$PWD/solvers/freeBody6DoFPimpleFoam"
+wmake "$PWD/solvers/freeBodyRhoPimpleFoam"
+wmake "$PWD/solvers/freeBodyRhoCentralFoam"
+
+# ---- 5. Utilities ------------------------------------------
+echo ""
+echo "--- Building utilities ---"
+wmake "$PWD/utilities/writeFFDict"
+
+echo ""
+echo "========================================================"
+echo "  src build complete"
+echo "========================================================"

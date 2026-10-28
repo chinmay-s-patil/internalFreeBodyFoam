@@ -1,0 +1,120 @@
+# Validation folders (hidden per user instruction)
+validation/papers/
+validation/thinDiskValidationReport/
+validation/report.md
+
+# OpenFOAM build and architecture artifacts
+Make/linux*
+**/Make/linux*
+lnInclude/
+**/lnInclude/
+platforms/
+linux64GccDPInt32Opt/
+*.o
+*.so
+*.dep
+
+# OpenFOAM Time Steps and Simulation Data
+[1-9]*/
+0.*/
+-[0-9]*/
+!0/
+!0.orig/
+!0.org/
+!*.md
+!*.py
+!*.C
+!*.H
+!*.sh
+
+# OpenFOAM parallel decomposition & post-processing
+processor*
+**/processor*
+postProcessing/
+**/postProcessing/
+postProcessing*/
+**/postProcessing*/
+dynamicCode/
+**/dynamicCode/
+
+# Logs and simulation temporary files
+log.*
+log*
+*.log
+*.foam
+*.OpenFOAM
+
+# Generated mesh files (keep mesh dictionaries, boundary, and source STLs)
+**/polyMesh/points
+**/polyMesh/faces
+**/polyMesh/owner
+**/polyMesh/neighbour
+**/polyMesh/cells
+**/polyMesh/pointZones
+**/polyMesh/faceZones
+**/polyMesh/cellZones
+**/polyMesh/sets/
+**/polyMesh/cellLevel
+**/polyMesh/level0Edge
+**/polyMesh/pointLevel
+**/polyMesh/surfaceIndex
+extendedFeatureEdgeMesh/
+**/extendedFeatureEdgeMesh/
+*.extendedFeatureEdgeMesh
+*.obj
+*.vtk
+*.vtp
+VTK/
+**/VTK/
+sets/
+**/sets/
+surfaces/
+**/surfaces/
+uniform/
+**/uniform/
+
+# CAD and 3D modeling files (FreeCAD, STEP, SolidWorks)
+*.FCStd
+*.FCBak
+FreeCAD/
+**/FreeCAD/
+*.step
+*.STEP
+*.stp
+*.STP
+*.sldprt
+*.SLDPRT
+*.sldasm
+*.SLDASM
+tutorials/propFall/Models/
+
+# Mesh backups and temporary folders
+**/orig/
+**/orig_*/
+**/backup*/
+*BackUp/
+*.bak
+*.bak_*
+
+# LaTeX build artifacts
+*.aux
+*.out
+*.toc
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+
+# Python caches
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# General editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~

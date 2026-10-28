@@ -1,0 +1,23 @@
+#!/bin/bash
+cd "${0%/*}" || exit 1   # run from this directory
+
+. "${WM_PROJECT_DIR:?}/bin/tools/RunFunctions"
+
+set -e
+
+# ============================================================
+#  Root Allwmake — freeBodyFoam master build script
+# ============================================================
+
+echo "========================================================"
+echo "  Building freeBodyFoam core src"
+echo "========================================================"
+
+if [ -f "$PWD/src/Allwmake" ]; then
+    "$PWD/src/Allwmake"
+fi
+
+echo ""
+echo "========================================================"
+echo "  Master build complete"
+echo "========================================================"

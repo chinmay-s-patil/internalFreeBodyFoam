@@ -1,0 +1,53 @@
+#!/bin/bash
+cd "${0%/*}" || exit 1   # run from this directory
+
+. "${WM_PROJECT_DIR:?}/bin/tools/RunFunctions"
+
+# ============================================================
+#  src/Allwclean — freeBodyFoam core components
+#
+#  Clean order (reverse of build):
+#    1. Utilities
+#    2. Dynamic solvers
+#    3. Motion solvers
+#    4. Function objects
+#    5. Shared models library
+#    6. Boundary conditions
+# ============================================================
+
+echo "========================================================"
+echo "  Cleaning freeBodyFoam core src"
+echo "========================================================"
+
+echo ""
+echo "--- Cleaning utilities ---"
+wclean "$PWD/utilities/writeFFDict"
+
+echo ""
+echo "--- Cleaning dynamic solvers ---"
+wclean "$PWD/solvers/freeBodyPimpleFoam"
+wclean "$PWD/solvers/freeBody6DoFPimpleFoam"
+wclean "$PWD/solvers/freeBodyRhoPimpleFoam"
+wclean "$PWD/solvers/freeBodyRhoCentralFoam"
+
+echo ""
+echo "--- Cleaning motion solvers ---"
+wclean "$PWD/motion/freeBodyRotationalMotion"
+wclean "$PWD/motion/sixDoFRotatingMotion"
+
+echo ""
+echo "--- Cleaning function objects ---"
+wclean "$PWD/functionObjects/fallingMotion"
+
+echo ""
+echo "--- Cleaning models ---"
+wclean "$PWD/models"
+
+echo ""
+echo "--- Cleaning BCs ---"
+wclean "$PWD/BCs/fallingInletVelocity"
+
+echo ""
+echo "========================================================"
+echo "  src clean complete"
+echo "========================================================"

@@ -1,0 +1,21 @@
+#!/bin/bash
+cd "${0%/*}" || exit 1   # run from this directory
+
+. "${WM_PROJECT_DIR:?}/bin/tools/RunFunctions"
+
+# ============================================================
+#  Root Allwclean — freeBodyFoam master clean script
+# ============================================================
+
+echo "========================================================"
+echo "  Cleaning freeBodyFoam core src"
+echo "========================================================"
+
+if [ -f "$PWD/src/Allwclean" ]; then
+    "$PWD/src/Allwclean"
+fi
+
+echo ""
+echo "========================================================"
+echo "  Master clean complete"
+echo "========================================================"
