@@ -77,7 +77,8 @@ def run_rotational_verification():
     I_disk = np.array([5.6436e-14, 1.1278e-13, 5.6436e-14])
     J_disk = np.diag(I_disk)
     J_disk_inv = np.linalg.inv(J_disk)
-    w0_disk = np.array([228.7, 10.0, 5.0])
+    # Non-zero transverse (x, z) and polar (y) components produce non-zero gyroscopic coupling w x (J w) != 0
+    w0_disk = np.array([200.0, 50.0, 30.0])
     
     def rk4_disk(w, dt):
         def dw(curr_w):

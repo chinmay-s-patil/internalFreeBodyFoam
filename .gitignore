@@ -118,3 +118,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Base validation report
+validation/report.md
+ideas/ehe.md

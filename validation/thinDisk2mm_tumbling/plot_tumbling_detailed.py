@@ -145,9 +145,9 @@ def main():
         ax.plot(0.5 * (t0_ms + t1_ms), w_m, marker="o", color="#1B5E20", markersize=5, zorder=6)
         ax.annotate(f"R{r['rev']}", xy=(0.5 * (t0_ms + t1_ms), w_m), xytext=(0, 6), textcoords="offset points", ha="center", fontsize=8, fontweight="bold", color="#1B5E20")
 
-    ax.axhline(-228.7, color="#C62828", ls="--", lw=1.6, label=r"Exp Mean $|\omega_t| = 228.7$ rad/s (Figs. 18–20)")
-    ax.axhspan(-228.7 - 45, -228.7 + 45, color="#FFCDD2", alpha=0.35, label=r"Exp $1\sigma$ Spread ($183 - 274$ rad/s)")
-    ax.set_title(r"Angular Velocities $\mathbf{\Omega}(t)$ & Cycle-Averages vs. Exp Mean", fontweight="bold", fontsize=12)
+    ax.axhline(-200.0, color="#C62828", ls="--", lw=1.6, label=r"Exp Observed Tumbling Rate $\approx 200$ rad/s (Fig. 18)")
+    ax.axhspan(-228.7, -188.5, color="#FFCDD2", alpha=0.35, label=r"Exp Peak Freq Band ($2\pi f_t \approx 188 - 229$ rad/s, Fig. 20a)")
+    ax.set_title(r"Angular Velocities $\mathbf{\Omega}(t)$ & Cycle-Averages vs. Exp Data", fontweight="bold", fontsize=12)
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("Angular Velocity (rad/s)")
     ax.legend(loc="lower left", fontsize=8.5)
