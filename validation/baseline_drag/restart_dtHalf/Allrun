@@ -1,0 +1,21 @@
+#!/bin/bash
+cd "${0%/*}" || exit 1
+
+if [ -z "$WM_PROJECT_DIR" ]; then
+    . /usr/lib/openfoam/openfoam2412/etc/bashrc
+fi
+
+# Check parallel execution
+NPROC=$(grep -oP 'numberOfSubdomains\s+\K[0-9]+' system/decomposeParDict 2>/dev/null || echo 1)
+
+if [ "$NPROC" -gt 1 ]; then
+    echo "Decomposing case across $NPROC cores..."
+    decomposePar -force -time 0.3 > log.decomposePar 2>&1
+    echo "Running freeBody6DoFPimpleFoam in parallel on $NPROC cores..."
+    mpirun -np "$NPROC" freeBody6DoFPimpleFoam -parallel > log.freeBody6DoFPimpleFoam 2>&1
+    echo "Reconstructing case..."
+    reconstructPar > log.reconstructPar 2>&1
+else
+    echo "Running freeBody6DoFPimpleFoam in serial..."
+    freeBody6DoFPimpleFoam > log.freeBody6DoFPimpleFoam 2>&1
+fi

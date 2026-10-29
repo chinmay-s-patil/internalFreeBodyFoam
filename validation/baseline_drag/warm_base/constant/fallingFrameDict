@@ -1,0 +1,68 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+FoamFile
+{
+    version         2;
+    format          ascii;
+    class           dictionary;
+    location        "constant";
+    object          fallingFrameDict;
+}
+
+u0              ( 0 -1.02 0 );
+
+acceleration    ( 0 -9.81 0 );
+
+patches         ( disk );
+
+mass            2.2113e-07;
+
+rhoInf          1.2;
+
+densityModel    rhoInf;
+
+gravityModel    constant;
+
+groundInterrupt off;
+
+freedom         ( 1 1 1 );
+
+rotor
+{
+    hubOrigin       ( 0 0 0 );
+    inertiaPrincipal ( 5.6436e-14 1.1278e-13 5.6436e-14 );
+    meshTiltAngleDeg 0;
+    meshTiltAxis    ( 1 0 0 );
+    rotationFreedom ( 1 1 1 );
+    initialOmega    ( -191 0 0 );
+    initialAngleDeg 0;
+    initialAxis     ( 1 0 0 );
+    damping         ( 0 0 0 );
+    report          true;
+}
+
+print
+{
+    frameVel        on;
+    frameAcc        on;
+    altitude        off;
+    pressureForce   off;
+    viscousForce    off;
+    aeroForce       on;
+    gravityForce    on;
+    netForce        on;
+    meanFlow        off;
+    relativeVel     off;
+    dynamicPressure off;
+}
+
+initialAcceleration ( 0 0 0 );
+
+
+// ************************************************************************* //

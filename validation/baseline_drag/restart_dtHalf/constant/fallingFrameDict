@@ -1,0 +1,86 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fallingFrameDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Initial fall velocity (vector)
+u0                  ( 0 0 0 );
+
+// Planetary gravity
+acceleration        ( 0 -9.81 0 );
+
+// Patches for aerodynamic force & moment integration
+patches             ( disk );
+
+// Disk Mass (2.02 mm diameter, 50 um thick PET disk, rho_d = 1380 kg/m^3)
+mass                2.2113e-07;
+
+// Fluid reference density (air)
+rhoInf              1.200;
+densityModel        rhoInf;
+gravityModel        constant;
+groundInterrupt     off;
+
+// Kinematic degrees of freedom for translation (1=free, 0=constrained)
+// (1 1 1) enables full 3D translation (vertical fall + lateral aerodynamic drift)
+freedom             ( 1 1 1 );
+
+// 6DoF Rotational Tumble Dynamics
+rotor
+{
+    hubOrigin         (0 0 0);
+
+    // Principal moments of inertia: I_xx (pitch) I_yy (spin) I_zz (roll) [kg*m^2]
+    // Symmetry axis along Y: I_yy = 0.5 * m * R^2 = 1.1278e-13
+    // Diametral axes along X, Z: I_xx = I_zz = 0.25 * m * R^2 + (1/12) * m * h^2 = 5.6436e-14
+    inertiaPrincipal  (5.6436e-14 1.1278e-13 5.6436e-14);
+
+    // Mesh is aligned with body frame at t=0
+    meshTiltAngleDeg  0.0;
+    meshTiltAxis      (1 0 0);
+
+    // 3D rotational freedom mask: (roll pitch yaw) = 1 means fully free
+    rotationFreedom   (1 1 1);
+
+    // Initial angular velocity [rad/s] (Tinklenberg et al. 2023 Table 3 benchmark: 36.4 Hz = 228.7 rad/s)
+    initialOmega      (-228.7 0 0);
+
+    // Initial perturbation angle [deg]
+    initialAngleDeg   0.0;
+    initialAxis       (1 0 0);
+
+    // Rotational damping [N*m*s/rad] (0 for undamped natural free fall)
+    damping           (0 0 0);
+
+    // Print rotational kinetics to console at each timestep
+    report            true;
+}
+
+// Diagnostic print configuration
+print
+{
+    frameVel        on;
+    frameAcc        on;
+    altitude        off;
+    pressureForce   off;
+    viscousForce    off;
+    aeroForce       on;
+    gravityForce    on;
+    netForce        on;
+    meanFlow        off;
+    relativeVel     off;
+    dynamicPressure off;
+}
+
+// ************************************************************************* //

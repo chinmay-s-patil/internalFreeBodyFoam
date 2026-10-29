@@ -1,0 +1,152 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+FoamFile
+{
+    version         2;
+    format          ascii;
+    class           dictionary;
+    object          fvSolution;
+}
+
+PIMPLE
+{
+    nOuterCorrectors 2;
+    nNonOrthogonalCorrectors 1;
+    nCorrectors     2;
+    outerCorrectorResidualControl
+    {
+        U
+        {
+            tolerance       0.001;
+            relTol          0;
+        }
+        p
+        {
+            tolerance       0.001;
+            relTol          0;
+        }
+        "(k|epsilon|omega|f|v2|nuTilda)"
+        {
+            tolerance       0.001;
+            relTol          0;
+        }
+    }
+    pRefValue       0;
+    pRefCell        0;
+}
+
+potentialFlow
+{
+    nNonOrthogonalCorrectors 8;
+    PhiRefValue     0;
+    PhiRefCell      0;
+}
+
+solvers
+{
+    "(p|p_rgh|pcorr)"
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0.01;
+        smoother        symGaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        cacheAgglomeration on;
+        agglomerator    faceAreaPair;
+        nCellsInCoarsestLevel 10;
+        mergeLevels     1;
+        maxIter         20;
+    }
+    "(pFinal|p_rghFinal|pcorrFinal)"
+    {
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0;
+        smoother        symGaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        cacheAgglomeration on;
+        agglomerator    faceAreaPair;
+        nCellsInCoarsestLevel 10;
+        mergeLevels     1;
+        maxIter         20;
+    }
+    U
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.1;
+        nSweeps         1;
+    }
+    UFinal
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+        nSweeps         1;
+    }
+    "(k|omega|epsilon|nuTilda|gammaInt|ReThetat)"
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-06;
+        relTol          0.1;
+        nSweeps         1;
+        minIter         1;
+    }
+    "(k|omega|epsilon|nuTilda|gammaInt|ReThetat)Final"
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-06;
+        relTol          0;
+        nSweeps         1;
+        minIter         1;
+    }
+    Phi
+    {
+        solver          GAMG;
+        tolerance       1e-07;
+        relTol          0.01;
+        smoother        GaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        cacheAgglomeration on;
+        agglomerator    faceAreaPair;
+        nCellsInCoarsestLevel 10;
+        mergeLevels     1;
+    }
+}
+
+relaxationFactors
+{
+    equations
+    {
+        U               0.6;
+        UFinal          1;
+        k               0.5;
+        kFinal          1;
+    }
+    fields
+    {
+        p               1;
+        p_rgh           1;
+    }
+}
+
+cache
+{
+    grad(U)         ;
+}
+
+
+// ************************************************************************* //
