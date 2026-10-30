@@ -16,11 +16,15 @@ Physics reference:
     * Steady regular bifurcation at Re_c1 ~ 116.9 (wake loses axisymmetry, planar-symmetric steady state)
     * Unsteady oscillatory Hopf bifurcation at Re_c2 ~ 125.3 (unsteady hairpin vortex shedding with St ~ 0.11 - 0.12)
   - At Re = 100: subcritical wake, must be steady and axisymmetric (sigma < 0, F_lat -> 0).
-    Cited steady C_D benchmark: Shenoy & Kleinstreuer (2008, JFM 605, 253-262), Chrust et al. (2013, PoF 25, 044102),
-    Roos & Willmarth (1971, AIAA J. 9, 285-291) indicate steady C_D ~ 1.15 - 1.25.
-  - At Re = 140: supercritical wake above both thresholds (Re > 125.3); wake must asymptotically break symmetry
-    with finite lateral shedding. When starting from unperturbed symmetric flow, linear modal amplification from
-    machine roundoff (~1e-11 N) requires long convective durations or controlled perturbation seeding.
+    Cited steady C_D benchmark: Shenoy & Kleinstreuer (2008, JFM 605, 253-262; finite-thickness disk h/D = 0.1)
+    and experimental measurements by Roos & Willmarth (1971, AIAA J. 9, 285-291) indicate unconfined steady C_D ~ 1.15 - 1.25.
+    (Note: Chrust et al. 2013 PoF 25, 044102 is a free-fall 6-DoF trajectory study; the corresponding fixed-body
+    parametric transition benchmark is Chrust et al. 2010 JFM 665, 199-208).
+  - At Re = 140: supercritical wake above the linear stability threshold (Re_c2 ~ 125.3 for zero-thickness disks,
+    whereas DNS for thicker h/D = 0.1 disks by Shenoy & Kleinstreuer 2008 places vortex shedding onset at Re ~ 155).
+    For our thin disk (h/D ~ 0.04), the wake must asymptotically break symmetry with finite lateral shedding.
+    When starting from unperturbed symmetric flow, linear modal amplification from machine roundoff (~1e-11 N)
+    requires long convective durations or controlled perturbation seeding.
 
 Convergence Gate:
   Requires >= 3.0 domain flow-throughs AND C_D drift < 1.0% per 100 ms to evaluate steady C_D,
