@@ -10,7 +10,7 @@ SRC=$(realpath "${2:-../thinDisk2mm_tumbling/case}")          # must hold consta
 NU=1.5e-5; D=2.02e-3; END=${END:-0.30}
 [ -n "${WM_PROJECT_DIR:-}" ] || . /usr/lib/openfoam/openfoam2412/etc/bashrc   # same env as Allrun
 V=$(python3 -c "print(f'{$RE*$NU/$D:.6f}')")                    # V = Re nu / D
-CASE=fixedDisk_Re${RE}
+CASE=${CASE_NAME:-fixedDisk_Re${RE}}
 
 rm -rf "$CASE"; mkdir -p "$CASE/constant" "$CASE/0"
 cp -r "$SRC/system" "$CASE/"                                    # identical schemes/solvers/decomposition
@@ -29,6 +29,7 @@ foamDictionary -entry rotor/initialOmega    -set "(0 0 0)" "$FF" >/dev/null
 foamDictionary -entry rotor/report          -set false     "$FF" >/dev/null
 foamDictionary -entry internalField -set "uniform (0 $V 0)" "$CASE/0/U" >/dev/null  # warm start, no impulsive start
 foamDictionary -entry endTime -set "$END" "$CASE/system/controlDict" >/dev/null
+foamDictionary -entry purgeWrite -set 2 "$CASE/system/controlDict" >/dev/null
 
 cat > "$CASE/system/forcesFunctions" <<EOT
 diskForces                          // independent F and M about hub (cross-check of the hand-rolled integral)

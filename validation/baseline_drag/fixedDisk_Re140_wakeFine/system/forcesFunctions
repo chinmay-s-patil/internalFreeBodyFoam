@@ -1,0 +1,29 @@
+diskForces                          // independent F and M about hub (cross-check of the hand-rolled integral)
+{
+    type            forces;
+    libs            (forces);
+    patches         (disk);
+    rho             rhoInf;
+    rhoInf          1.2;
+    CofR            (0 0 0);
+    pName           p;
+    UName           U;
+    executeControl  timeStep;
+    executeInterval 1;
+    writeControl    timeStep;
+    writeInterval   1;
+}
+amiFluxMaster                       // net flux through masterAMI, expect ~0
+{
+    type            surfaceFieldValue;
+    libs            (fieldFunctionObjects);
+    regionType      patch;
+    name            masterAMI;
+    operation       sum;
+    fields          (phi);
+    writeFields     no;
+    executeControl  timeStep;
+    executeInterval 1;
+    writeControl    timeStep;
+    writeInterval   1;
+}
