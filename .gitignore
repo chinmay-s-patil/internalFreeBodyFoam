@@ -1,7 +1,13 @@
-# Validation folders (hidden per user instruction)
+# Validation folders and literature papers (strictly hidden from git)
 validation/papers/
+papers/
+**/papers/
 validation/thinDiskValidationReport/
 validation/report.md
+*falling_in_air*.pdf
+*varshney*.pdf
+*meliga*.pdf
+*tian*.pdf
 
 # OpenFOAM build and architecture artifacts
 Make/linux*

@@ -11,8 +11,6 @@ This folder contains a consolidated collection of **symbolic links** to all repo
 | [`report.md`](./report.md) | `../validation/report.md` | **Primary Comprehensive Validation Report (Markdown)** detailing physics, 13-revolution data, ASME V&V 20 uncertainty, and peer-review resolutions. |
 | [`report.pdf`](./report.pdf) | `../validation/report.pdf` | **Publication-Quality Formal PDF Validation Report** compiled with `pdflatex` (11 pages, full equations, figures, and tables). |
 | [`report.tex`](./report.tex) | `../validation/report.tex` | **Complete LaTeX Source** for the formal validation and verification report. |
-| [`tinklenberg2023_thin_disks_falling_in_air.pdf`](./tinklenberg2023_thin_disks_falling_in_air.pdf) | `../validation/papers/thin-disks-falling-in-air.pdf` | **Experimental Benchmark Paper**: Tinklenberg, Guala, Coletti (2023), *J. Fluid Mech.*, 962, A3. |
-| [`varshney2012_falling_disks.pdf`](./varshney2012_falling_disks.pdf) | `../validation/papers/Varshney_2012_Nonlinearity_25_C1.pdf` | Supporting literature on 3D falling disk regimes and flutter/tumble bifurcations. |
 | [`tumbling_validation_detailed.png`](./tumbling_validation_detailed.png) | `../validation/thinDisk2mm_tumbling/tumbling_validation_detailed.png` | **6-panel publication validation figure** across 13 full revolutions ($t = 0 \to 0.500\text{ s}$). |
 | [`plot_tumbling_detailed.py`](./plot_tumbling_detailed.py) | `../validation/thinDisk2mm_tumbling/plot_tumbling_detailed.py` | Python script to regenerate the 6-panel tumbling validation plot. |
 | [`tumbling_motion_rotation.dat`](./tumbling_motion_rotation.dat) | `../validation/thinDisk2mm_tumbling/case/postProcessing/tumbleMotion/motion.dat` | Angular velocity ($\boldsymbol{\Omega}$), Euler angles, quaternions, and moments ($29,714$ steps). |
@@ -36,6 +34,9 @@ This folder contains a consolidated collection of **symbolic links** to all repo
 | [`make_restart_variants.sh`](./make_restart_variants.sh) | `../validation/baseline_drag/make_restart_variants.sh` | Shell script to generate developed-state restart variants from $t = 0.30\text{ s}$ (`base`, `dtHalf`, `dtHalfOuter2`, `linUp`). |
 | [`compare_variants.py`](./compare_variants.py) | `../validation/baseline_drag/compare_variants.py` | Python tool comparing developed-state settling speed $V_{\mathrm{eq,est}}$, frequency, and peak moments across variants. |
 | [`make_wakeFine_case.sh`](./make_wakeFine_case.sh) | `../validation/baseline_drag/make_wakeFine_case.sh` | Shell script constructing refined static wake mesh `warm_wakeFine` ($6,984$ static AMI faces vs. $456$ baseline). |
+
+> [!NOTE]
+> **Literature Reference Papers:** Original research articles and preprints (Tinklenberg et al. 2023, Meliga et al. 2009, Tian 2019, Varshney et al. 2012) are stored locally on disk under `validation/papers/` and are strictly excluded from git tracking via `.gitignore` to comply with copyright requirements. All equations, citations, and DOI links are fully documented in [`report.md`](./report.md) and [`report.tex`](./report.tex).
 
 ---
 

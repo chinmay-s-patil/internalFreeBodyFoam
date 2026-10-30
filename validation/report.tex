@@ -288,26 +288,25 @@ Per the global linear stability analysis of Meliga et al. (2009) \cite{meliga200
 
 \subsection{Comparative Diagnostic Summary Across 50~ms Runs}
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{p{38mm} c c c X}
+\begin{tabularx}{\textwidth}{p{37mm} >{\centering\arraybackslash}p{25mm} >{\centering\arraybackslash}p{24mm} >{\centering\arraybackslash}p{27mm} >{\raggedright\arraybackslash}X}
 \toprule
-\textbf{Metric / Diagnostic} & \textbf{Subcritical} & \textbf{Baseline} & \textbf{Refined Wake} & \textbf{Sourced Literature /} \\
-& ($Re = 100$) & ($Re = 140$) & ($Re = 140$, \texttt{wakeFine}) & \textbf{Physical Target} \\
+\textbf{Metric / Diagnostic} & \shortstack{\textbf{Subcritical} \\ \scriptsize ($Re = 100$)} & \shortstack{\textbf{Baseline} \\ \scriptsize ($Re = 140$)} & \shortstack{\textbf{Refined Wake} \\ \scriptsize ($Re = 140$) \\ \scriptsize (\texttt{wakeFine})} & \shortstack[l]{\textbf{Sourced Literature /} \\ \textbf{Physical Target}} \\
 \midrule
 Mesh Cells (Static AMI Faces) & 213k (456) & 213k (456) & 487k (6,984) & Spatial refinement test \\
 Inflow Velocity $V$ [m/s] & $0.7426$ & $1.0396$ & $1.0396$ & Nominal Reynolds number \\
 Steps \& Physical Time & $4,379$ ($94.2$~ms) & $3,276$ ($50.0$~ms) & $3,263$ ($50.0$~ms) & Convective run \\
-Domain Flow-Throughs ($L = 50$~mm) & $1.40$ ($34.6\ D/V$) & $1.04$ & $1.04$ & $> 3.0$ required for steady state \\
+Domain Flow-Throughs ($50$~mm) & \shortstack{$1.40$ \\ \scriptsize ($34.6\ D/V$)} & \shortstack{$1.04$ \\ \scriptsize ($26.0\ D/V$)} & \shortstack{$1.04$ \\ \scriptsize ($26.0\ D/V$)} & $> 3.0$ required for steady state \\
 Analysis Window [ms] & $[56.6, 94.2]$ & $[30.0, 50.0]$ & $[30.0, 50.0]$ & Post-transient window \\
 \midrule
-Mean Drag $\langle C_D \rangle$ (Window Spread) & $1.2999$ [$1.299, 1.301$] & $1.1609$ [$1.154, 1.168$] & $1.1225$ [$1.117, 1.131$] & $C_D \approx 1.15$--$1.25$ \cite{shenoy2008,roos1971,chrust2010} \\
-$C_D$ Drift per $100$~ms & $\mathbf{-0.0045}$ ($\mathbf{-0.35\%}$) & $-0.0635$ ($-5.5\%$) & $-0.0676$ ($-6.0\%$) & $\to 0$ ($< 1.0\%$ at convergence) \\
+Mean Drag $\langle C_D \rangle$ (Spread) & \shortstack{$1.2999$ \\ \scriptsize [$1.299, 1.301$]} & \shortstack{$1.1609$ \\ \scriptsize [$1.154, 1.168$]} & \shortstack{$1.1225$ \\ \scriptsize [$1.117, 1.131$]} & $C_D \approx 1.15$--$1.25$ \cite{shenoy2008,roos1971}; $1.054$ \cite{tian2019} \\
+$C_D$ Drift per $100$~ms & \shortstack{$\mathbf{-0.0045}$ \\ \scriptsize ($\mathbf{-0.35\%}$)} & \shortstack{$-0.0635$ \\ \scriptsize ($-5.5\%$)} & \shortstack{$-0.0676$ \\ \scriptsize ($-6.0\%$)} & $\to 0$ ($< 1.0\%$ at convergence) \\
 Lateral Ratio $\langle |F_{\mathrm{lat}}| \rangle / F_y$ & $\mathbf{8.27 \times 10^{-6}}$ & $1.69 \times 10^{-2}$ & $\mathbf{4.99 \times 10^{-5}}$ & $0$ ($Re=100$); $>0$ ($Re=140$) \\
 Peak Lateral Force Amplitude & $< 2.3 \times 10^{-12}$~N & $\sim 10^{-8}$~N & $\le 1.2 \times 10^{-11}$~N & Roundoff ($100$); Unamplified ($140$) \\
-Convergence Gate Status & \textbf{DRIFT PASS} & \textbf{UNCONVERGED} & \textbf{UNCONVERGED} & Gated by drift and flow-throughs \\
+Convergence Gate Status & \shortstack{\textbf{DRIFT MET} \\ \scriptsize \textbf{FT PENDING}} & \shortstack{\textbf{NOT} \\ \scriptsize \textbf{CONVERGED}} & \shortstack{\textbf{NOT} \\ \scriptsize \textbf{CONVERGED}} & Gated by drift and flow-throughs \\
 \midrule
 Force $F_y$ Discrepancy vs.\ \texttt{forces} & $3.63 \times 10^{-10}$ & $2.07 \times 10^{-10}$ & $2.14 \times 10^{-10}$ & Machine precision (\textbf{PASS}) \\
 Max Aerodynamic Moment Discrepancy & $\le 2.5 \times 10^{-17}$~N$\cdot$m & $\le 3.9 \times 10^{-18}$~N$\cdot$m & $\le 1.7 \times 10^{-18}$~N$\cdot$m & Machine precision (\textbf{PASS}) \\
@@ -326,8 +325,8 @@ AMI Net Leak $/ (V A_{\mathrm{sphere}})$ & $\mathbf{4.37 \times 10^{-8}}$ & $4.3
         \item On the refined grid, initial perturbations originate strictly from machine roundoff ($\sim 10^{-11}$~N). Because 1.0 domain flow-through ($50$~ms) spans only $\sim 1$ shedding cycle, linear modal instability growth at $\sigma^* \sim 0.05$--$0.1$ has had insufficient convective time to amplify $10^{-11}$~N into observable macroscopic shedding ($\sim 10^{-7}$~N).
     \end{enumerate}
     Resolving the true supercritical Hopf mode on \texttt{wakeFine} requires either extending the simulation to $t \ge 0.20$~s ($> 8$--$10$ shedding cycles) or introducing a tiny controlled asymmetry seed.
-    \item \textbf{Mid-Transient Status of the $-3.3\%$ Drag Reduction:} On \texttt{wakeFine}, mean $C_D$ drops from $1.1609$ to $1.1225$ over $t \in [30, 50]$~ms. However, both baseline ($-5.5\% / 100$~ms) and \texttt{wakeFine} ($-6.0\% / 100$~ms) are still actively drifting at $1.04$ flow-throughs, confirming that this drag delta is a \textbf{preliminary mid-transient observation} rather than a fully developed asymptotic difference. Furthermore, because \texttt{make\_wakeFine\_case.sh} refined the static AMI sphere (Level 4, 6,984 faces), added multi-level surface refinement zones, and embedded a $312\ \mu$m wake box, this reduction reflects the combined effect of spatial wake refinement rather than the 34:1 AMI face mismatch in isolation.
-    \item \textbf{Subcritical Benchmark ($Re = 100$):} As the simulation advanced to $t = 94.2$~ms ($1.40$ domain flow-throughs $\equiv 34.6$ disk convective units $D/V$), the linear $C_D$ drift decayed from $-4.67\% / 100$~ms to $\mathbf{-0.35\% / 100}$~ms, successfully fulfilling Criterion 2 of the convergence gate ($< 1.0\% / 100$~ms). The broadside drag coefficient has plateaued at $C_D = 1.2999$ ($\approx 1.300$) with an extremely tight window spread of $[1.2993, 1.3013]$ (total spread $\Delta C_D = 0.0020$, $< 0.15\%$). This steady value is within $\approx 4$--$8\%$ of the high-resolution unconfined literature range ($1.15$--$1.25$) reported by Shenoy \& Kleinstreuer (2008) \cite{shenoy2008} and Roos \& Willmarth (1971) \cite{roos1971}, with the residual increment attributable to domain blockage ($\approx 0.36\%$) and baseline static-mesh resolution. Concurrently, lateral forces remain strictly suppressed at $\langle |F_{\mathrm{lat}}| \rangle / F_y = 8.27 \times 10^{-6}$ ($\sim 10^{-12}$~N amplitude), rigorously confirming that the numerical solver preserves the steady axisymmetric state without artificial vortex shedding or symmetry breaking.
+    \item \textbf{Mid-Transient Status of the $-3.3\%$ Drag Reduction:} On \texttt{wakeFine}, mean $C_D$ drops from $1.1609$ to $1.1225$ over $t \in [30, 50]$~ms. However, both baseline ($-5.5\% / 100$~ms) and \texttt{wakeFine} ($-6.0\% / 100$~ms) are still actively drifting at $1.04$ flow-throughs. Crucially, Direct Numerical Simulations of a 3D circular disk normal to the flow by Tian (2019) \cite{tian2019} establish a time-averaged drag coefficient of $\bar{C}_D \approx 1.054$ at $Re = 1000$ (consistent with experimental measurements of $C_D \approx 1.10$ by Roos \& Willmarth \cite{roos1971}). Because bluff-body drag decreases monotonically from laminar to turbulent subcritical regimes, broadside drag at $Re = 140$ cannot physically drop below the $Re = 1000$ level. If the observed $-5\% \text{ to } -6\% / 100$~ms downward drift were sustained, $C_D$ would unphysically breach this high-$Re$ anchor, proving that both $50$~ms runs are caught mid-transient rather than reflecting an asymptotic mesh convergence verdict. Furthermore, because \texttt{make\_wakeFine\_case.sh} refined the static AMI sphere (Level 4, 6,984 faces), added multi-level surface refinement zones, and embedded a $312\ \mu$m wake box, this reduction reflects the combined effect of spatial wake refinement rather than the 34:1 AMI face mismatch in isolation.
+    \item \textbf{Subcritical Benchmark ($Re = 100$):} As the simulation advanced to $t = 94.2$~ms ($1.40$ domain flow-throughs $\equiv 34.6$ disk convective units $D/V$), the linear $C_D$ drift decayed from $-4.67\% / 100$~ms to $\mathbf{-0.35\% / 100}$~ms, successfully fulfilling Criterion 2 of the convergence gate ($< 1.0\% / 100$~ms). The broadside drag coefficient hovers near $1.300$ (mean $C_D = 1.2999$, window spread $[1.2993, 1.3013]$, $< 0.15\%$ spread). If evaluated against literature estimates for circular disks at $Re = 100$ ($C_D \approx 1.15$--$1.25$ \cite{shenoy2008,roos1971}), this intermediate value sits $4\%$--$13\%$ above that reference band ($+4.0\%$ above $1.25$, $+13.0\%$ above $1.15$). The small computational domain blockage ($\approx 0.36\%$) cannot account for a discrepancy of this magnitude; whether the residual elevation stems from numerical diffusion or near-wake discretization remains to be tested through systematic mesh refinement. Lateral forces remain suppressed at $\langle |F_{\mathrm{lat}}| \rangle / F_y = 8.27 \times 10^{-6}$ ($\sim 10^{-12}$~N amplitude), consistent with a steady axisymmetric wake. However, because the run has completed $1.40$ flow-throughs against the gate's requirement of $3.0$, full asymptotic qualification is reserved until completion.
 \end{itemize}
 
 \section{Analysis of the \texorpdfstring{$-17\%$}{-17\%} Settling Velocity Deficit}
@@ -392,10 +391,15 @@ K.~Varshney, S.~Chang, and Z.~J.~Wang.
 \newblock {\em Nonlinearity}, 25(6):C1--C20, 2012.
 
 \bibitem{meliga2009}
-P.~Meliga, J.-M.~Chomaz, and D.~Fabre.
-\newblock Global stability of the wake of a disk: from the steady axisymmetric to the chaotic regimes.
-\newblock {\em Journal of Fluid Mechanics}, 637:417--440, 2009.
+P.~Meliga, J.-M.~Chomaz, and D.~Sipp.
+\newblock Global mode interaction and pattern selection in the wake of a disk: a weakly nonlinear expansion.
+\newblock {\em Journal of Fluid Mechanics}, 633:159--189, 2009.
 \newblock DOI: \href{https://doi.org/10.1017/S0022112009007290}{10.1017/S0022112009007290}.
+
+\bibitem{tian2019}
+X.~Tian.
+\newblock On the intrinsic three-dimensionality of the flow normal to a circular disk.
+\newblock {\em arXiv preprint arXiv:1906.10578}, 2019.
 
 \bibitem{fabre2008}
 D.~Fabre, F.~Auguste, and J.~Magnaudet.

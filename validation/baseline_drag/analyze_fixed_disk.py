@@ -12,19 +12,19 @@ Baseline-drag diagnostics for the fixed broadside disk (make_fixed_disk.sh):
   AMI interface flux leak normalized against domain inflow and rotating sphere cross-section
 
 Physics reference:
-  - Meliga et al. (2009, J. Fluid Mech. 637, 417-440):
+  - Meliga, Chomaz & Sipp (2009, J. Fluid Mech. 633, 159-189; DOI: 10.1017/S0022112009007290):
     * Steady regular bifurcation at Re_c1 ~ 116.9 (wake loses axisymmetry, planar-symmetric steady state)
     * Unsteady oscillatory Hopf bifurcation at Re_c2 ~ 125.3 (unsteady hairpin vortex shedding with St ~ 0.11 - 0.12)
+  - Stokes creeping flow baseline: C_D = 64 / (pi * Re) ≈ 20.37 / Re (Oberbeck 1876).
+  - High-Re DNS anchor: C_D ≈ 1.054 at Re = 1000 (Tian 2019, arXiv:1906.10578; citing Roos & Willmarth 1971, C_D ~ 1.10).
   - At Re = 100: subcritical wake, must be steady and axisymmetric (sigma < 0, F_lat -> 0).
-    Cited steady C_D benchmark: Shenoy & Kleinstreuer (2008, JFM 605, 253-262; finite-thickness disk h/D = 0.1)
-    and experimental measurements by Roos & Willmarth (1971, AIAA J. 9, 285-291) indicate unconfined steady C_D ~ 1.15 - 1.25.
-    (Note: Chrust et al. 2013 PoF 25, 044102 is a free-fall 6-DoF trajectory study; the corresponding fixed-body
-    parametric transition benchmark is Chrust et al. 2010 JFM 665, 199-208).
-  - At Re = 140: supercritical wake above the linear stability threshold (Re_c2 ~ 125.3 for zero-thickness disks,
-    whereas DNS for thicker h/D = 0.1 disks by Shenoy & Kleinstreuer 2008 places vortex shedding onset at Re ~ 155).
-    For our thin disk (h/D ~ 0.04), the wake must asymptotically break symmetry with finite lateral shedding.
-    When starting from unperturbed symmetric flow, linear modal amplification from machine roundoff (~1e-11 N)
-    requires long convective durations or controlled perturbation seeding.
+    Literature broadside drag estimates span C_D ~ 1.15 - 1.25 (e.g. Shenoy & Kleinstreuer 2008 for h/D = 0.1).
+    (Note: Chrust et al. 2013 PoF 25, 044102 is a free-fall 6-DoF trajectory study; the fixed-body transition study
+    is Chrust et al. 2010 JFM 665, 199-208).
+  - At Re = 140: supercritical wake above the Hopf threshold (Re_c2 ~ 125.3).
+    For our slender disk (h = 50 um, D = 2.02 mm, h/D ≈ 0.025, chi = 40.4), the wake must asymptotically break
+    axisymmetry with finite lateral shedding. When starting from unperturbed symmetric flow, linear modal amplification
+    from machine roundoff (~1e-11 N) requires long convective durations or controlled perturbation seeding.
 
 Convergence Gate:
   Requires >= 3.0 domain flow-throughs AND C_D drift < 1.0% per 100 ms to evaluate steady C_D,
