@@ -290,58 +290,57 @@ Executing these independent diagnostics on the broadside disk flow:
 
 ---
 
-### 9.4. Resolution of AMI Mismatch: Refined Static Wake Mesh (`warm_wakeFine`)
+### 9.4. Static Wake Under-Resolution & Refined Static Mesh (`warm_wakeFine`)
 
-Investigation of the baseline mesh uncovered a severe geometric discontinuity across the non-conformal sliding interface:
+Investigation of the baseline mesh (total **212,792 cells**: 178,160 rotating, 34,632 static) uncovered a severe geometric discontinuity across the non-conformal sliding interface:
 - **Baseline Rotating AMI Sphere (`masterAMI`):** $15,528$ faces ($\Delta x \approx 57\ \mu\mathrm{m}$).
 - **Baseline Static Outer AMI Sphere (`slaveAMI`):** Only $456$ faces ($\Delta x \approx 330\ \mu\mathrm{m}$) — a **34:1 face count disparity**.
 - **Static Background Grid:** Base cell size $1.25\ \mathrm{mm} \approx 0.62 D$, transitioning coarseness immediately downstream of the disk.
 
-To resolve this disparity, a refined static mesh case (`warm_wakeFine`) was synthesized using `make_wakeFine_case.sh`:
+To resolve the static wake and interface disparity, a refined static mesh case (`warm_wakeFine`) was synthesized using `make_wakeFine_case.sh`:
 1. **AMI Sphere Resolution Matching:** Static sphere boundary refinement was elevated from Level (2 3) to Level (4 4), shrinking static surface cell size to $\approx 78\ \mu\mathrm{m}$.
 2. **Interface Face Count:** `slaveAMI` face count increased from **456 to 6,984 faces** (a $>15\times$ resolution increase), closely matching the rotating sphere's $15,528$ faces.
-3. **Downstream Wake Box:** A Level 2 ($312\ \mu\mathrm{m}$) refinement box was embedded spanning $x \in [-4, 4]\ \mathrm{mm}$, $y \in [-4, 24]\ \mathrm{mm}$, $z \in [-12, 6]\ \mathrm{mm}$, aligned with the observed lateral drift direction of the falling disk.
+3. **Multi-Feature Wake Refinement:** In addition to the AMI sphere, `make_wakeFine_case.sh` embedded multi-level surface grading and a Level 2 ($312\ \mu\mathrm{m}$) downstream wake refinement box spanning $x \in [-4, 4]\ \mathrm{mm}$, $y \in [-4, 24]\ \mathrm{mm}$, $z \in [-12, 6]\ \mathrm{mm}$ along the lateral drift trajectory.
 4. **Mesh Quality Verification:** Evaluated with OpenFOAM `checkMesh`:
    - Total mesh cell count: **487,510 cells** (rotating: 178,160; static: 309,350).
    - Maximum non-orthogonality: **$37.3^\circ$** (average **$7.0^\circ$**).
    - Maximum skewness: **2.24**.
    - Topological consistency: cellZones `rotatingZone` and `staticZone` correctly assigned; `Mesh OK.`.
-5. **Demonstrated Baseline Drag Reduction on `fixedDisk_Re140_wakeFine` ($3,263$ steps, $t = 50.0\ \mathrm{ms}$):**
-   - **Baseline Drag Drop:** Mean broadside $C_D$ over $t \in [30, 50]\ \mathrm{ms}$ dropped from **$1.1609 \pm 0.007$** (coarse baseline) to **$1.1225 \pm 0.007$** (refined wake mesh), achieving a decisive **$-3.3\%$ reduction** directly confirming that wake smearing and AMI face mismatch artificially inflated baseline drag.
-   - **Mass Conservation & Leakage:** Net AMI interface mass leakage dropped by **$5.1\times$**, from $4.31 \times 10^{-7}$ down to **$8.44 \times 10^{-8}$** relative to sphere convective throughput.
-   - **Interpolation Weights:** CyclicAMI weights improved from $0.977 - 1.007$ to **$0.9987 - 1.0030$** (average $1.00014$), eliminating interface interpolation artifacts.
+5. **Preliminary Drag Reduction on `fixedDisk_Re140_wakeFine` ($3,263$ steps, $t = 50.0\ \mathrm{ms}$):**
+   - **Preliminary Drag Drop:** Mean broadside $C_D$ over $t \in [30, 50]\ \mathrm{ms}$ dropped from **$1.1609$** (baseline) to **$1.1225$** (refined wake mesh), a **$-3.3\%$ drop**. Note that "$\pm 0.007$" reflects intra-window signal variation across the short $20\ \mathrm{ms}$ window, not an uncertainty bound. Because both cases are still drifting at $-5.5\%$ to $-6.0\%$ per $100\ \mathrm{ms}$ at $1.04$ flow-throughs, this delta is a preliminary mid-transient observation. Furthermore, because multiple mesh features were refined simultaneously, this drop reflects combined spatial wake refinement rather than the 34:1 AMI mismatch in isolation.
+   - **Improved Sliding Interface Conservation:** Net AMI interface mass leakage dropped by **$5.1\times$** (from $4.31 \times 10^{-7}$ down to **$8.44 \times 10^{-8}$** relative to sphere convective throughput), and cyclicAMI weights tightened to **$1.00014 \pm 0.002$**. While verifying excellent geometric flux conservation, these metrics do not prove that interface leakage was the primary cause of drag over-prediction.
 
 ---
 
-### 9.5. Fixed Broadside Disk Benchmark & Restart Sensitivity Suite
+### 9.5. Fixed Broadside Disk Benchmark & Convergence Gating
 
 To separate fluid-dynamic discretization error from 6DoF body kinematics, two specialized diagnostic suites were constructed:
 1. **Fixed Broadside Disk Suite (`make_fixed_disk.sh`):**
    - Freezes 6DoF translation and rotation (`freedom (0 0 0)`, `rotationFreedom (0 0 0)`, $\mathbf{\Omega}_0 = \mathbf{0}$) under uniform inflow in zero gravity ($\mathbf{g} = \mathbf{0}$).
-   - **Bifurcation Regimes (Meliga et al. 2009):** The wake of an axisymmetric thin disk undergoes two successive instabilities:
-     - Steady regular bifurcation at $Re_{c1} \approx 116.9$ breaking axisymmetry into a planar-symmetric steady wake ($m = 1$).
-     - Oscillatory Hopf bifurcation at $Re_{c2} \approx 125.3$ initiating periodic hairpin vortex shedding with $St \approx 0.11 - 0.12$.
-   - **$Re = 100$ Case (`fixedDisk_Re100`, $V = 0.7426\ \mathrm{m/s}$):** Sits in the strictly subcritical regime where the wake must remain steady and axisymmetric ($\sigma < 0$, $F_{\mathrm{lat}} \to 0$), providing a clean test of broadside $C_D$ without windowing ambiguity.
-     - **Completed Simulation Results ($2,344$ steps, $t = 50.0\ \mathrm{ms}$, $0.74$ domain flow-throughs):**
-       - **Subcritical Broadside Drag:** Over $t \in [30, 50]\ \mathrm{ms}$, $C_D = 1.3073 \pm 0.006$ (min $1.3026$, max $1.3153$), drifting downward at $-0.0611$ per $100\ \mathrm{ms}$ ($-4.67\% / 100\ \mathrm{ms}$) as the boundary layer and wake relax.
-       - **Axisymmetric Wake Suppression:** Lateral force ratio $|F_{\mathrm{lat}}| / F_y$ has a mean of **$1.10 \times 10^{-5}$** (max $1.41 \times 10^{-5}$), with lateral force amplitudes below $2.3 \times 10^{-12}\ \mathrm{N}$ ($0.000\%$ of $F_y$). This confirms that the numerical wake remains strictly steady and axisymmetric without spurious symmetry-breaking perturbations below $Re_{c1} \approx 116.9$.
-       - **Comprehensive 3D Verification:** Vertical force matches OpenFOAM's certified library to **$3.61 \times 10^{-10}$** [PASS], with lateral force differences $\le 5 \times 10^{-21}\ \mathrm{N}$ and moment differences $\le 2.3 \times 10^{-17}\ \mathrm{N}\cdot\mathrm{m}$ [PASS]. Sliding AMI mass flux leak is $2.72 \times 10^{-7}$ relative to rotating sphere cross-section [PASS].
-   - **$Re = 140$ Case (`fixedDisk_Re140`, $V = 1.0396\ \mathrm{m/s}$):** Sits above both thresholds ($Re > 125.3$), where the wake is supercritical and unsteady.
-   - **Initial Simulation Results on `fixedDisk_Re140` ($3,276$ steps, $t = 50.0\ \mathrm{ms}$, $1.04$ domain flow-throughs):**
-     - **Broadside Drag Coefficient:** Evaluates to $C_D = 1.1609 \pm 0.007$ over $t \in [30, 50]\ \mathrm{ms}$, but is **not yet fully converged**, drifting at $-0.0635$ per $100\ \mathrm{ms}$ ($-5.5\% / 100\ \mathrm{ms}$) after only 1.0 domain flow-through. Furthermore, fixed broadside drag cannot be directly equated to the free-fall tumbling drag ($C_{D,\mathrm{paper}} \approx 1.09$), as tumbling disks spend substantial fractions of each cycle edge-on.
-     - **Windowing Limitation on Shedding Strouhal Number:** The apparent peak at $f = 50.0\ \mathrm{Hz}$ ($St = 0.097$) is an **artifact of the 20 ms window** ($T = 0.02\ \mathrm{s} \implies \Delta f_{\mathrm{Rayleigh}} = 1/T = 50.0\ \mathrm{Hz}$), representing the first resolvable bin and spanning only $\sim 1$ shedding period. Resolving physical shedding frequencies ($St \approx 0.11 - 0.12$) requires extending the run to $t \ge 0.20\ \mathrm{s}$ ($> 8-10$ cycles and $> 3$ domain flow-throughs).
-     - **Side-Force Envelope Growth Rate:** Over the short $20\ \mathrm{ms}$ window, tracking maximum $|F_{\mathrm{lat}}|$ in $2\ \mathrm{ms}$ bins resolves intra-cycle phase rather than envelope growth. Applying a Hilbert analytic envelope yields $\sigma_x = -2.7\ \mathrm{s}^{-1}$, $\sigma_z = -4.2\ \mathrm{s}^{-1}$, which reflects the unresolved startup phase rather than asymptotic linear modal growth.
-     - **Comprehensive 3D Force, Moment, and Flux Verification:**
-       - Vertical force relative error: $\frac{\max |F_{y,\mathrm{solver}} - F_{y,\mathrm{forces}}|}{\bar{F}_y} = 2.07 \times 10^{-10}$ [PASS].
-       - Lateral forces absolute difference: $\max |dF_x| \le 5.0 \times 10^{-22}\ \mathrm{N}$, $\max |dF_z| \le 5.0 \times 10^{-21}\ \mathrm{N}$ [PASS].
-       - Aerodynamic moments: $\max |dM_x| = 2.23 \times 10^{-18}\ \mathrm{N}\cdot\mathrm{m}$, $\max |dM_z| = 3.92 \times 10^{-18}\ \mathrm{N}\cdot\mathrm{m}$ [PASS].
-       - AMI interface flux conservation: relative to rotating sphere cross-section ($V \cdot A_{\mathrm{sphere}} = 1.33 \times 10^{-5}\ \mathrm{m}^3/\mathrm{s}$), the interface leak is $4.31 \times 10^{-7}$ [PASS (tolerance check)].
-    - **Refined Mesh Benchmark (`fixedDisk_Re140_wakeFine`, $V = 1.0396\ \mathrm{m/s}$):** Sits at identical flow parameters on the 487k-cell mesh ($6,984$ static AMI faces):
-      - **Completed Simulation Results ($3,263$ steps, $t = 50.0\ \mathrm{ms}$, $1.04$ domain flow-throughs):**
-        - **Drag Reduction:** Mean $C_D$ evaluates to **$1.1225 \pm 0.007$** (min $1.1172$, max $1.1312$), demonstrating a **$-3.3\%$ drag reduction** relative to the coarse grid ($1.1609$).
-        - **Lateral Force Ratio:** $|F_{\mathrm{lat}}| / F_y$ drops from $1.69 \times 10^{-2}$ to **$4.99 \times 10^{-5}$** (amplitudes $\le 1.2 \times 10^{-11}\ \mathrm{N}$).
-        - **Sliding Interface Flux Leak:** Reduced to **$8.44 \times 10^{-8}$** relative to sphere convective throughput ($1.20 \times 10^{-9}$ of domain inflow) [PASS].
-        - **3D Verification:** $F_y$ matches OpenFOAM `forces` to **$2.14 \times 10^{-10}$** [PASS]; moments match to $< 1.7 \times 10^{-18}\ \mathrm{N}\cdot\mathrm{m}$ [PASS].
+   - **Wake Instability Regimes & Sourced Literature Targets:**
+     - Per global linear stability analysis (Meliga et al. 2009, *JFM* 637, 417; Fabre et al. 2008, *PoF* 20, 051702), the wake past an axisymmetric thin disk undergoes:
+       * Steady regular bifurcation at $Re_{c1} \approx 116.9$ ($m = 1$).
+       * Oscillatory Hopf bifurcation at $Re_{c2} \approx 125.3$ ($St \approx 0.11 - 0.12$).
+     - **Steady Broadside Drag Literature Target ($Re = 100$):** In the steady axisymmetric regime ($Re < 135$), DNS by Shenoy & Kleinstreuer (2008, *JFM* 605, 253–262, $h/D = 0.1$), DNS of flat discs by Chrust, Bouchet & Dušek (2013, *PoF* 25, 044102), and towing-tank data by Roos & Willmarth (1971, *AIAA J.* 9, 285–291) establish that steady broadside $C_D$ lies in the range **$1.15 - 1.25$**.
+     - **Supercritical Physics ($Re = 140$):** Because $Re = 140 > Re_{c2}$, the physical wake **must break symmetry and shed vortices** ($F_{\mathrm{lat}} \neq 0$).
+   - **Convergence Gate in `analyze_fixed_disk.py`:**
+     - Requires $\ge 3.0$ domain flow-throughs AND linear $C_D$ drift $< 1.0\%$ per $100\ \mathrm{ms}$ before reporting steady $C_D$ comparisons, shedding frequency $St$, or Hilbert growth rate $\sigma$.
+   - **$Re = 100$ Subcritical Case (`fixedDisk_Re100`, $V = 0.7426\ \mathrm{m/s}$):**
+     - Completed $2,344$ steps ($t = 50.0\ \mathrm{ms}$, $0.74$ flow-throughs).
+     - **Convergence Status:** [UNCONVERGED / MID-TRANSIENT]. At $0.74$ flow-throughs, $C_D = 1.3073$ is drifting at $-4.67\%$ per $100\ \mathrm{ms}$ and represents a transient start-up value rather than a steady-state drag coefficient.
+     - **Axisymmetry:** Lateral force ratio is $|F_{\mathrm{lat}}| / F_y = 1.10 \times 10^{-5}$ ($\sim 10^{-12}\ \mathrm{N}$ amplitude), consistent with subcritical axisymmetric flow, but requires extension to $> 3$ flow-throughs for definitive steady-state verification.
+     - **Algebraic Verification:** $F_y$ matches OpenFOAM `forces` to $3.61 \times 10^{-10}$ [PASS]; moments match to $\le 2.3 \times 10^{-17}\ \mathrm{N}\cdot\mathrm{m}$ [PASS].
+   - **$Re = 140$ Supercritical Baseline Case (`fixedDisk_Re140`, $V = 1.0396\ \mathrm{m/s}$):**
+     - Completed $3,276$ steps ($t = 50.0\ \mathrm{ms}$, $1.04$ flow-throughs, 212,792 cells).
+     - **Convergence Status:** [UNCONVERGED / MID-TRANSIENT]. Mean $C_D = 1.1609$ (window spread $[1.154, 1.168]$) is drifting at $-5.5\%$ per $100\ \mathrm{ms}$.
+     - **Shedding & Growth Rate:** The apparent peak at $50.0\ \mathrm{Hz}$ ($St = 0.097$) is an artifact of the 20 ms window ($\Delta f_{\mathrm{Rayleigh}} = 50.0\ \mathrm{Hz}$).
+     - **Lateral Force:** $\langle |F_{\mathrm{lat}}| \rangle / F_y = 1.69 \times 10^{-2}$ ($\sim 10^{-8}\ \mathrm{N}$), likely prematurely seeded by coarse-mesh asymmetry or AMI mismatch.
+   - **$Re = 140$ Refined Wake Case (`fixedDisk_Re140_wakeFine`, $V = 1.0396\ \mathrm{m/s}$):**
+     - Completed $3,263$ steps ($t = 50.0\ \mathrm{ms}$, $1.04$ flow-throughs, 487,510 cells, $6,984$ static AMI faces).
+     - **Convergence Status:** [UNCONVERGED / MID-TRANSIENT]. Mean $C_D = 1.1225$ (spread $[1.117, 1.131]$) is drifting at $-6.0\%$ per $100\ \mathrm{ms}$.
+     - **Preliminary Drag Reduction:** Demonstrates a preliminary $-3.3\%$ drag reduction ($1.1609 \to 1.1225$) under combined spatial wake refinement.
+     - **Lateral Force Contradiction:** $\langle |F_{\mathrm{lat}}| \rangle / F_y$ drops to $4.99 \times 10^{-5}$ ($\sim 10^{-11}\ \mathrm{N}$). This does NOT indicate wake stabilization (which would contradict supercritical physics at $Re = 140 > 125.3$). Rather, on the more symmetric refined mesh, perturbations start at machine roundoff ($10^{-11}\ \mathrm{N}$), and 1.0 domain flow-through is too short for linear instability growth to reach macroscopic amplitude without seeding.
+     - **Interface Flux:** AMI leakage reduced by $5.1\times$ to $8.44 \times 10^{-8}$ relative to sphere convective throughput [PASS].
 2. **Developed-State Restart Suite from $t = 0.30\ \mathrm{s}$ (`make_restart_variants.sh`):**
    - Restarts from the fully developed tumbling limit cycle ($t = 0.30\ \mathrm{s}$, 9 complete revolutions) to evaluate sensitivity of $V_{\mathrm{eq,est}}$ and torque peaks to numerical parameters without repeating the initial transient:
      - `restart_base`: Control case on baseline numerics.

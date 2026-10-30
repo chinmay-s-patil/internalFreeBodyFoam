@@ -276,77 +276,84 @@ Aitken $\Delta^2$ sequence extrapolation on the mean cycle velocities yields $V_
 
 To isolate fluid-dynamic discretization error from coupled 6DoF kinematic degrees of freedom, fixed broadside disk simulations were conducted using \texttt{make\_fixed\_disk.sh} under uniform inflow with frozen frame velocity and attitude ($\mathbf{v}_{\mathrm{frame}} = \mathbf{0}$, $\boldsymbol{\omega} = \mathbf{0}$, $\mathbf{g} = \mathbf{0}$).
 
-\subsection{Wake Instability Regimes (Meliga et al., 2009)}
-Per the global linear stability analysis of Meliga et al. (2009) \cite{meliga2009}, the wake past an axisymmetric thin disk exhibits two distinct instability thresholds:
+\subsection{Wake Instability Regimes and Sourced Literature Benchmarks}
+Per the global linear stability analysis of Meliga et al. (2009) \cite{meliga2009} and Fabre et al. (2008) \cite{fabre2008}:
 \begin{enumerate}
-    \item \textbf{Steady Regular Bifurcation ($Re_{c1} \approx 116.9$):} Axisymmetry breaks into a planar-symmetric steady wake ($m = 1$).
-    \item \textbf{Oscillatory Hopf Bifurcation ($Re_{c2} \approx 125.3$):} Unsteady periodic hairpin vortex shedding initiates with Strouhal number $St \approx 0.11$--$0.12$.
+    \item \textbf{Subcritical Axisymmetric Regime ($Re < Re_{c1} \approx 116.9$):} At $Re = 100$, the wake is strictly steady and axisymmetric ($\sigma < 0$, $F_{\mathrm{lat}} \to 0$). Published direct numerical simulations of flow past thin circular disks by Shenoy \& Kleinstreuer (2008) \cite{shenoy2008} ($h/D = 0.1$, steady axisymmetric regime for $Re < 135$), Chrust, Bouchet \& Du\v{s}ek (2013) \cite{chrust2013}, and towing-tank measurements by Roos \& Willmarth (1971) \cite{roos1971} establish that the steady broadside drag coefficient lies in the range:
+    \begin{equation}
+    C_D(Re = 100) \approx 1.15 \text{ -- } 1.25
+    \end{equation}
+    \item \textbf{Supercritical Bifurcation Regimes ($Re > Re_{c2} \approx 125.3$):} The wake undergoes a steady regular bifurcation ($Re_{c1} \approx 116.9$, $m = 1$) followed by an oscillatory Hopf bifurcation ($Re_{c2} \approx 125.3$), shedding periodic hairpin vortex loops at $St \approx 0.11$--$0.12$. Consequently, at $Re = 140$, the physical wake \textbf{must asymptotically break symmetry} and produce a non-zero lateral force ($F_{\mathrm{lat}} \neq 0$).
 \end{enumerate}
 
-\subsection{Comparative Summary: Subcritical ($Re = 100$) vs.\ Supercritical ($Re = 140$)}
+\subsection{Comparative Diagnostic Summary Across 50~ms Runs}
 
 \begin{table}[H]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3pt}
-\begin{tabularx}{\textwidth}{p{40mm} c c c X}
+\begin{tabularx}{\textwidth}{p{38mm} c c c X}
 \toprule
-\textbf{Metric / Diagnostic} & \textbf{Subcritical} & \textbf{Baseline} & \textbf{Refined Wake} & \textbf{Target /} \\
-& ($Re = 100$) & ($Re = 140$) & ($Re = 140$, Fine) & \textbf{Benchmark} \\
+\textbf{Metric / Diagnostic} & \textbf{Subcritical} & \textbf{Baseline} & \textbf{Refined Wake} & \textbf{Sourced Literature /} \\
+& ($Re = 100$) & ($Re = 140$) & ($Re = 140$, \texttt{wakeFine}) & \textbf{Physical Target} \\
 \midrule
-Mesh Cells (Static AMI Faces) & 138k (456) & 138k (456) & 487k (6,984) & Resolution test \\
-Inflow Velocity $V$ [m/s] & $0.7426$ & $1.0396$ & $1.0396$ & --- \\
-Total Simulation Steps & $2,344$ ($50.0$~ms) & $3,276$ ($50.0$~ms) & $3,263$ ($50.0$~ms) & Convective run \\
-Domain Flow-Throughs & $0.74$ & $1.04$ & $1.04$ & $> 3.0$ \\
-Analysis Window [ms] & $[30.0, 50.0]$ & $[30.0, 50.0]$ & $[30.0, 50.0]$ & Post-transient \\
+Mesh Cells (Static AMI Faces) & 213k (456) & 213k (456) & 487k (6,984) & Spatial refinement test \\
+Inflow Velocity $V$ [m/s] & $0.7426$ & $1.0396$ & $1.0396$ & Nominal Reynolds number \\
+Steps \& Physical Time & $2,344$ ($50.0$~ms) & $3,276$ ($50.0$~ms) & $3,263$ ($50.0$~ms) & Convective run \\
+Domain Flow-Throughs ($L = 50$~mm) & $0.74$ & $1.04$ & $1.04$ & $> 3.0$ required for steady state \\
+Analysis Window [ms] & $[30.0, 50.0]$ & $[30.0, 50.0]$ & $[30.0, 50.0]$ & Post-transient window \\
 \midrule
-Mean Drag $\langle C_D \rangle$ & $1.3073 \pm 0.006$ & $\mathbf{1.1609 \pm 0.007}$ & $\mathbf{1.1225 \pm 0.007}$ & \textbf{$-3.3\%$ drop} \\
-$C_D$ Drift per $100$~ms & $-0.0611$ ($-4.7\%$) & $-0.0635$ ($-5.5\%$) & $-0.0676$ ($-6.0\%$) & $\to 0$ at steady state \\
-Lateral Ratio $\langle |F_{\mathrm{lat}}| \rangle / F_y$ & $\mathbf{1.10 \times 10^{-5}}$ & $1.69 \times 10^{-2}$ & $\mathbf{4.99 \times 10^{-5}}$ & $0$ below $Re_{c1}$ \\
-Peak Lateral Amplitude & $< 2.3 \times 10^{-12}$~N & $\sim 10^{-8}$~N & $\le 1.2 \times 10^{-11}$~N & Symmetry noise \\
-Wake Dynamic State & \textbf{Steady Axisymmetric} & \textbf{Unsteady / Trans.} & \textbf{Symmetric / Res.} & Meliga et al. \cite{meliga2009} \\
+Mean Drag $\langle C_D \rangle$ (Window Spread) & $1.3073$ [$1.303, 1.315$] & $1.1609$ [$1.154, 1.168$] & $1.1225$ [$1.117, 1.131$] & $C_D \approx 1.15$--$1.25$ \cite{shenoy2008,chrust2013} \\
+$C_D$ Drift per $100$~ms & $-0.0611$ ($-4.7\%$) & $-0.0635$ ($-5.5\%$) & $-0.0676$ ($-6.0\%$) & $\to 0$ ($< 1.0\%$ at convergence) \\
+Lateral Ratio $\langle |F_{\mathrm{lat}}| \rangle / F_y$ & $\mathbf{1.10 \times 10^{-5}}$ & $1.69 \times 10^{-2}$ & $\mathbf{4.99 \times 10^{-5}}$ & $0$ ($Re=100$); $>0$ ($Re=140$) \\
+Peak Lateral Force Amplitude & $< 2.3 \times 10^{-12}$~N & $\sim 10^{-8}$~N & $\le 1.2 \times 10^{-11}$~N & Roundoff ($100$); Unamplified ($140$) \\
+Convergence Gate Status & \textbf{UNCONVERGED} & \textbf{UNCONVERGED} & \textbf{UNCONVERGED} & Gated by drift and flow-throughs \\
 \midrule
-Force $F_y$ Error vs.\ \texttt{forces} & $3.61 \times 10^{-10}$ & $2.07 \times 10^{-10}$ & $2.14 \times 10^{-10}$ & Machine prec.\ (\textbf{PASS}) \\
-Max Moment Error $|d\mathbf{M}|$ & $\le 2.3 \times 10^{-17}$~N$\cdot$m & $\le 3.9 \times 10^{-18}$~N$\cdot$m & $\le 1.7 \times 10^{-18}$~N$\cdot$m & Machine prec.\ (\textbf{PASS}) \\
-AMI Net Leak $/ (V A_{\mathrm{sphere}})$ & $2.72 \times 10^{-7}$ & $4.31 \times 10^{-7}$ & $\mathbf{8.44 \times 10^{-8}}$ & \textbf{$5.1\times$ improved} \\
+Force $F_y$ Discrepancy vs.\ \texttt{forces} & $3.61 \times 10^{-10}$ & $2.07 \times 10^{-10}$ & $2.14 \times 10^{-10}$ & Machine precision (\textbf{PASS}) \\
+Max Aerodynamic Moment Discrepancy & $\le 2.3 \times 10^{-17}$~N$\cdot$m & $\le 3.9 \times 10^{-18}$~N$\cdot$m & $\le 1.7 \times 10^{-18}$~N$\cdot$m & Machine precision (\textbf{PASS}) \\
+AMI Net Leak $/ (V A_{\mathrm{sphere}})$ & $2.72 \times 10^{-7}$ & $4.31 \times 10^{-7}$ & $\mathbf{8.44 \times 10^{-8}}$ & $5.1\times$ reduction (\textbf{PASS}) \\
 \bottomrule
 \end{tabularx}
-\caption{Quantitative comparison between subcritical ($Re = 100$), baseline supercritical ($Re = 140$), and refined static wake ($Re = 140$, \texttt{wakeFine}) benchmarks across $50$~ms runs.}
+\caption{Quantitative diagnostic comparison between subcritical ($Re = 100$), baseline supercritical ($Re = 140$), and refined static wake ($Re = 140$, \texttt{wakeFine}) fixed broadside disk cases across 50~ms runs.}
 \label{tab:fixed_disk_comparison}
 \end{table}
 
-\subsection{Physical Implications of Fixed-Disk Diagnostics}
+\subsection{Physical Evaluation and Critical Interpretations}
 \begin{itemize}
-    \item \textbf{Subcritical Axisymmetry ($Re = 100$):} Below $Re_{c1} \approx 116.9$, lateral forces are suppressed to $1.1 \times 10^{-5}$ of vertical drag ($\sim 10^{-12}$~N), confirming that the numerical discretization maintains strict axisymmetric symmetry without spurious numerical symmetry breaking.
-    \item \textbf{Supercritical Shedding and Windowing Limitations ($Re = 140$):} At $Re = 140 > Re_{c2}$, lateral oscillations emerge. However, the apparent discrete Fourier peak at $f = 50.0$~Hz ($St = 0.097$) is strictly an \textbf{artifact of the 20~ms window} ($\Delta f_{\mathrm{Rayleigh}} = 1/T = 50.0$~Hz). True shedding frequency ($St \approx 0.11$--$0.12$) requires extension to $t \ge 0.20$~s ($> 8$--$10$ shedding cycles).
-    \item \textbf{Broadside Drag vs.\ Free-Fall Tumbling Drag:} Fixed broadside drag ($C_D \approx 1.16$ at $Re=140$, $1.31$ at $Re=100$) is consistent with planar broadside disk literature, but cannot be directly compared to free-fall tumbling drag ($C_{D,\mathrm{paper}} \approx 1.09$). Tumbling bodies oscillate between broadside ($C_D \sim 2.0$) and edge-on ($C_D \sim 0.26$) orientations throughout each cycle.
+    \item \textbf{Supercritical Lateral Force Interpretation ($Re = 140$):} On the refined mesh (\texttt{wakeFine}), the lateral force ratio is $\langle |F_{\mathrm{lat}}| \rangle / F_y = 4.99 \times 10^{-5}$ ($\sim 10^{-11}$~N), which is comparable to the subcritical $Re = 100$ case ($1.10 \times 10^{-5}$). In a supercritical wake above $Re_{c2} \approx 125.3$, the physical flow \textbf{must break axisymmetry}. Thus, $|F_{\mathrm{lat}}| \sim 10^{-5}$ does not represent a physical validation of stability; rather, two distinct interpretations exist:
+    \begin{enumerate}
+        \item The baseline mesh's lateral force of $1.69 \times 10^{-2}$ ($\sim 10^{-8}$~N) was prematurely triggered by geometric grid asymmetries or the 34:1 coarse AMI face mismatch.
+        \item On the refined grid, initial perturbations originate strictly from machine roundoff ($\sim 10^{-11}$~N). Because 1.0 domain flow-through ($50$~ms) spans only $\sim 1$ shedding cycle, linear modal instability growth at $\sigma^* \sim 0.05$--$0.1$ has had insufficient convective time to amplify $10^{-11}$~N into observable macroscopic shedding ($\sim 10^{-7}$~N).
+    \end{enumerate}
+    Resolving the true supercritical Hopf mode on \texttt{wakeFine} requires either extending the simulation to $t \ge 0.20$~s ($> 8$--$10$ shedding cycles) or introducing a tiny controlled asymmetry seed.
+    \item \textbf{Mid-Transient Status of the $-3.3\%$ Drag Reduction:} On \texttt{wakeFine}, mean $C_D$ drops from $1.1609$ to $1.1225$ over $t \in [30, 50]$~ms. However, both baseline ($-5.5\% / 100$~ms) and \texttt{wakeFine} ($-6.0\% / 100$~ms) are still actively drifting at $1.04$ flow-throughs, confirming that this drag delta is a \textbf{preliminary mid-transient observation} rather than a fully developed asymptotic difference. Furthermore, because \texttt{make\_wakeFine\_case.sh} refined the static AMI sphere (Level 4, 6,984 faces), added multi-level surface refinement zones, and embedded a $312\ \mu$m wake box, this reduction reflects the combined effect of spatial wake refinement rather than the 34:1 AMI face mismatch in isolation.
+    \item \textbf{Subcritical Benchmark ($Re = 100$):} At $t = 50.0$~ms, the $Re = 100$ run has completed only $0.74$ flow-throughs, with $C_D = 1.3073$ drifting at $-4.67\% / 100$~ms. While the suppression of lateral forces to $1.10 \times 10^{-5}$ is consistent with subcritical axisymmetry, $C_D = 1.3073$ remains transient. Extending $Re = 100$ to $t \ge 0.25$~s ($> 3$--$4$ flow-throughs) is required to establish a steady-state $C_D$ with drift $< 1.0\% / 100$~ms for rigorous comparison against Shenoy \& Kleinstreuer (2008) \cite{shenoy2008}.
 \end{itemize}
 
 \section{Analysis of the \texorpdfstring{$-17\%$}{-17\%} Settling Velocity Deficit}
 
 The baseline drag excess of $C_D \approx 1.16$ (vs.\ experimental $0.746$) produces the $-17\%$ velocity deficit. Three key factors govern this behavior:
 
-\subsection{Static Wake Under-Resolution and AMI Disparity}
-Inspection of the baseline discretization revealed a severe geometric mismatch across the sliding AMI boundary:
+\subsection{Static Wake Under-Resolution and Multi-Feature Discretization Error}
+Inspection of the baseline discretization (212,792 cells) revealed a severe geometric mismatch across the sliding AMI boundary:
 \begin{itemize}
     \item \textbf{Rotating Sphere Interface (\texttt{masterAMI}):} $15,528$ faces ($\Delta x \approx 57\ \mu$m).
     \item \textbf{Static Outer Interface (\texttt{slaveAMI}):} Only $456$ faces ($\Delta x \approx 330\ \mu$m) — a \textbf{34:1 face ratio disparity}.
     \item \textbf{Static Background Grid:} Base cell size $1.25$~mm ($0.62 D$).
 \end{itemize}
-When shed vortices cross the interface into the static outer mesh, they encounter an immediate $>5\times$ jump in cell size. Combined with the LUST convection scheme and $\mathrm{Co}_{\mathrm{max}} \approx 1.5$, this causes artificial numerical diffusion, smearing the separated shear layers and boosting base suction.
+When shed vortices cross the interface into the static outer mesh, they encounter an immediate $>5\times$ jump in cell size. Combined with the LUST convection scheme and $\mathrm{Co}_{\mathrm{max}} \approx 1.5$, numerical diffusion smears the separating shear layers, elevating base suction.
 
-\subsection{Refined Static Wake Mesh Synthesis and Baseline Drag Verification}
-To resolve the interface disparity, a refined mesh was synthesized via \texttt{make\_wakeFine\_case.sh}:
+\subsection{Refined Static Wake Mesh Synthesis (\texttt{warm\_wakeFine})}
+To resolve the static wake and interface disparity, a refined mesh was synthesized using script \texttt{make\_wakeFine\_}\allowbreak\texttt{case.sh}:
 \begin{itemize}
-    \item \textbf{AMI Sphere Matching:} Static boundary refinement elevated to Level (4 4), yielding $\approx 78\ \mu$m cells.
-    \item \textbf{Face Count Match:} \texttt{slaveAMI} face count increased $>15\times$ from \textbf{$456 \to 6,984$ faces}, matching the $15,528$ rotating faces.
+    \item \textbf{AMI Sphere Matching:} Static boundary refinement elevated to Level (4 4), yielding $\approx 78\ \mu$m cells and increasing \texttt{slaveAMI} faces from $456 \to 6,984$.
     \item \textbf{Downstream Wake Box:} Level 2 ($312\ \mu$m) refinement box embedded along the lateral drift trajectory.
-    \item \textbf{Quality Audit:} 487,510 cells; max non-orthogonality $37.3^\circ$ (average $7.0^\circ$), max skewness 2.24; \texttt{checkMesh} OK.
+    \item \textbf{Quality Audit:} 487,510 cells (rotating: 178,160; static: 309,350); max non-orthogonality $37.3^\circ$ (average $7.0^\circ$), max skewness 2.24; \texttt{checkMesh} OK.
 \end{itemize}
-Execution of \texttt{fixedDisk\_Re140\_wakeFine} ($3,263$ time steps to $t = 50.0$~ms) demonstrated:
+Execution of \texttt{fixedDisk\_Re140\_wakeFine} demonstrated:
 \begin{enumerate}
-    \item \textbf{Decisive Drag Reduction:} Mean $C_D$ over $t \in [30, 50]$~ms decreased from \textbf{$1.1609 \pm 0.007$} to \textbf{$1.1225 \pm 0.007$} (a \textbf{$-3.3\%$ drop}), validating the hypothesis that baseline static-mesh smearing causes artificial excess drag.
-    \item \textbf{Suppression of Numerical Flux Leakage:} Net AMI flux leakage dropped by $5.1\times$ to $8.44 \times 10^{-8}$ relative to sphere cross-section, and cyclicAMI weights tightened to $1.00014 \pm 0.002$.
+    \item \textbf{Preliminary Drag Reduction:} Mean $C_D$ over $t \in [30, 50]$~ms decreased from $1.1609$ to $1.1225$ (a $-3.3\%$ drop), providing preliminary mid-transient evidence that static wake resolution influences baseline drag. Isolating the specific contribution of the AMI interface requires parametric isolation of individual mesh features.
+    \item \textbf{Improved Sliding Interface Conservation:} Net AMI flux leakage dropped by $5.1\times$ to $8.44 \times 10^{-8}$ relative to sphere cross-section, and cyclicAMI weights tightened to $1.00014 \pm 0.002$. While these confirm superior geometric and mass-conservation properties, they do not prove that interface leakage was the primary cause of drag over-prediction.
 \end{enumerate}
 
 \subsection{Experimental Population Spread vs.\ Measurement Uncertainty}
@@ -372,7 +379,7 @@ The \texttt{freeBody6DoFPimpleFoam} solver demonstrates outstanding numerical co
     \item \textbf{Validation Status:} In accordance with ASME V\&V 20, the solver is designated as \textbf{preliminarily validated with established dynamic fidelity}, with the path to complete quantitative agreement mapped through the synthesized refined wake mesh.
 \end{enumerate}
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{tinklenberg2023}
 A.~Tinklenberg, M.~Guala, and F.~Coletti.
 \newblock Thin disks falling in air.
@@ -388,6 +395,31 @@ K.~Varshney, S.~Chang, and Z.~J.~Wang.
 P.~Meliga, J.-M.~Chomaz, and D.~Fabre.
 \newblock Global stability of the wake of a disk: from the steady axisymmetric to the chaotic regimes.
 \newblock {\em Journal of Fluid Mechanics}, 637:417--440, 2009.
+
+\bibitem{fabre2008}
+D.~Fabre, F.~Auguste, and J.~Magnaudet.
+\newblock Bifurcations and symmetry breaking in the wake of axisymmetric bodies.
+\newblock {\em Physics of Fluids}, 20:051702, 2008.
+
+\bibitem{auguste2010}
+F.~Auguste, D.~Fabre, and J.~Magnaudet.
+\newblock Bifurcations in the wake of a thick circular disk.
+\newblock {\em Theoretical and Computational Fluid Dynamics}, 24:305--313, 2010.
+
+\bibitem{shenoy2008}
+A.~R.~Shenoy and C.~Kleinstreuer.
+\newblock Flow over a thin circular disk at low to moderate Reynolds numbers.
+\newblock {\em Journal of Fluid Mechanics}, 605:253--262, 2008.
+
+\bibitem{chrust2013}
+M.~Chrust, G.~Bouchet, and J.~Du\v{s}ek.
+\newblock Numerical simulation of the dynamics of freely falling discs.
+\newblock {\em Physics of Fluids}, 25:044102, 2013.
+
+\bibitem{roos1971}
+F.~W.~Roos and W.~W.~Willmarth.
+\newblock Some experimental results on sphere and disk drag.
+\newblock {\em AIAA Journal}, 9(2):285--291, 1971.
 
 \bibitem{natarajan1993}
 R.~Natarajan and A.~Acrivos.
