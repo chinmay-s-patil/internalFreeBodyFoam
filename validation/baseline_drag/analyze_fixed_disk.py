@@ -195,15 +195,37 @@ def main():
             print(f"{name}: peak f = {f_dom:.1f} Hz -> St = {St_dom:.4f}, amp = {amp:.2e} N ({amp_rel*100:.3f}% of F_y), "
                   f"cycles = {n_cycles:.1f}{status_str}")
 
-        # Growth rate of lateral perturbations using Hilbert envelope
-        print(f"\n--- {prefix}Side-Force Envelope Growth Rate (Hilbert Analytic Signal) ---")
+        # Side-force azimuth angle analysis (distinguishes steady planar m=1 mode from oscillatory shedding)
+        phi_rad = np.arctan2(Fz[w], Fx[w])
+        phi_deg = np.degrees(phi_rad)
+        mean_phi = np.degrees(np.arctan2(np.mean(np.sin(phi_rad)), np.mean(np.cos(phi_rad))))
+        std_phi = np.std(phi_deg)
+        print(f"\n--- Side-Force Azimuth Orientation (Plane of Deflection) ---")
+        if np.max(Flat[w]) < 1e-12:
+            print(f"Azimuth: signal amplitude negligible (< 1e-12 N); axisymmetric flow.")
+        else:
+            mode_type = "STEADY PLANAR DEFLECTION (m=1 regular mode)" if std_phi < 5.0 else "ROTATING / OSCILLATING (shedding mode)"
+            print(f"Azimuth phi = atan2(F_z, F_x): mean = {mean_phi:+6.1f} deg, variation = +/-{std_phi:.2f} deg [{mode_type}]")
+
+        # Growth rate of lateral perturbations using Hilbert envelope and post-startup log-linear fit
+        print(f"\n--- {prefix}Side-Force Envelope Growth Rate ---")
+        # Post-startup exponential growth (t >= 50 ms to t_end)
+        m_dev = (t >= 0.050) & (t <= tw[-1])
+        if np.sum(m_dev) > 10 and np.max(Flat[m_dev]) > 1e-13:
+            p_dev = np.polyfit(t[m_dev], np.log(np.maximum(Flat[m_dev], 1e-18)), 1)
+            sig_dev = p_dev[0]
+            sig_dev_star = sig_dev * D / V
+            dev_regime = "GROWING" if sig_dev > 1.0 else ("DECAYING" if sig_dev < -1.0 else "STEADY / NEUTRAL")
+            print(f"Post-startup modal growth (50 - {1e3*tw[-1]:.0f} ms): sigma = {sig_dev:+6.1f} 1/s "
+                  f"(sigma* = sigma D/V = {sig_dev_star:+7.4f}); {dev_regime}")
+
         for name, F in (("F_x", Fx), ("F_z", Fz), ("|F_lat|", Flat)):
             s = np.interp(tu, t, F)
             sig, env = compute_hilbert_growth(tu, s)
             sig_ndim = sig * D / V
             regime = "GROWING" if sig > 1.0 else ("DECAYING" if sig < -1.0 else "STEADY / NEUTRAL")
             qualifier = " (PRELIMINARY: short window / startup phase)" if not conv_gate_passed else ""
-            print(f"{name:<8}: sigma = {sig:+8.1f} 1/s  (sigma* = sigma D/V = {sig_ndim:+7.4f}); {regime}{qualifier}")
+            print(f"Intra-window Hilbert {name:<8}: sigma = {sig:+8.1f} 1/s  (sigma* = sigma D/V = {sig_ndim:+7.4f}); {regime}{qualifier}")
 
     # Comprehensive multi-axis cross-check against OpenFOAM forces (always executed)
     print(f"\n--- Verification Cross-Check vs OpenFOAM `forces` Library ---")
