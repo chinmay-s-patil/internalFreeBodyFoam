@@ -18,13 +18,15 @@ Physics reference:
   - Stokes creeping flow baseline: C_D = 64 / (pi * Re) ≈ 20.37 / Re (Oberbeck 1876).
   - High-Re DNS anchor: C_D ≈ 1.054 at Re = 1000 (Tian 2019, arXiv:1906.10578; citing Roos & Willmarth 1971, C_D ~ 1.10).
   - At Re = 100: subcritical wake, must be steady and axisymmetric (sigma < 0, F_lat -> 0).
-    Literature broadside drag estimates span C_D ~ 1.15 - 1.25 (e.g. Shenoy & Kleinstreuer 2008 for h/D = 0.1).
+    Literature broadside drag estimates span C_D ~ 1.15 - 1.25 (unverified secondary estimate cited for h/D = 0.1;
+    Shenoy & Kleinstreuer 2008 has not been directly audited).
     (Note: Chrust et al. 2013 PoF 25, 044102 is a free-fall 6-DoF trajectory study; the fixed-body transition study
     is Chrust et al. 2010 JFM 665, 199-208).
-  - At Re = 140: supercritical wake above the Hopf threshold (Re_c2 ~ 125.3).
-    For our slender disk (h = 50 um, D = 2.02 mm, h/D ≈ 0.025, chi = 40.4), the wake must asymptotically break
-    axisymmetry with finite lateral shedding. When starting from unperturbed symmetric flow, linear modal amplification
-    from machine roundoff (~1e-11 N) requires long convective durations or controlled perturbation seeding.
+  - At Re = 140: supercritical wake above the Hopf threshold (Re_c2 ~ 125.3 for a zero-thickness disk).
+    For our slender disk (h = 50 um, D = 2.02 mm, h/D ≈ 0.025, chi = 40.4), which lies close to the zero-thickness limit,
+    the wake must asymptotically break axisymmetry with finite lateral shedding. When starting from unperturbed symmetric
+    flow, linear modal amplification from machine roundoff (~1e-11 N) requires long convective durations or controlled
+    perturbation seeding.
 
 Convergence Gate:
   Requires >= 3.0 domain flow-throughs AND C_D drift < 1.0% per 100 ms to evaluate steady C_D,
