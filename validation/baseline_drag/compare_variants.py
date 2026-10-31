@@ -28,7 +28,8 @@ def cmean(a, t, t0, t1):
     m = (t > t0) & (t < t1)
     tt = np.concatenate(([t0], t[m], [t1]))
     aa = np.concatenate(([np.interp(t0, t, a)], a[m], [np.interp(t1, t, a)]))
-    return np.trapezoid(aa, tt) / (t1 - t0)
+    trapz_fn = getattr(np, "trapezoid", getattr(np, "trapz", None))
+    return trapz_fn(aa, tt) / (t1 - t0)
 
 
 def metrics(case, t_from, W):

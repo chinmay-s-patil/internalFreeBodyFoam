@@ -22,11 +22,11 @@ Physics reference:
     Shenoy & Kleinstreuer 2008 has not been directly audited).
     (Note: Chrust et al. 2013 PoF 25, 044102 is a free-fall 6-DoF trajectory study; the fixed-body transition study
     is Chrust et al. 2010 JFM 665, 199-208).
-  - At Re = 140: supercritical wake above the Hopf threshold (Re_c2 ~ 125.3 for a zero-thickness disk).
+  - At Re = 140: supercritical wake above regular bifurcation (Re_c1 ~ 116.9) and Hopf threshold (Re_c2 ~ 125.3).
     For our slender disk (h = 50 um, D = 2.02 mm, h/D ≈ 0.025, chi = 40.4), which lies close to the zero-thickness limit,
-    the wake must asymptotically break axisymmetry with finite lateral shedding. When starting from unperturbed symmetric
-    flow, linear modal amplification from machine roundoff (~1e-11 N) requires long convective durations or controlled
-    perturbation seeding.
+    the wake breaks axisymmetry. When starting from unperturbed flow, linear modal amplification of the steady planar mode
+    from numerical seeds (~1e-10 N, originating in mesh asymmetry and solver tolerances) proceeds exponentially before
+    non-linear saturation.
 
 Convergence Gate:
   Requires >= 3.0 domain flow-throughs AND C_D drift < 1.0% per 100 ms to evaluate steady C_D,
@@ -209,15 +209,15 @@ def main():
 
         # Growth rate of lateral perturbations using Hilbert envelope and post-startup log-linear fit
         print(f"\n--- {prefix}Side-Force Envelope Growth Rate ---")
-        # Post-startup exponential growth (t >= 50 ms to t_end)
-        m_dev = (t >= 0.050) & (t <= tw[-1])
-        if np.sum(m_dev) > 10 and np.max(Flat[m_dev]) > 1e-13:
-            p_dev = np.polyfit(t[m_dev], np.log(np.maximum(Flat[m_dev], 1e-18)), 1)
-            sig_dev = p_dev[0]
-            sig_dev_star = sig_dev * D / V
-            dev_regime = "GROWING" if sig_dev > 1.0 else ("DECAYING" if sig_dev < -1.0 else "STEADY / NEUTRAL")
-            print(f"Post-startup modal growth (50 - {1e3*tw[-1]:.0f} ms): sigma = {sig_dev:+6.1f} 1/s "
-                  f"(sigma* = sigma D/V = {sig_dev_star:+7.4f}); {dev_regime}")
+        # Post-startup exponential growth (t >= 80 ms to exclude zero-crossing transient)
+        m_dev80 = (t >= 0.080) & (t <= tw[-1])
+        if np.sum(m_dev80) > 10 and np.max(Flat[m_dev80]) > 1e-13:
+            p_dev80 = np.polyfit(t[m_dev80], np.log(np.maximum(Flat[m_dev80], 1e-18)), 1)
+            sig_dev80 = p_dev80[0]
+            sig_dev_star80 = sig_dev80 * D / V
+            dev_regime80 = "GROWING" if sig_dev80 > 1.0 else ("DECAYING" if sig_dev80 < -1.0 else "STEADY / NEUTRAL")
+            print(f"Post-startup modal growth (80 - {1e3*tw[-1]:.0f} ms): sigma = {sig_dev80:+6.1f} 1/s "
+                  f"(sigma* = sigma D/V = {sig_dev_star80:+7.4f}); {dev_regime80}")
 
         for name, F in (("F_x", Fx), ("F_z", Fz), ("|F_lat|", Flat)):
             s = np.interp(tu, t, F)

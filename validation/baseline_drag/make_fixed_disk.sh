@@ -29,7 +29,7 @@ foamDictionary -entry rotor/initialOmega    -set "(0 0 0)" "$FF" >/dev/null
 foamDictionary -entry rotor/report          -set false     "$FF" >/dev/null
 foamDictionary -entry internalField -set "uniform (0 $V 0)" "$CASE/0/U" >/dev/null  # warm start, no impulsive start
 foamDictionary -entry endTime -set "$END" "$CASE/system/controlDict" >/dev/null
-foamDictionary -entry purgeWrite -set 2 "$CASE/system/controlDict" >/dev/null
+foamDictionary -entry purgeWrite -set 0 "$CASE/system/controlDict" >/dev/null
 
 cat > "$CASE/system/forcesFunctions" <<EOT
 diskForces                          // independent F and M about hub (cross-check of the hand-rolled integral)
