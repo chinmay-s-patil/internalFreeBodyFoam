@@ -394,10 +394,10 @@ On the full 13-revolution run, $V_{\mathrm{eq,est}}$ evaluates to $1.0252$~m/s, 
 \midrule
 Continuous Run (\texttt{case}) & 6 & $30.48$ & $1.0345$ & $1.0183$ & $1.0252$ & Reference \\
 Control Restart (\texttt{restart\_base}) & 4 & $30.62$ & $1.0387$ & $1.0253$ & $1.0258$ & $\mathbf{+0.06\%}$ ($+0.0006$~m/s) \\
-Temporal Refined (\texttt{restart\_dtHalf}) & 2 & $30.66$ & $1.0459$ & $1.0367$ & $1.0272$ & $\mathbf{+0.20\%}$ ($+0.0020$~m/s) \\
+Temporal Refined (\texttt{restart\_dtHalf}) & 4 & $30.52$ & $1.0385$ & $1.0254$ & $1.0256$ & $\mathbf{+0.04\%}$ ($+0.0004$~m/s) \\
 \bottomrule
 \end{tabularx}
-\caption{Dynamic limit-cycle restart metrics evaluated from $t = 0.30$~s across complete revolutions using \texttt{compare\_variants.py}. The control restart reproduces the continuous limit cycle to $0.06\%$, while halving $\Delta t$ shifts settling speed by $+0.20\%$ over the first 2 completed revolutions.}
+\caption{Dynamic limit-cycle restart metrics evaluated from $t = 0.30$~s across complete revolutions using \texttt{compare\_variants.py}. The control restart reproduces the continuous limit cycle to $0.06\%$, while halving $\Delta t$ shifts settling speed by only $+0.04\%$ over 4 complete revolutions ($-0.02\%$ relative to \texttt{restart\_base}).}
 \label{tab:restart_metrics}
 \end{table}
 
@@ -405,9 +405,9 @@ Temporal Refined (\texttt{restart\_dtHalf}) & 2 & $30.66$ & $1.0459$ & $1.0367$ 
 As shown in Table~\ref{tab:restart_metrics}:
 \begin{itemize}
     \item The control restart (\texttt{restart\_base}) reproduces the continuous run with high fidelity: $V_{\mathrm{eq,est}} = 1.0258$~m/s ($+0.06\%$ agreement), tumbling frequency $f_t = 30.62$~Hz ($+0.44\%$), trajectory angle $\psi = 15.28^\circ$ ($-1.5\%$), and peak torque $M_{x,\mathrm{p95}} = 0.731$~nN$\cdot$m ($+0.7\%$).
-    \item Halving the time step alone (\texttt{restart\_dtHalf}, with $\mathrm{nOuterCorrectors} = 1$) produces a small shift of $+0.20\%$ ($+0.0020$~m/s) in equilibrium velocity and $+0.57\%$ in frequency over the first 2 completed revolutions ($+0.36\%$ over the first revolution).
+    \item Halving the time step alone (\texttt{restart\_dtHalf}, with $\mathrm{nOuterCorrectors} = 1$) over 4 full completed revolutions produces an almost imperceptible shift of $\mathbf{+0.04\%}$ ($+0.0004$~m/s vs.\ continuous run, and $-0.02\%$ vs.\ \texttt{restart\_base}) in equilibrium settling velocity, with tumbling frequency matching to $+0.13\%$ ($30.52$~Hz vs.\ $30.48$~Hz), trajectory angle $\psi = 15.29^\circ$ ($+0.01^\circ$ vs.\ \texttt{restart\_base}), and peak torque matching to $0.731$~nN$\cdot$m.
 \end{itemize}
-Because halving $\Delta t$ also tightens explicit fluid--body dynamic coupling, this case cleanly isolates temporal error. The small observed sensitivity indicates that time-step truncation error is not the source of the $-17\%$ settling deficit, making an expensive Outer2 variation unnecessary. Full multi-revolution completion and convection scheme evaluation (\texttt{restart\_linUp}) remain planned.
+Because halving $\Delta t$ also tightens explicit fluid--body dynamic coupling, this case cleanly isolates temporal error. The negligible observed sensitivity ($< 0.05\%$) demonstrates that time-step truncation error is not the source of the $-17\%$ settling deficit, and confirms that an expensive Outer2 variation is unnecessary. Convection scheme evaluation (\texttt{restart\_linUp}) and direct 6DoF spatial wake refinement (\texttt{warm\_wakeFine} vs.\ \texttt{warm\_base}) remain active.
 
 \section{Analysis of the \texorpdfstring{$-17\%$}{-17\%} Settling Velocity Deficit}
 
