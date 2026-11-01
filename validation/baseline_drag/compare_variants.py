@@ -35,6 +35,8 @@ def cmean(a, t, t0, t1):
 def metrics(case, t_from, W):
     r = np.loadtxt(os.path.join(case, "postProcessing/tumbleMotion/motion.dat"), comments="#")
     f = np.loadtxt(os.path.join(case, "postProcessing/fallingMotion/motion.dat"))
+    n_pts = min(len(r), len(f))
+    r, f = r[:n_pts], f[:n_pts]
     t = r[:, 0]
     ang = np.degrees(np.unwrap(np.radians(r[:, 10])))
     e = rev_edges(t, ang, t_from)
