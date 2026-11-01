@@ -1,5 +1,6 @@
 # 6DoF CFD Validation Study: Thin Disks Falling in Air
 
+**Author:** Chinmay S. Patil  
 **Benchmark Reference:**  
 Tinklenberg, A., Guala, M., & Coletti, F. (2023). *Thin disks falling in air*. **Journal of Fluid Mechanics**, vol. 962, A3. [doi:10.1017/jfm.2023.209](https://doi.org/10.1017/jfm.2023.209)
 
