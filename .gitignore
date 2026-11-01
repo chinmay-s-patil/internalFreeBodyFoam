@@ -127,4 +127,5 @@ Thumbs.db
 
 # Base validation report
 !validation/report.md
-ideas/ehe.md
+# Ignore ideas directory entirely
+ideas/

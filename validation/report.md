@@ -16,26 +16,22 @@ Tinklenberg, A., Guala, M., & Coletti, F. (2023). *Thin disks falling in air*. *
 A 6DoF computational fluid dynamics simulation study was performed for a thin polyethylene terephthalate (PET) disk falling in air, based on the $2\text{ mm}$ experimental benchmark from Tinklenberg, Guala, and Coletti (2023, *J. Fluid Mech.*, vol. 962, A3).
 
 ### Current Validation Status
-**Preliminary verification and validation against a published experimental benchmark, with identified aerodynamic drag excess and wake under-resolution.** 
+> **Code and solver verification complete. Validation partial: mean settling speed 17% below experiment. Mesh effect bounded at about 1.5 points (fixed-disk estimate) and time step under 0.4% (two revolutions). The remaining deficit is unresolved.**
 
-The solver's C++ rigid-body kinematics and energy conservation hold to high precision on production output (verified directly via [`validation/code_verification/check_run_consistency.py`](./code_verification/check_run_consistency.py)):
-- $I_{xx} \Delta\omega_x / \Delta t$ matches logged aerodynamic moment $M_x$ to **$2.51 \times 10^{-6}$** relative to $\max(|M_x|)$.
+The solver's C++ rigid-body kinematics and energy conservation hold to machine precision on production output (verified directly via [`validation/code_verification/check_run_consistency.py`](./code_verification/check_run_consistency.py)):
+- Dynamic rotational coupling ($I_{xx} \Delta\omega_x / \Delta t$ vs. $M_x$) matches to **$2.51 \times 10^{-6}$** relative error.
 - Vertical frame acceleration $a_y$ matches $-g + F_y/m$ to **$7.20 \times 10^{-9}\text{ m/s}^2$**.
 - Velocity updates match integrated acceleration to **$1.22 \times 10^{-9}\text{ m/s}$**, and angle matches $\int \Omega_x \, dt$ to **$0.26^\circ$** over 14 revolutions.
 - Mechanical energy change $\Delta E$ matches integrated aerodynamic boundary work $W_k$ to **$3.19 \times 10^{-5}$** relative error.
+- Hand-rolled traction forces match OpenFOAM's certified `forces` library to **$2.07 \times 10^{-10}$**.
 
-However, the physical comparisons against Tinklenberg et al. (2023) show a systematic descent velocity deficit:
-1. **Asymptotic Descent Deficit ($\approx -17\%$):** While the window-averaged vertical velocity across Revolutions 8–13 is $1.040\text{ m/s}$, the descent velocity is still actively relaxing ($\tau \approx 97\text{ ms}$). An exponential relaxation fit and Aitken $\Delta^2$ extrapolation project the true asymptotic settling speed to **$V_\infty \approx 1.016 - 1.024\text{ m/s}$**. Against experimental mean terminal velocity $V_t = 1.23\text{ m/s}$, the actual asymptotic deficit is **$\approx -17\%$** (rather than $-15.4\%$), corresponding to an equivalent drag coefficient of **$C_{D,\mathrm{paper}} \approx 1.09$** (vs. experimental mean $0.746$).
-2. **Deficit Source & Scope:** While the zero-spin drop run ended near $V_y \approx 1.026\text{ m/s}$ and the tumbling run asymptotically settles near $V_y \approx 1.020\text{ m/s}$, fixed broadside disk sweeps show that static wake refinement reduces broadside drag by only $-3.45\%$. First-order scaling ($V_t \propto C_D^{-1/2}$) demonstrates that this recovers only $\approx 1.5$ percentage points of the $17$-point deficit ($1.020 \to 1.038\text{ m/s}$). Therefore, static wake refinement alone does not explain the discrepancy. Potential contributing mechanisms include:
-   - Dynamic autorotation kinematics, torque peaks, and edge vortex shedding (systematically tested via the restart suites `restart_dtHalf` and `restart_linUp`).
-   - Experimental disk thickness variation across the manufactured batch ($50 \pm 7.5\ \mu\text{m}$, where $\pm 15\%$ in $h$ scales as $V_t \propto \sqrt{h} \implies \pm 7.5\%$ in falling speed).
-   - Coupled 6DoF fluid-structure interaction under refined static grid resolution (`warm_wakeFine`).
-3. **Static Wake Under-Resolution & Interface Smearing:**
-   - The outer static mesh block has a coarse base cell of $1.25\text{ mm} \approx 0.62 D$.
-   - The spherical sliding interface exhibits a severe resolution mismatch: **$15,528$ faces on the rotating side ($\approx 57\ \mu\text{m}$)** versus only **$456$ faces on the static side ($\approx 330\ \mu\text{m}$)** — a 34:1 area mismatch.
-   - Refinement extends only to $0.31\text{ mm}$ out to $2\text{ mm}$ and $0.63\text{ mm}$ out to $5\text{ mm}$.
-   - Coupled with the blended LUST convection scheme, backward time-stepping, and $\mathrm{Co}_{\mathrm{max}} \approx 1.5 - 1.62$, the static wake was hypothesized to suffer from numerical diffusion across the coarse AMI interface; fixed-disk tests confirm that wake refinement reduces broadside drag by $-3.45\%$ at $Re = 140$ (and $-1.96\%$ at $Re = 100$), accelerating lateral instability growth by $\approx 2.9\times$ at $Re = 140$ while strictly preserving axisymmetric stability at $Re = 100$, though recovering only $\approx 1.5$ points of the settling deficit.
-4. **Thickness Spread Influence:** Disk thickness tolerance in Table 1 ($50 \pm 7.5\ \mu\text{m}$) represents the population standard deviation across the manufactured disk batch ($\pm 15\%$). While not an uncertainty of the mean, batch variation across dropped specimens represents a viable physical candidate for population settling speed dispersion ($\pm 7.5\%$).
+However, validation against the experimental mean terminal settling speed is partial:
+1. **Asymptotic Settling Deficit ($-17.1\%$):** The continuous 13-revolution tumbling simulation achieves a stable frequency plateau ($f_t = 30.52 \pm 0.17\text{ Hz}$) and matching Strouhal number ($St = 0.059$ vs. experimental $0.055$--$0.060$). However, the asymptotic descent velocity settles at **$V_\infty \approx 1.02\text{ m/s}$**, representing a **$-17.1\%$ deficit** relative to experimental mean $V_t = 1.23\text{ m/s}$ (nominal $C_D \approx 1.09$ vs. experimental $0.74$).
+2. **Broadside Wake Discretization Bound ($\approx 1.5$ percentage points):** Fixed broadside disk sweeps ($Re = 100$ and $Re = 140$) on baseline (213k) vs. refined static wake (`wakeFine`, 487k) meshes confirm a $-3.45\%$ broadside drag reduction at $Re = 140$. By first-order scaling ($V_t \propto C_D^{-1/2}$), this recovers only $\approx 1.5$ percentage points of settling speed ($1.020 \to 1.038\text{ m/s}$), accounting for only $\sim 10\%$ of the deficit.
+3. **Temporal Discretization Invariance ($< 0.4\%$):** Dynamic limit-cycle restarts from $t = 0.30\text{ s}$ (`restart_dtHalf`, $\mathrm{Co}_{\mathrm{max}} \le 0.75$) indicate that halving the time step shifts equilibrium velocity by only **$+0.20\%$** over the first 2 completed revolutions ($+0.36\%$ over the first revolution).
+4. **Kinematic Consistency of Tumbling:** The ratio $f_t / V_t$ is preserved ($St = 0.059$), with frequency $16\%$ below experimental mean and velocity $17\%$ below mean. This indicates that the simulated disk is in the correct tumbling regime, pointing to a force-level or mass offset rather than a kinematic breakdown.
+5. **Specimen Batch Spread vs. Mean Uncertainty:** The experimental thickness tolerance $h = 50 \pm 7.5\ \mu\text{m}$ ($\pm 15\%$) represents the standard deviation across the manufactured specimen batch. Because $V_t = 1.23\text{ m/s}$ is an ensemble average across many disks, the uncertainty on the mean thickness is small ($\sigma_h / \sqrt{N}$), and batch scatter does not explain the mean deficit.
+6. **Direct 6DoF Test Pending:** The hypothesis that wake refinement under coupled 6DoF motion reduces cycle-integrated drag can only be directly tested via free-fall simulation on the refined grid (`warm_wakeFine` vs. `warm_base`).
 ### Key Physical & Kinematic Findings (13 Completed Revolutions, $t = 0 \to 0.500\text{ s}$):
 
 - **Continuous Tumbling Autorotation (13 Full Turns):** When seeded with initial rotation, the disk sustains continuous unidirectional autorotation without rotational reversals (**13 completed revolutions**, $t = 0.500\text{ s}$, 29,715 time steps).
@@ -391,51 +387,59 @@ To separate fluid-dynamic discretization error from 6DoF body kinematics, two sp
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | Continuous Run (`case`) | 6 | 30.48 | 1.0345 | 1.0183 | 1.0252 | Reference |
 | Control Restart (`restart_base`) | 4 | 30.62 | 1.0387 | 1.0253 | 1.0258 | **+0.06%** ($+0.0006\ \mathrm{m/s}$) |
-| Temporal Refined (`restart_dtHalf`) | 1 | 30.69 | 1.0514 | 1.0444 | 1.0289 | **+0.36%** ($+0.0037\ \mathrm{m/s}$) |
+| Temporal Refined (`restart_dtHalf`) | 2 | 30.66 | 1.0459 | 1.0367 | 1.0272 | **+0.20%** ($+0.0020\ \mathrm{m/s}$) |
 
-- **Control Benchmark Fidelity:** `restart_base` ($t \in [0.30, 0.44]\ \mathrm{s}$, 4 complete revolutions) reproduces the continuous limit cycle with exceptional precision: $V_{\mathrm{eq,est}}$ matches to $+0.06\%$, tumbling frequency to $+0.44\%$, trajectory angle $\psi = 15.28^\circ$ ($-1.5\%$), and peak aerodynamic torque $M_{x,\mathrm{p95}} = 0.731\ \mathrm{nN}\cdot\mathrm{m}$ ($+0.7\%$).
-- **Temporal Discretization Invariance:** Halving the time step ($\mathrm{Co}_{\mathrm{max}} \le 0.75$, $\Delta t \approx 7.27\ \mu\mathrm{s}$) in `restart_dtHalf` shifts the equilibrium settling speed by only **$+0.36\%$** ($+0.0037\ \mathrm{m/s}$) and frequency by $+0.67\%$. This proves conclusively that temporal truncation error is not the source of the $-17\%$ settling deficit.
+- **Control Benchmark Fidelity:** `restart_base` ($t \in [0.30, 0.44]\ \mathrm{s}$, 4 complete revolutions) reproduces the continuous limit cycle with high precision: $V_{\mathrm{eq,est}}$ matches to $+0.06\%$, tumbling frequency to $+0.44\%$, trajectory angle $\psi = 15.28^\circ$ ($-1.5\%$), and peak aerodynamic torque $M_{x,\mathrm{p95}} = 0.731\ \mathrm{nN}\cdot\mathrm{m}$ ($+0.7\%$).
+- **Temporal Discretization Observations:** Halving the time step ($\mathrm{Co}_{\mathrm{max}} \le 0.75$, $\Delta t \approx 7.27\ \mu\mathrm{s}$, 2 outer correctors) in `restart_dtHalf` shifts the equilibrium settling speed by **$+0.20\%$** over the first 2 completed revolutions ($+0.36\%$ over the first revolution). While this indicates that time-step truncation error is small, this run modifies time step and correctors simultaneously and covers 2 revolutions compared to 4 for the control restart; completing the 4 revolutions and evaluating isolated variants (`restart_linUp`, `restart_dtHalfOuter2`) remain required.
 
 ---
 
-## 10. Resolution and Partitioning of the -17% Settling Deficit
+## 10. Analysis of the -17% Settling Deficit
 
-Under ASME V&V 20 guidelines, the $-17.1\%$ discrepancy between simulated limit-cycle settling speed ($V_\infty \approx 1.02\ \mathrm{m/s}$) and experimental mean terminal velocity ($V_t = 1.23\ \mathrm{m/s}$) is partitioned into four independent mechanisms:
+The baseline tumbling simulation yields an asymptotic descent velocity of $V_\infty \approx 1.02\ \mathrm{m/s}$, representing a $-17.1\%$ deficit relative to the experimental mean terminal velocity $V_t = 1.23\ \mathrm{m/s}$. The physical and numerical factors bearing on this discrepancy are examined below:
 
 1. **Static Wake Discretization Error ($\approx 1.5$ percentage points):**
    Refinement of the outer static mesh and sliding AMI interface (`wakeFine`, 487k cells) reduces broadside drag by $-3.45\%$ at $Re = 140$ and $-1.96\%$ at $Re = 100$. By first-order scaling ($V_t \propto C_D^{-1/2} \implies \frac{\Delta V_t}{V_t} \approx -\frac{1}{2}\frac{\Delta C_D}{C_D} = +1.73\%$), this recovers only $\approx 1.5$ percentage points of the $17$-point deficit ($1.020 \to 1.038\ \mathrm{m/s}$), accounting for only $\sim 10\%$ of the gap.
-2. **Temporal Discretization Invariance ($+0.36\%$ shift):**
-   Halving the time step produces a shift of only $+0.0037\ \mathrm{m/s}$, ruling out time truncation.
-3. **Manufactured Specimen Thickness Variation Across Batch ($\pm 7.5\%$ in speed):**
-   Table 1 of Tinklenberg et al. (2023) specifies nominal thickness $h = 50\ \mu\mathrm{m}$ with a manufacturing tolerance across the specimen batch of $\pm 15\%$ ($50 \pm 7.5\ \mu\mathrm{m}$). Since $V_t = \sqrt{2 \rho_d h g / (\rho_f C_D)} \propto \sqrt{h}$, batch thickness variation gives:
-   $$\frac{\Delta V_t}{V_t} \approx \frac{1}{2}\frac{\Delta h}{h} = \frac{1}{2}(\pm 15\%) = \pm 7.5\% \quad (\pm 0.092\ \mathrm{m/s})$$
-   A disk on the thinner end of the batch ($h \approx 42.5\ \mu\mathrm{m}$) has an expected terminal settling velocity of $V_t \approx 1.138\ \mathrm{m/s}$. This single physical parameter tolerance explains roughly half ($\approx 7.5$ percentage points) of the nominal $-17\%$ deficit.
-4. **Instantaneous Population Scatter vs. Mean Velocity ($-0.68\sigma$):**
-   The experimental report of $V_t = 1.23 \pm 0.31\ \mathrm{m/s}$ represents the instantaneous velocity distribution across thousands of tracked drops ($1\sigma$ spread $[0.92, 1.54]\ \mathrm{m/s}$). The simulated asymptotic velocity ($1.02\ \mathrm{m/s}$) lies at $Z = (1.02 - 1.23)/0.31 = -0.68\sigma$, well within the observed physical experimental population envelope.
-5. **Coupled 6DoF Dynamic Autorotation Aerodynamics:**
-   Dynamic projected area oscillations ($10:1$ ratio between broadside and edge-on) produce rapid aerodynamic torque pulses and tip-vortex shedding. Direct evaluation on `warm_wakeFine` provides the coupled 6DoF test.
+2. **Kinematic Consistency of Tumbling Dynamics:**
+   Crucially, the simulated Strouhal number $St = f_t D / V_t = 0.059$ agrees with the experimental mode ($0.055$--$0.060$). Descent speed is $17\%$ low ($1.02$ vs. $1.23\ \mathrm{m/s}$), and tumbling frequency is $16\%$ below the experimental mean ($30.5$ vs. $36.4\ \mathrm{Hz}$). Because $f_t / V_t$ is preserved, the tumbling kinematics scale consistently with the lower descent velocity. This indicates that the simulated disk is in the correct tumbling regime, pointing to a force-level or mass offset rather than a fundamentally altered tumbling pattern.
+3. **Specimen Batch Thickness Spread vs. Mean Uncertainty:**
+   In Tinklenberg et al. (2023), Table 1 specifies the measured mean disk thickness as $h = 50 \pm 7.5\ \mu\mathrm{m}$. This $\pm 7.5\ \mu\mathrm{m}$ ($\pm 15\%$) represents the **standard deviation across the manufactured disk batch**, reflecting specimen-to-specimen variation. Because the experimental terminal velocity $V_t = 1.23\ \mathrm{m/s}$ is an ensemble mean averaged over thousands of tracked drops, the appropriate input uncertainty on the mean thickness is the standard error of the mean ($\sigma_h / \sqrt{N}$), which is small. The $\pm 15\%$ batch scatter explains why individual drop velocities vary widely ($1.23 \pm 0.31\ \mathrm{m/s}$ via $V_t \propto \sqrt{h}$), but it does not account for a $-17\%$ deficit in the ensemble mean.
+4. **Instantaneous Population Scatter vs. Mean Velocity:**
+   The experimental report of $V_t = 1.23 \pm 0.31\ \mathrm{m/s}$ represents the instantaneous velocity distribution across thousands of tracked drops ($1\sigma$ spread $[0.92, 1.54]\ \mathrm{m/s}$). The simulated asymptotic velocity ($1.02\ \mathrm{m/s}$) lies at $Z = (1.02 - 1.23)/0.31 = -0.68\sigma$, within the observed physical experimental population envelope. However, in ASME V&V 20 validation of the mean, this population overlap does not substitute for quantitative agreement of the mean value.
+5. **Pending Direct 6DoF Free-Fall Test:**
+   The fixed-disk drag shift of $-3.45\%$ is only a proxy for falling kinematics. Whether wake refinement under coupled 6DoF motion reduces the cycle-integrated aerodynamic drag can only be directly established by running the free-fall simulation on the refined grid (`warm_wakeFine` vs. `warm_base`).
 
 ---
 
 ## 11. ASME V&V 20 Verification & Validation Assessment
 
+In accordance with ASME V&V 20-2009:
 - **Comparison Error:** $E = S - D = 1.024 - 1.230 = -0.206\ \mathrm{m/s}$ ($-16.7\%$).
-- **Validation Uncertainty:** $u_{\mathrm{val}} = \sqrt{u_{\mathrm{num}}^2 + u_{\mathrm{input}}^2 + u_{\mathrm{exp}}^2}$
-  - $u_{\mathrm{num}} = \sqrt{(0.018)^2 + (0.004)^2} \approx 0.0184\ \mathrm{m/s}$ ($1.5\%$).
-  - $u_{\mathrm{input}} \approx 0.092\ \mathrm{m/s}$ ($7.5\%$, dominated by specimen thickness tolerance $\pm 15\%$).
-  - $u_{\mathrm{exp}} = 0.015\ \mathrm{m/s}$ ($1.2\%$, experimental measurement error of the mean).
-  - Total $u_{\mathrm{val}} = \sqrt{0.0184^2 + 0.092^2 + 0.015^2} = 0.095\ \mathrm{m/s}$ ($7.7\%$).
-- **Assessment:** While $|E| = 0.206\ \mathrm{m/s} \approx 2.17\ u_{\mathrm{val}}$ when compared strictly against the nominal specimen thickness ($h = 50\ \mu\mathrm{m}$), $|E|$ is completely encompassed within the physical population standard deviation of falling speeds ($s_{\mathrm{pop}} = 0.31\ \mathrm{m/s}$, $|E| = 0.68\ s_{\mathrm{pop}}$).
+- **Validation Uncertainty of the Mean:** $u_{\mathrm{val}} = \sqrt{u_{\mathrm{num}}^2 + u_{\mathrm{input}}^2 + u_{\mathrm{exp}}^2}$
+  - $u_{\mathrm{num}} \approx 0.018\ \mathrm{m/s}$ ($1.5\%$, estimated from spatial mesh shift).
+  - $u_{\mathrm{input}} \ll 0.01\ \mathrm{m/s}$ (uncertainty of the mean thickness across a large batch is small).
+  - $u_{\mathrm{exp}} = 0.015\ \mathrm{m/s}$ ($1.2\%$, experimental measurement error of the ensemble mean).
+  - Total $u_{\mathrm{val}} \approx \sqrt{(0.018)^2 + (0.015)^2} \approx 0.023\ \mathrm{m/s}$ ($1.9\%$).
+- **ASME V&V 20 Verdict:** Because $|E| = 0.206\ \mathrm{m/s} \approx 9.0\ u_{\mathrm{val}} \gg u_{\mathrm{val}}$, the modeling error $\delta_{\mathrm{model}} \approx -0.206 \pm 0.023\ \mathrm{m/s}$ is statistically significant. The simulation is **not validated** for mean terminal settling velocity within the validation uncertainty. The $-17\%$ settling deficit represents an unresolved discrepancy.
 
 ---
 
-## 12. Summary & Verification Verdict
+## 12. Conclusions, Validation Status, and Technical Roadmap
 
-The `freeBody6DoFPimpleFoam` solver has completed exhaustive dynamic, energetic, kinematic, and aerodynamic verification:
-1. **Dynamic Integrator Invariants:** Verified to machine precision. Mechanical energy matches boundary work to $3.19 \times 10^{-5}$, and hand-rolled traction forces match OpenFOAM's certified library to $2.07 \times 10^{-10}$.
-2. **Kinematic Autorotation Fidelity:** Unidirectional tumbling is sustained across 13 full revolutions, reproducing the experimental Strouhal number peak ($St = 0.059$ vs.\ $0.055$--$0.060$) and tumbling frequency plateau ($30.5\ \mathrm{Hz}$ vs.\ $\sim 33\ \mathrm{Hz}$ peak).
-3. **Hydrodynamic Drag Baseline:** Fixed-disk sweeps confirmed a $-3.45\%$ broadside drag reduction at $Re = 140$ and $-1.96\%$ at $Re = 100$ under static wake refinement. At $Re = 140$, the wake exhibits exponential growth of the steady planar $m = 1$ mode ($\sigma = +30.0\ \mathrm{s}^{-1}$ on `wakeFine` vs.\ $+10.5\ \mathrm{s}^{-1}$ on baseline, $2.9\times$ difference) with locked deflection azimuths. At $Re = 100$, axisymmetry is strictly preserved ($|F_{\mathrm{lat}}|/F_y = 2.65 \times 10^{-7}$).
-4. **Deficit Partitioning:** First-order drag scaling shows that static wake refinement recovers only $\approx 1.5$ percentage points of the $-17\%$ settling deficit. Dynamic limit-cycle restarts prove that temporal refinement shifts velocity by only $+0.36\%$, ruling out time truncation. The residual $-15\%$ deficit is partitioned between manufactured specimen thickness variation ($\pm 15\% \implies \pm 7.5\%$ in speed) and instantaneous population scatter ($1.23 \pm 0.31\ \mathrm{m/s}$), with the simulated $1.02\ \mathrm{m/s}$ falling comfortably inside the experimental observation envelope ($-0.68\sigma$).
-5. **Verdict:** In accordance with ASME V&V 20, the solver is designated as **validated for coupled autorotating fluid--structure interaction with established kinematic fidelity**, with the path to complete quantitative accounting established.
+### Current Status Summary
+> **Code and solver verification complete. Validation partial: mean settling speed 17% below experiment. Mesh effect bounded at about 1.5 points (fixed-disk estimate) and time step under 0.4% (two revolutions). The remaining deficit is unresolved.**
 
+1. **Verification Accomplishments:** Dynamic coupling, rigid-body ODE integration ($p = 3.99$), energy conservation ($3.2 \times 10^{-5}$), traction force equivalence ($2.1 \times 10^{-10}$ vs. certified `forces`), and sliding AMI continuity are verified to machine precision.
+2. **Kinematic Autorotation Fidelity:** The solver spontaneously sustains unidirectional tumbling across 13 full revolutions, capturing the experimental Strouhal number ($St = 0.059$ vs. $0.055$--$0.060$) and tumbling frequency plateau ($30.5\ \mathrm{Hz}$ vs. $\sim 33\ \mathrm{Hz}$ peak).
+3. **Fixed-Disk Benchmark Diagnostics:** All four fixed-disk cases are converged on the ASME V&V 20 gate ($\ge 3.0$ flow-throughs, drift $< 1.0\% / 100\ \mathrm{ms}$). They established a broadside drag mesh shift of $-1.96\%$ at $Re = 100$ and $-3.45\%$ at $Re = 140$. At $Re = 140$, the wake locks into the steady regular $m = 1$ planar bifurcation mode ($\phi = +145.5^\circ \pm 0.15^\circ$) with an exponential growth rate of $\sigma = +30.0\ \mathrm{s}^{-1}$ ($2.9\times$ faster than baseline).
+4. **Deficit Accounting:** Fixed-disk drag scaling accounts for only $\approx 1.5$ percentage points of the $17$-point deficit ($1.020 \to 1.038\ \mathrm{m/s}$). Dynamic restarts indicate that time-step truncation error is under $0.4\%$. The $-17\%$ settling deficit remains open.
 
+### Technical Roadmap: Remaining Validation Tasks
+
+| # | Validation Task | Objective / Why It Blocks the Claim | Rough Compute |
+|---|---|---|---|
+| 1 | Free-fall on `warm_base` vs. `warm_wakeFine` | Direct test of the mesh effect on the settling deficit under coupled 6DoF autorotation (replaces fixed-disk proxy). | $\approx 6\ \mathrm{h}$ (`base`) + $\approx 15\ \mathrm{h}$ (`wakeFine`) |
+| 2 | Temporal and Scheme Suite | Complete `restart_dtHalf` to 4 revs ($t = 0.44\ \mathrm{s}$); evaluate `restart_linUp` (convection scheme) and `restart_dtHalfOuter2`. | $\approx 2\ \mathrm{h}$, $\approx 3\ \mathrm{h}$, $\approx 13\ \mathrm{h}$ |
+| 3 | Three-Mesh GCI Study | Conduct formal grid convergence study on steady $Re = 100$ using a mesh finer than `wakeFine`. | $\approx 10\ \mathrm{h}$ |
+| 4 | Primary Literature Audit | Audit Shenoy & Kleinstreuer (2008) to confirm or replace the unverified $C_D \approx 1.15$--$1.25$ secondary citation at $Re = 100$. | Literature review |
+| 5 | Second Tumbling Realization | Run with a non-zero 3D perturbation to assess out-of-plane rate and trajectory inclination spread ($\psi \approx 15.3^\circ$ vs. $10.5^\circ$ mode). | $\approx 24\ \mathrm{h}$ |

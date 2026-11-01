@@ -12,7 +12,7 @@ if [ "$NPROC" -gt 1 ]; then
     echo "Decomposing case across $NPROC cores..."
     decomposePar -force > log.decomposePar 2>&1
     echo "Running freeBody6DoFPimpleFoam in parallel on $NPROC cores..."
-    mpirun -np "$NPROC" freeBody6DoFPimpleFoam -parallel > log.freeBody6DoFPimpleFoam 2>&1
+    mpirun -np "$NPROC" --bind-to core freeBody6DoFPimpleFoam -parallel > log.freeBody6DoFPimpleFoam 2>&1
     echo "Reconstructing case..."
     reconstructPar > log.reconstructPar 2>&1
 else

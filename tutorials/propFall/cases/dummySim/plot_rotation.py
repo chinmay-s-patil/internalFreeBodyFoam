@@ -188,9 +188,9 @@ def main():
     plt.savefig(out_case, dpi=200, bbox_inches='tight', facecolor=fig.get_facecolor(), edgecolor='none')
     print(f"Plot saved to: {out_case}")
 
-    # Copy to artifacts directory
-    artifact_dir = "/home/lavender/.gemini/antigravity-ide/brain/1a886228-ca85-4b7c-8ec1-3d683a36a1fb"
-    if os.path.exists(artifact_dir):
+    # Copy to artifacts directory if specified
+    artifact_dir = os.environ.get("ARTIFACT_DIR")
+    if artifact_dir and os.path.exists(artifact_dir):
         out_art = os.path.join(artifact_dir, "rotation_plot.png")
         plt.savefig(out_art, dpi=200, bbox_inches='tight', facecolor=fig.get_facecolor(), edgecolor='none')
         print(f"Plot copied to artifact: {out_art}")

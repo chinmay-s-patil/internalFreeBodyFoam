@@ -35,11 +35,11 @@ maxDeltaT       0.0001;
 
 writeControl    adjustableRunTime;
 
-writeInterval   0.005;
+writeInterval   0.02;
 
-purgeWrite      0;
+purgeWrite      3;
 
-writeFormat     ascii;
+writeFormat     binary;
 
 writePrecision  10;
 

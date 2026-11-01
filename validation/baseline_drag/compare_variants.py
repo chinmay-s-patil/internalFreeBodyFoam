@@ -38,6 +38,8 @@ def metrics(case, t_from, W):
     n_pts = min(len(r), len(f))
     r, f = r[:n_pts], f[:n_pts]
     t = r[:, 0]
+    _, u_idx = np.unique(t, return_index=True)
+    r, f, t = r[u_idx], f[u_idx], t[u_idx]
     ang = np.degrees(np.unwrap(np.radians(r[:, 10])))
     e = rev_edges(t, ang, t_from)
     if len(e) < 2:
