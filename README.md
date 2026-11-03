@@ -20,7 +20,7 @@
 | **Numerical Sensitivity** | Discretization sensitivities evaluated | Direct 6DoF tests: static mesh shift $-0.09\%$, time-step halving $+0.04\%$, convection scheme (LUST vs. linearUpwind) $-0.75\%$ | Single-pair parameter shifts, each $\lesssim 1\%$, not a formal 3-mesh GCI. Near-body boundary layer grid unrefined. | **BOUNDED** |
 | **Terminal Settling Velocity** | Mean settling speed of thin disks falling in air | [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) $2.02\text{ mm}$ PET disk ($h = 50\ \mu\text{m}$, $\chi = 40.4$): $V_{\text{sim}} \approx 1.02\text{ m/s}$ vs. $V_{\text{exp}} = 1.23\text{ m/s}$ | Discrepancy of $-17\%$ ($|E| \approx 11.7\, u_{\text{val}}$) is unresolved. Specimen thickness scatter alone cannot explain it (needs about $-31\%$ mean thickness); cause unidentified. | **NOT VALIDATED** |
 | **Axisymmetric Body Dynamics** | Rectilinear & oscillatory wakes ([Fernandes et al. 2007](https://doi.org/10.1017/S0022112006003685)) | Initial test cases set up at $Re = 100$ and $Re = 200$ | Fixed-disk runs compared against self-generated baselines. Release test had rotation locked. Critical $Re_c$, shedding frequencies, and amplitudes not yet validated. | **IN PROGRESS** |
-| **Independent Drag Check** | Broadside disk & sphere drag against published literature | Published experimental correlations (e.g. Roos & Willmarth 1971, Achenbach 1968) | Fixed-disk comparisons to date rely on self-generated OpenFOAM runs rather than digitized published experimental data. | **NOT RUN** |
+| **Independent Drag Check** | Broadside disk & sphere drag against published literature | Published experimental correlations (e.g. Roos & Willmarth 1971 for disks; Schiller–Naumann 1933 or Clift et al. 1978 for spheres at $Re \approx 20\text{--}200$) | Fixed-disk comparisons to date rely on self-generated OpenFOAM runs rather than digitized published experimental data. | **NOT RUN** |
 | **Domain & Far-Field Sensitivity** | Domain size and boundary blockage effects | Computational domain bounding box is $15D \times 25D \times 15D$ | At $Re \approx 140\text{--}170$, wake development and lateral boundary proximity can shift drag by several percent. Domain extent study not yet executed. | **NOT RUN** |
 | **Literature Drag Sources** | Secondary citations for thin disk drag at $Re = 100$ | Range $C_D \approx 1.15\text{--}1.25$ commonly cited via Shenoy & Kleinstreuer (2008) | Primary tabulated data audit of Shenoy & Kleinstreuer (2008) remains pending. | **UNVERIFIED CITATION** |
 | **Transonic / Compressible Solvers** | `freeBodyRhoPimpleFoam`, `freeBodyRhoCentralFoam` | Solver implementations completed in source tree | Zero quantitative verification or validation cases executed. | **UNVALIDATED** |
@@ -147,7 +147,7 @@ Simulates a solid steel sphere ($D = 50\text{ mm}$, $m = 0.5105\text{ kg}$) fall
 ### What `freeBodyFoam` Can Simulate
 * **Full 6DoF Coupled Tumble & Autorotation**: Resolves chaotic blade autorotation, gyroscopic tumbling, pitch reversal, and 3D crosswind drift on non-trivial geometries.
 * **Non-Deforming Sliding Spherical Mesh (`cyclicAMI`)**: Continuous, unrestricted multi-axis 3D tumbling without mesh skewness degradation, boundary layer distortion, or remeshing penalties.
-* **Rigorous Momentum & Torque Integration**: Integrates instantaneous pressure $p_{\text{rgh}}$ and viscous shear stress across complex lifting surfaces, capturing wake-induced autorotation and spin-up dynamics.
+* **Pressure & Viscous Moment Integration**: Integrates instantaneous pressure $p_{\text{rgh}}$ and viscous shear stress across complex lifting surfaces, capturing wake-induced autorotation and spin-up dynamics.
 * **Precision Telemetry & Radar Tracking**: Outputs instantaneous 6DoF pose quaternions, Euler attitude angles, velocity, acceleration, and force balances to live dashboards and 3D visualizers.
 
 ## Requirements and Environment
@@ -215,6 +215,7 @@ Detailed reference documentation is maintained in the [`docs/`](docs/) directory
 * **Fernandes, P. C., Risso, F., Ern, P., & Magnaudet, J.** (2007). "Oscillatory motion and wake instability of freely rising axisymmetric bodies". *Journal of Fluid Mechanics*, 573: 479–502.
 * **Tinklenberg, A., Guala, M., & Coletti, F.** (2023). "Thin disks falling in air". *Journal of Fluid Mechanics*, 962: A3.
 * **ASME V&V 20-2009**: "Standard for Verification and Validation in Computational Fluid Dynamics and Heat Transfer", *American Society of Mechanical Engineers*.
-* **Achenbach, E.** (1968). "Distribution of local pressure and skin friction around a circular cylinder in cross-flow up to Re = 5 × 10⁶". *Journal of Fluid Mechanics*, 34(4), 625–639.
+* **Roos, F. W., & Willmarth, W. W.** (1971). "Some experimental results on sphere and disk drag". *AIAA Journal*, 9(2), 285–291.
+* **Schiller, L., & Naumann, A.** (1933). "A drag coefficient correlation". *VDI Zeitung*, 77, 318–320.
 * **Kurganov, A., & Tadmor, E.** (2000). "New High-Resolution Central Schemes for Nonlinear Conservation Laws and Convection-Diffusion Equations". *Journal of Computational Physics*, 160(1), 241–282.
 * **Roache, P. J.** (1998). *Verification and Validation in Computational Science and Engineering*. Hermosa Publishers, Albuquerque, NM.
