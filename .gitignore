@@ -13,7 +13,9 @@ validation/baseline_drag/*
 !validation/baseline_drag/*.py
 !validation/baseline_drag/*.sh
 validation/baseline_drag.zip
-validation/mesh_convergence/
+validation/mesh_convergence/*
+!validation/mesh_convergence/*.py
+!validation/mesh_convergence/*.sh
 validation/temporal_convergence/
 validation/code_verification/
 validation/validation_check

@@ -36,7 +36,7 @@ Perturbation Cases Configured:
 3. `restart_pert5pct_y`:
    * Perturbation: 5% axial coin spin on Omega_y (spin axis).
    * Initial rate: Omega_b = (-161.3947, +8.0697, 0.0) rad/s.
-   * Tests gyroscopic coupling without initial geometric tilt.
+   * Tilts angular momentum vector H by beta = arctan(I_yy * Omega_y / (I_xx * |Omega_x|)) = arctan(2 * 0.05) ≈ 5.71 deg via gyroscopic coupling (I_yy ≈ 2*I_xx).
    * Simulation window: t in [0.30, 0.58] s (duration 0.28 s >= 8.5 complete tumbling revolutions).
 
 Key Observable Metrics & Analysis Protocol:
