@@ -6,7 +6,24 @@
 
 `freeBodyFoam` is a custom OpenFOAM solver suite for simulating free-falling bodies, projectile trajectories, atmospheric entry, and 6DoF tumbling dynamics in a **body-fixed accelerating reference frame**. By solving fluid dynamics in the non-inertial frame of the falling object, trajectory descents across kilometers of physical altitude are resolved within a compact, stationary computational domain.
 
-> **Status**: Verified and validated against analytical high-$Re$ terminal velocity and the Fernandes et al. (2007) experimental benchmark suite on OpenFOAM-v2412.
+> **Status (ASME V&V 20)**: **Code Verification Complete | Validation Partial**.  
+> Kinematic autorotation ($St \approx 0.0598$) and non-inertial reference frame momentum coupling ($F_{\text{aero}} \approx mg$) are verified. Terminal settling velocity against the [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) experimental benchmark exhibits a **$-17\%$ velocity deficit ($1.02\text{ m/s}$ vs. $1.23\text{ m/s}$, $|E| \approx 11.7\, u_{\text{val}}$)** which remains an open, unresolved modeling discrepancy.
+
+### Claims-to-Evidence Summary
+
+| Category | Claimed Feature / Metric | Evidence / Verification Basis | Limitations & Open Discrepancies | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **6DoF Rotational Kinematics** | 4th-order ODE convergence for $\boldsymbol{\omega}$; rigid-body invariants conserved in vacuum | Test function convergence: $p = 3.991$ for $\boldsymbol{\omega}$ using explicit RK4; kinetic energy drift $< 10^{-14}$ across 13,333 steps ($\Delta t = 1.5 \times 10^{-5}\text{ s}$, $T = 0.20\text{ s}$) | Explicit RK4 (not symplectic). Attitude update uses quaternion exponential map on $SO(3)$ (order unverified when $\boldsymbol{\omega}$ varies within a step). | **VERIFIED** (for $\boldsymbol{\omega}$) |
+| **Non-Inertial Reference Frame** | Dynamic D'Alembert frame coupling achieves steady terminal equilibrium | Planar cylinder test ([`tutorials/theRodDrop/theRodDrop-Denser`](tutorials/theRodDrop/theRodDrop-Denser)): $F_{\text{aero}}/mg = 99.97\%$ ($0.03\%$ residual), $a_y \to 0.0031\text{ m/s}^2$ | Verification of frame momentum coupling only. Does not validate aerodynamic drag coefficients (circular test). | **VERIFIED** (Frame coupling only) |
+| **Sliding CyclicAMI Interface** | Mass conservation across rotating spherical interface | Interface flux leak $< 4.81 \times 10^{-13}\text{ m}^3\text{/s}$ ($< 6.2 \times 10^{-10}$ rel. inflow) | Static outer mesh refined from 213k to 487k cells; inner rotating boundary layer mesh remained unrefined. | **VERIFIED** |
+| **Tumbling Kinematics** | Free 6DoF planar tumbling autorotation | Spontaneous limit-cycle autorotation sustained across 13 revs; $St = 0.0598$ matches experimental peak ($0.055 - 0.060$) | Sim frequency is $30.5\text{ Hz}$ vs. exp. mean $\sim 36.4\text{ Hz}$ (also $\sim 16\%$ low). $St$ matches because $V$ and $f$ are both low by similar factors, pointing to an effective force or mass offset. | **CONSISTENT** |
+| **Numerical Sensitivity** | Discretization sensitivities evaluated | Direct 6DoF tests: static mesh shift $-0.09\%$, time-step halving $+0.04\%$, convection scheme (LUST vs. linearUpwind) $-0.75\%$ | Single-pair parameter shifts, each $\lesssim 1\%$, not a formal 3-mesh GCI. Near-body boundary layer grid unrefined. | **BOUNDED** |
+| **Terminal Settling Velocity** | Mean settling speed of thin disks falling in air | [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) $2.02\text{ mm}$ PET disk ($h = 50\ \mu\text{m}$, $\chi = 40.4$): $V_{\text{sim}} \approx 1.02\text{ m/s}$ vs. $V_{\text{exp}} = 1.23\text{ m/s}$ | Discrepancy of $-17\%$ ($|E| \approx 11.7\, u_{\text{val}}$) is unresolved. Specimen thickness scatter alone cannot explain it (needs about $-31\%$ mean thickness); cause unidentified. | **NOT VALIDATED** |
+| **Axisymmetric Body Dynamics** | Rectilinear & oscillatory wakes ([Fernandes et al. 2007](https://doi.org/10.1017/S0022112006003685)) | Initial test cases set up at $Re = 100$ and $Re = 200$ | Fixed-disk runs compared against self-generated baselines. Release test had rotation locked. Critical $Re_c$, shedding frequencies, and amplitudes not yet validated. | **IN PROGRESS** |
+| **Independent Drag Check** | Broadside disk & sphere drag against published literature | Published experimental correlations (e.g. Roos & Willmarth 1971, Achenbach 1968) | Fixed-disk comparisons to date rely on self-generated OpenFOAM runs rather than digitized published experimental data. | **NOT RUN** |
+| **Domain & Far-Field Sensitivity** | Domain size and boundary blockage effects | Computational domain bounding box is $15D \times 25D \times 15D$ | At $Re \approx 140\text{--}170$, wake development and lateral boundary proximity can shift drag by several percent. Domain extent study not yet executed. | **NOT RUN** |
+| **Literature Drag Sources** | Secondary citations for thin disk drag at $Re = 100$ | Range $C_D \approx 1.15\text{--}1.25$ commonly cited via Shenoy & Kleinstreuer (2008) | Primary tabulated data audit of Shenoy & Kleinstreuer (2008) remains pending. | **UNVERIFIED CITATION** |
+| **Transonic / Compressible Solvers** | `freeBodyRhoPimpleFoam`, `freeBodyRhoCentralFoam` | Solver implementations completed in source tree | Zero quantitative verification or validation cases executed. | **UNVALIDATED** |
 
 ---
 
@@ -29,24 +46,25 @@ Traditional numerical methods for atmospheric free-fall require translating the 
    $$\frac{\partial \mathbf{U}}{\partial t} + \nabla \cdot (\mathbf{U} \mathbf{U}) - \nabla \cdot (\nu_{\text{eff}} \nabla \mathbf{U}) = -\frac{1}{\rho_f} \nabla p + \mathbf{g} - \mathbf{a}_{\text{frame}}$$
 2. **Hydrostatic-Reduced Pressure Formulation ($p_{\text{rgh}}$)**: Eliminates spurious apparent hydrostatic moments on tumbling asymmetric bodies, preserving numerical stability during tight 6DoF coupling.
 3. **Dynamic Inflow/Outflow Switching (`fallingInletVelocity`)**: Evaluates instantaneous directional face fluxes $(\mathbf{S}_f \cdot \mathbf{U}_{\text{inlet}})$, imposing Dirichlet inflow conditions on upstream faces and reflection-free zero-gradient Neumann conditions on downstream wake faces.
-4. **Symplectic 6DoF Quaternion Kinematics**: Integrates the Euler-Poinsot rigid-body equations with quaternion algebra, conserving rotational kinetic energy to within $< 10^{-13}$ relative error.
+4. **Coupled 6DoF Quaternion Kinematics**: Integrates Euler's rigid-body equations for angular velocity $\boldsymbol{\omega}$ with explicit RK4 ($p = 3.991$) and orientation via exponential quaternion map on $SO(3)$, conserving unforced rotational invariants to $< 10^{-14}$ relative error.
 5. **Arbitrary Mesh Interface (`cyclicAMI`) for Arbitrary 3D Tumble**: Combines an inner rotating spherical mesh zone (`rotatingZone`) with an outer stationary domain, allowing continuous, unconstrained 3D tumbling without remeshing.
 
 ---
 
 ## Benchmark Showcases & Validation
 
-### 1. Analytical Transcritical Cylinder Crossflow (`theRodDrop`)
-A heavy cylinder ($R = 2.0\text{ m}$, $m = 1000\text{ kg}$) falling through air is benchmarked against the analytical force balance at transcritical Reynolds numbers ($Re = 2.57 \times 10^7$):
-* **Analytical Target**: $V_{t,\text{analytical}} = \sqrt{\frac{2mg}{\rho_f C_D A}} = 96.388\text{ m/s}$ ($C_D = 0.3452$).
-* **Simulated Velocity**: $V_{\text{sim}} = 96.340\text{ m/s}$ (**$-0.05\%$ relative discrepancy**).
-* **Terminal Deceleration**: $\frac{dV}{dt} = 0.0031\text{ m/s}^2$ ($99.968\%$ decay toward equilibrium).
+### 1. Non-Inertial Reference Frame Coupling (`theRodDrop`)
+A heavy half-cylinder ($R = 2.0\text{ m}$, span $w = 1.0\text{ m}$, frontal area $A = 2.0\text{ m}^2$, $m = 98,018\text{ kg}$) falling through scaled dense fluid ($\rho_f = 300\text{ kg/m}^3$, $\nu = 1.5 \times 10^{-5}\text{ m}^2\text{/s}$, $g = 9.81\text{ m/s}^2$) is benchmarked for dynamic frame momentum balance under $k$-$\omega$ SST URANS ($Re = 2.57 \times 10^7$):
+* **Analytical Formulation**: Terminal balance $F_{\text{aero}} \approx mg \implies V_{t,\text{analytical}} = \sqrt{\frac{2mg}{\rho_f C_D A}} = 96.359\text{ m/s} \approx 96.36\text{ m/s}$ (using simulated $C_D = 0.3452$).
+* **Simulated Velocity**: $V_{\text{sim}} = 96.340\text{ m/s}$ (**$-0.02\%$ relative discrepancy**).
+* **Terminal Equilibrium**: $\frac{dV}{dt} = 0.0031\text{ m/s}^2$ ($99.968\%$ decay toward equilibrium; near-terminal force balance $F_{\text{aero}}/mg = 99.97\%$).
+* **Scope & Limitation**: Verifies non-inertial accelerating reference frame coupling ($F \approx mg$). Does not validate aerodynamic drag coefficients because $C_D$ was extracted from the simulation itself; matching the literature drag band at $Re = 2.6 \times 10^7$ without boundary-layer tripping or grid sensitivity is coincidental.
 
 ![theRodDrop Kinematics](docs/images/theRodDrop_kinematics.png)
 
-### 2. Viscous Disk Benchmark (Fernandes et al. 2007)
-* **Steady Wake ($Re = 100$)**: Computed drag coefficient $C_D = 1.157$ matches benchmark $C_D = 1.160$ within **$-0.26\%$**.
-* **Oscillatory Vortex Shedding ($Re = 180$)**: Computed shedding frequency corresponds to Strouhal number $St = 0.1260$, matching experimental $St = 0.1250 \pm 0.003$ within **$+0.80\%$**.
+### 2. Viscous Disk Flow ([Fernandes et al. 2007](https://doi.org/10.1017/S0022112006003685))
+* **Status**: Initial verification cases configured for thin disks ($\chi = 10$) in viscous liquid at $Re = 100$ and $Re = 200$.
+* **Validation Scope**: Rectilinear wake development and dynamic release were tested with rotation locked; validation against published Fernandes et al. bifurcation thresholds ($Re_c$), vortex shedding frequencies, and trajectory oscillations is currently in progress.
 
 ---
 
@@ -194,7 +212,8 @@ Detailed reference documentation is maintained in the [`docs/`](docs/) directory
 
 ## References
 
-* **Fernandes, P. C., Risso, F., Fabre, D., & Magnaudet, J.** (2007). "Oscillatory motion and wake instability of freely rising or falling disks". *Journal of Fluid Mechanics*, 570, 391–414.
+* **Fernandes, P. C., Risso, F., Ern, P., & Magnaudet, J.** (2007). "Oscillatory motion and wake instability of freely rising axisymmetric bodies". *Journal of Fluid Mechanics*, 573: 479–502.
+* **Tinklenberg, A., Guala, M., & Coletti, F.** (2023). "Thin disks falling in air". *Journal of Fluid Mechanics*, 962: A3.
 * **ASME V&V 20-2009**: "Standard for Verification and Validation in Computational Fluid Dynamics and Heat Transfer", *American Society of Mechanical Engineers*.
 * **Achenbach, E.** (1968). "Distribution of local pressure and skin friction around a circular cylinder in cross-flow up to Re = 5 × 10⁶". *Journal of Fluid Mechanics*, 34(4), 625–639.
 * **Kurganov, A., & Tadmor, E.** (2000). "New High-Resolution Central Schemes for Nonlinear Conservation Laws and Convection-Diffusion Equations". *Journal of Computational Physics*, 160(1), 241–282.
