@@ -1,0 +1,49 @@
+#!/bin/bash
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+#------------------------------------------------------------------------------
+# steelBallRun — True 3D 6DoF Solid Sphere with Golf-Ball Rotation Markers
+#
+# Unrestricted 6DoF Dynamics:
+#   - Translation: Full 3D (X Y Z) freedom (freedom: 1 1 1)
+#   - Rotation: Full 3D (roll pitch yaw) tumble (rotationFreedom: 1 1 1)
+#   - Dynamic Mesh: Spherical cyclicAMI rotatingZone via libfreeBodyRotationalMotion
+#   - Visual Rotation: 32 high-contrast surface dots for immediate attitude tracking
+#------------------------------------------------------------------------------
+
+# 1. Build mesh if polyMesh is absent
+if [ ! -d "constant/polyMesh" ]; then
+    echo "Building 3D spherical AMI mesh..."
+    ./meshing/build_mesh.sh
+fi
+
+# 2. Restore 0 directory
+echo "Restoring 0 directory..."
+restore0Dir
+
+# 3. Check mesh
+echo "Checking mesh..."
+runApplication checkMesh -allTopology -allGeometry
+
+# 4. Open foamResiduals if DISPLAY is available
+if [ -n "${DISPLAY:-}" ] && command -v foamResiduals >/dev/null 2>&1; then
+    touch log.freeBody6DoFPimpleFoam
+    echo "Launching foamResiduals monitor on DISPLAY=${DISPLAY}..."
+    foamResiduals log.freeBody6DoFPimpleFoam >/dev/null 2>&1 &
+    FOAM_RES_PID=$!
+fi
+
+# 5. Run solver streaming directly to case log file
+echo "Running freeBody6DoFPimpleFoam..."
+freeBody6DoFPimpleFoam 2>&1 | tee log.freeBody6DoFPimpleFoam
+
+# 6. Post-processing
+if [ -f "log.freeBody6DoFPimpleFoam" ]; then
+    echo "Generating publication kinematics plots..."
+    python3 track_motion.py --plot
+
+    echo "Generating 3D animation video..."
+    python3 animate_motion.py --video steelBallRun.mp4
+fi
+
+#------------------------------------------------------------------------------

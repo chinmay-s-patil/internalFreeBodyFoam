@@ -1,0 +1,40 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+#------------------------------------------------------------------------------
+# rodRoller — 2D transverse circular cylinder with axial rotation
+#
+# Constrained 6DoF:
+#   - Translation: pure vertical Y fall (freedom: 0 1 0)
+#   - Rotation: pure axial Z spin (rotationFreedom: 0 0 1)
+#   - Dynamic Mesh: cyclicAMI rotatingZone driven by libfreeBodyRotationalMotion
+#------------------------------------------------------------------------------
+
+# 1. Generate mesh via script or blockMesh
+if [ ! -f "system/blockMeshDict" ]; then
+    echo "Generating blockMeshDict..."
+    python3 system/generate_mesh.py
+fi
+
+echo "Building blockMesh..."
+runApplication blockMesh
+
+# 2. Restore 0 directory
+echo "Restoring 0 directory..."
+restore0Dir
+
+# 3. Check mesh
+echo "Checking mesh..."
+runApplication checkMesh -allTopology -allGeometry
+
+# 4. Run freeBody6DoFPimpleFoam
+echo "Running freeBody6DoFPimpleFoam..."
+runApplication $(getApplication)
+
+# 5. Plot kinematics
+if [ -f "log.freeBody6DoFPimpleFoam" ]; then
+    echo "Plotting kinematics..."
+    python3 plot_motion.py
+fi
+
+#------------------------------------------------------------------------------

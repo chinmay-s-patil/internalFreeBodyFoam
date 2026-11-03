@@ -1,1 +1,0 @@
-cases/propTumble6DoF/animate_motion.py

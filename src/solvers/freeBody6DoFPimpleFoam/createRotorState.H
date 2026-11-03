@@ -58,6 +58,20 @@ const tensor Jb = JbCalc;
 Info<< "  Body inertia tensor in solver/mesh frame: " << Jb << endl;
 const tensor JbInv = inv(Jb);
 
+const vector addedInertiaPrincipal
+(
+    rotorDict.getOrDefault<vector>("addedInertiaPrincipal", vector::zero)
+);
+
+const tensor JbEffCalc
+(
+    Ib.x() + addedInertiaPrincipal.x(), 0, 0,
+    0, Ib.y() + addedInertiaPrincipal.y(), 0,
+    0, 0, Ib.z() + addedInertiaPrincipal.z()
+);
+const tensor JbEff = JbEffCalc;
+const tensor JbEffInv = inv(JbEff);
+
 const vector rotFreedom
 (
     rotorDict.getOrDefault<vector>("rotationFreedom", vector::one)

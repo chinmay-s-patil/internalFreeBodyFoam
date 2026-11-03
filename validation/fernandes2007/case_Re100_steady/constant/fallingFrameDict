@@ -1,0 +1,80 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Version:  2412
+    \\  /    A nd           | Website:  www.openfoam.com
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fallingFrameDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Initial fall velocity (Re = 100 benchmark in water: V = 0.010 m/s)
+u0                  ( 0 -0.010 0 );
+
+// Effective reduced gravity for submerged body (g_eff = g * (rho_b - rho_f) / rho_b)
+acceleration        ( 0 -0.05967 0 );
+
+// Initial frame acceleration (zero for steady terminal start)
+initialAcceleration ( 0 0 0 );
+
+// Patches for hydrodynamic force & moment integration
+patches             ( disk );
+
+// Body mass (D = 10 mm, h = 1 mm, rho_b = 1006.116 kg/m^3 -> m = 79.02 mg)
+mass                7.902e-05;
+
+// Fluid reference density (water)
+rhoInf              1000.0;
+densityModel        rhoInf;
+gravityModel        constant;
+groundInterrupt     off;
+
+includeBuoyancy     false;
+
+// Kinematic degrees of freedom for translation (1=free, 0=constrained)
+freedom             ( 0 0 0 );
+
+// 6DoF Rotational Dynamics
+rotor
+{
+    hubOrigin         (0 0 0);
+
+    // Principal moments of inertia: I_xx (pitch) I_yy (spin) I_zz (roll) [kg*m^2]
+    inertiaPrincipal  (5.0046e-10 9.8775e-10 5.0046e-10);
+
+    meshTiltAngleDeg  0.0;
+    meshTiltAxis      (1 0 0);
+
+    // 3D rotational freedom mask: fixed for steady state convergence
+    rotationFreedom   (0 0 0);
+
+    // Initial angular velocity: zero spin
+    initialOmega      (0 0 0);
+
+    // Initial perturbation angle: zero tilt
+    initialAngleDeg   0.0;
+}
+
+// Print toggles for console telemetry
+print
+{
+    frameVel          on;
+    frameAcc          on;
+    altitude          off;
+    pressureForce     off;
+    viscousForce      off;
+    aeroForce         on;
+    gravityForce      on;
+    netForce          on;
+    meanFlow          off;
+    relativeVel       off;
+    dynamicPressure   off;
+}
+
+// ************************************************************************* //

@@ -64,6 +64,11 @@ if (bodyMass <= 0.0)
         << bodyMass << exit(FatalError);
 }
 
+const vector addedMass
+(
+    fallingFrameDict.getOrDefault<vector>("addedMass", vector::zero)
+);
+
 // Construct external forces model
 externalForces extForces(fallingFrameDict);
 const bodyLoad initialExtLoad = extForces.evaluate(runTime.value(), mesh);

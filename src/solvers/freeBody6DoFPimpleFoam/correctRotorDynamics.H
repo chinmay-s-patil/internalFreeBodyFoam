@@ -49,13 +49,20 @@ if (mag(rotorDamping) > 0.0)
     Mb -= cmptMultiply(rotorDamping, omegaB_old);
 }
 
-// Solve Euler's rotational equations via RK4
+const scalar dtCorrect = runTime.deltaTValue();
+
+// Stabilize rotational coupling against explicit added-inertia feedback in dense fluids
+if (dtCorrect > 1e-15 && mag(addedInertiaPrincipal) > 0.0)
+{
+    const vector alpha_old = (omegaB - omegaB_old) / dtCorrect;
+    Mb += cmptMultiply(addedInertiaPrincipal, alpha_old);
+}
+
+// Solve Euler's rotational equations via RK4 using effective inertia
 auto domega = [&](const vector& w) -> vector
 {
-    return JbInv & (Mb - (w ^ (Jb & w)));
+    return JbEffInv & (Mb - (w ^ (JbEff & w)));
 };
-
-const scalar dtCorrect = runTime.deltaTValue();
 const vector k1 = domega(omegaB_old);
 const vector k2 = domega(omegaB_old + 0.5*dtCorrect*k1);
 const vector k3 = domega(omegaB_old + 0.5*dtCorrect*k2);

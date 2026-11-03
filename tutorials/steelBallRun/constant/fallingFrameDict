@@ -1,0 +1,79 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fallingFrameDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Initial fall velocity (vector) [m/s]
+u0                  ( 0 0 0 );
+
+// Planetary gravity [m/s^2]
+acceleration        ( 0 -9.81 0 );
+
+// Patches for aerodynamic force & moment integration
+patches             ( sphere );
+
+// Solid steel sphere: R = 0.025 m (D = 0.05 m), rho = 7800 kg/m^3
+// Mass = (4/3) * pi * R^3 * rho = 0.510509 kg
+mass                0.510509;
+
+// Kinematic degrees of freedom for translation (1=free, 0=constrained)
+// Full 3D translational freedom enabled (vertical fall + aerodynamic drift)
+freedom             ( 1 1 1 );
+
+// Fluid reference density (air at 20 C, 1 atm)
+rhoInf              1.204;
+densityModel        rhoInf;
+gravityModel        constant;
+groundInterrupt     off;
+
+// Full 3D 6DoF Rotational Dynamics
+rotor
+{
+    hubOrigin         (0 0 0);
+
+    // Principal moments of inertia: I_xx I_yy I_zz [kg*m^2]
+    // Solid sphere: I = (2/5) * m * R^2 = 1.27627e-4 kg*m^2 (isotropic)
+    inertiaPrincipal  (1.27627e-04 1.27627e-04 1.27627e-04);
+
+    // 3D rotational freedom mask: full (roll pitch yaw) unrestricted rotation
+    rotationFreedom   (1 1 1);
+
+    // Initial 3D tumble angular velocity [rad/s] (roll, pitch, yaw)
+    initialOmega      (10.0 5.0 15.0);
+
+    initialAxis       (0 1 0);
+    initialAngleDeg   0.0;
+
+    damping           (0 0 0);
+
+    report            true;
+}
+
+// Diagnostic print configuration
+print
+{
+    frameVel        on;
+    frameAcc        on;
+    altitude        on;
+    pressureForce   off;
+    viscousForce    off;
+    aeroForce       on;
+    gravityForce    on;
+    netForce        on;
+    meanFlow        off;
+    relativeVel     off;
+    dynamicPressure off;
+}
+
+// ************************************************************************* //

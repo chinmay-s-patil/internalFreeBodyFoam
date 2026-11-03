@@ -1,56 +1,73 @@
-# Validation folders and literature papers (strictly hidden from git)
-validation/papers/
-papers/
-**/papers/
-validation/thinDiskValidationReport/
-validation/report.md
-*falling_in_air*.pdf
-*varshney*.pdf
-*meliga*.pdf
-*tian*.pdf
+# ==============================================================================
+# Non-Public Tutorial Suites
+# ==============================================================================
+tutorials/propFall/
 
-# OpenFOAM build and architecture artifacts
-Make/linux*
+
+# ==============================================================================
+# Old Validation Cases
+# ==============================================================================
+validation/thinDisk2mm/
+validation/thinDisk2mm_tumbling/
+validation/baseline_drag/
+validation/baseline_drag.zip
+validation/mesh_convergence/
+validation/temporal_convergence/
+validation/code_verification/
+validation/validation_check
+validation/thinDiskValidationReport/
+validation/check
+validation/Validation Report FreeBodyFoam.pdf
+
+
+# ==============================================================================
+# Literature Papers & Ideas
+# ==============================================================================
+papers/
+ideas/
+
+
+# ==============================================================================
+# OpenFOAM Build & Compilation Artifacts
+# ==============================================================================
 **/Make/linux*
 lnInclude/
-**/lnInclude/
 platforms/
 linux64GccDPInt32Opt/
 *.o
 *.so
 *.dep
 
+
+# ==============================================================================
 # OpenFOAM Time Steps and Simulation Data
+# ==============================================================================
 [1-9]*/
 0.*/
 -[0-9]*/
-!0/
 !0.orig/
-!0.org/
-!*.md
-!*.py
-!*.C
-!*.H
-!*.sh
 
-# OpenFOAM parallel decomposition & post-processing
+
+# ==============================================================================
+# OpenFOAM Parallel Decomposition & Post-Processing
+# ==============================================================================
 processor*
-**/processor*
-postProcessing/
-**/postProcessing/
 postProcessing*/
-**/postProcessing*/
 dynamicCode/
-**/dynamicCode/
 
-# Logs and simulation temporary files
-log.*
+
+# ==============================================================================
+# Logs and Simulation Temporary Files
+# ==============================================================================
 log*
 *.log
 *.foam
-*.OpenFOAM
 
-# Generated mesh files (keep mesh dictionaries, boundary, and source STLs)
+
+# ==============================================================================
+# Generated Mesh Data
+# Keep mesh dictionaries, boundary files, and STL files
+# ==============================================================================
 **/polyMesh/points
 **/polyMesh/faces
 **/polyMesh/owner
@@ -64,45 +81,54 @@ log*
 **/polyMesh/level0Edge
 **/polyMesh/pointLevel
 **/polyMesh/surfaceIndex
+
 extendedFeatureEdgeMesh/
-**/extendedFeatureEdgeMesh/
 *.extendedFeatureEdgeMesh
+
 *.obj
 *.vtk
 *.vtp
-VTK/
-**/VTK/
-sets/
-**/sets/
-surfaces/
-**/surfaces/
-uniform/
-**/uniform/
 
-# CAD and 3D modeling files (FreeCAD, STEP, SolidWorks)
+VTK/
+sets/
+surfaces/
+uniform/
+
+
+# ==============================================================================
+# CAD and 3D Modelling Files
+# ==============================================================================
 *.FCStd
 *.FCBak
+
 FreeCAD/
-**/FreeCAD/
+
 *.step
 *.STEP
 *.stp
 *.STP
+
 *.sldprt
 *.SLDPRT
 *.sldasm
 *.SLDASM
-tutorials/propFall/Models/
 
-# Mesh backups and temporary folders
-**/orig/
-**/orig_*/
-**/backup*/
+
+# ==============================================================================
+# Mesh Backups and Temporary Folders
+# ==============================================================================
+orig/
+orig_*/
+backup*/
 *BackUp/
+
 *.bak
 *.bak_*
 
-# LaTeX build artifacts
+
+# ==============================================================================
+# LaTeX Build Artifacts
+# ==============================================================================
 *.aux
 *.out
 *.toc
@@ -110,23 +136,22 @@ tutorials/propFall/Models/
 *.fls
 *.synctex.gz
 
-# Python caches
+
+# ==============================================================================
+# Python Caches
+# ==============================================================================
 __pycache__/
-**/__pycache__/
 *.pyc
 *.pyo
 *.pyd
 .pytest_cache/
 
-# General editor cruft
+
+# ==============================================================================
+# General Editor & OS Files
+# ==============================================================================
 .DS_Store
 Thumbs.db
 *.swp
 *.swo
 *~
-
-# Base validation report
-!validation/report.md
-# Ignore ideas directory entirely
-ideas/
-validation/Validation Report FreeBodyFoam.pdf

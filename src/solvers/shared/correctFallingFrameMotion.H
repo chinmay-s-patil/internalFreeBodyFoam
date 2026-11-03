@@ -81,7 +81,12 @@ externalMoment.value() = extLoad.moment;
 gravityForce.value() = bodyMass * gravity.value();
 netForce.value()     = gravityForce.value() + aeroForce.value() + externalForce.value();
 
-vector a_new = netForce.value() / bodyMass;
+vector a_new = vector::zero;
+for (direction d = 0; d < 3; ++d)
+{
+    const scalar mEff = bodyMass + addedMass[d];
+    a_new[d] = (netForce.value()[d] + addedMass[d] * a_prev[d]) / mEff;
+}
 a_new.x() *= freedomMask.x();
 a_new.y() *= freedomMask.y();
 a_new.z() *= freedomMask.z();
