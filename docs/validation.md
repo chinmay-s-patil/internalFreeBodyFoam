@@ -102,7 +102,7 @@ The primary experimental benchmark models a thin circular polyester disk ($D = 2
 Tinklenberg et al. (2023, Table 1) report $h = 50 \pm 7.5\ \mu\text{m}$ as the specimen-to-specimen standard deviation across the manufactured glitter batch.
 1. **Ensemble Averaging**: Because experimental $V_t = 1.23\text{ m/s}$ is an ensemble mean of thousands of drops, the uncertainty on the mean thickness is the standard error of the mean ($\sigma / \sqrt{N}$), which is small ($< 1\%$). Specimen scatter around the mean shifts the mean velocity by only a fraction of a percent.
 2. **Velocity Scaling**: Since $V_t \propto \sqrt{h}$ at fixed drag coefficient, explaining a $-17\%$ speed deficit solely via thickness would require a $-31\%$ drop in mean thickness ($\approx 34.5\ \mu\text{m}$ instead of $50\ \mu\text{m}$). The paper explicitly verified the $50\ \mu\text{m}$ mean using caliper measurements on stacks.
-3. **Burrs and Curvature**: Edge burrs or non-planar curl add drag, which would make experimental disks fall slower, widening the gap (the simulation is already slower than experiment).
+3. **Hypothetical Imperfections**: Any hypothetical edge imperfections or non-planar curvature would add drag and reduce physical descent speed, widening the gap (since the simulation is already slower than experiment); this cannot explain why physical disks fall faster.
 
 ---
 

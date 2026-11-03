@@ -17,7 +17,7 @@ This folder contains a consolidated collection of **symbolic links** to all repo
 | [`tumbling_motion_translation.dat`](./tumbling_motion_translation.dat) | `../validation/thinDisk2mm_tumbling/case/postProcessing/fallingMotion/motion.dat` | Translating frame velocities, aerodynamic forces ($\mathbf{F}_{\mathrm{aero}}$), and gravity ($29,714$ steps). |
 | [`tumbling_solver.log`](./tumbling_solver.log) | `../validation/thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam` | Complete solver execution log with cyclicAMI weights and mass continuity checks. |
 | [`tumbling_case`](./tumbling_case) | `../validation/thinDisk2mm_tumbling/case` | Case directory (0, constant, system, mesh) for the 13-revolution seeded tumbling run. |
-| [`check_run_consistency.py`](./check_run_consistency.py) | `../validation/code_verification/check_run_consistency.py` | Rigorous audit script checking C++ rigid-body dynamic coupling, energy conservation ($3.2 \times 10^{-5}$), and asymptotic extrapolation. |
+| [`check_run_consistency.py`](./check_run_consistency.py) | `../validation/code_verification/check_run_consistency.py` | Verification audit script checking C++ rigid-body dynamic coupling, energy conservation ($3.2 \times 10^{-5}$), and asymptotic extrapolation. |
 | [`verify_6dof_integrator.py`](./verify_6dof_integrator.py) | `../validation/code_verification/verify_6dof_integrator.py` | Independent verification of RK4 order ($p = 3.991$), non-trivial invariant conservation, and C++ diagnostics. |
 | [`compute_spatial_gci.py`](./compute_spatial_gci.py) | `../validation/mesh_convergence/compute_gci.py` | ASME V&V 20 spatial grid convergence script across 3 meshes. |
 | [`compute_temporal_gci.py`](./compute_temporal_gci.py) | `../validation/temporal_convergence/compute_temporal_gci.py` | ASME V&V 20 temporal convergence script across 3 time steps ($p = 1.566$). |
@@ -34,6 +34,8 @@ This folder contains a consolidated collection of **symbolic links** to all repo
 | [`make_restart_variants.sh`](./make_restart_variants.sh) | `../validation/baseline_drag/make_restart_variants.sh` | Shell script to generate developed-state restart variants from $t = 0.30\text{ s}$ (`base`, `dtHalf`, `dtHalfOuter2`, `linUp`). |
 | [`compare_variants.py`](./compare_variants.py) | `../validation/baseline_drag/compare_variants.py` | Python tool comparing developed-state settling speed $V_{\mathrm{eq,est}}$, frequency, and peak moments across variants. |
 | [`make_wakeFine_case.sh`](./make_wakeFine_case.sh) | `../validation/baseline_drag/make_wakeFine_case.sh` | Shell script constructing refined static wake mesh `warm_wakeFine` ($6,984$ static AMI faces vs. $456$ baseline). |
+| [`setup_3d_perturbations.py`](./setup_3d_perturbations.py) | `../validation/baseline_drag/setup_3d_perturbations.py` | Python script to set up 3D out-of-plane perturbation realizations (Roadmap Task 4). |
+| [`setup_diagnostic_weight73um.py`](./setup_diagnostic_weight73um.py) | `../validation/baseline_drag/setup_diagnostic_weight73um.py` | Python script to set up mass/weight scaling diagnostic case (Roadmap Task 5). |
 
 > [!NOTE]
 > **Literature Reference Papers:** Original research articles and preprints (Tinklenberg et al. 2023, Meliga et al. 2009, Tian 2019, Varshney et al. 2012) are stored locally on disk under `validation/papers/` and are strictly excluded from git tracking via `.gitignore` to comply with copyright requirements. All equations, citations, and DOI links are fully documented in [`report.md`](./report.md) and [`report.tex`](./report.tex).
