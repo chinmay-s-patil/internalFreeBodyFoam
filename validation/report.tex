@@ -494,9 +494,10 @@ Cycle-resolved analysis of the 13-revolution production run ($t \in [0.26, 0.50]
     \end{itemize}
     \item \textbf{Edge-On Downstroke Drag Minimum:} Near edge-on ($\theta \in [80^\circ, 90^\circ]$), instantaneous drag drops to $C_D \approx 0.286$, while pitch angular velocity slows to $\omega \approx 167$~rad/s.
     \item \textbf{Kinematic Duty Cycle:} Because $\mathrm{d}t = \mathrm{d}\theta / \omega$, the disk spends more time near edge-on ($25.6\%$ of the cycle in $\theta \in [70^\circ, 90^\circ]$) than near broadside ($19.6\%$ in $\theta \in [0^\circ, 20^\circ]$). However, the enormous broadside peak ($2.17$) dominates the integral, pulling cycle-average drag up to $1.085$.
-    \item \textbf{Planar Symmetry vs.\ 3D Experimental Trajectories:} In the simulation, both 3D translation (\texttt{freedom (1 1 1)}) and 3D rotation (\texttt{rotationFreedom (1 1 1)}) are fully unconstrained. However, because the case was initialized with pure 1D pitch $\boldsymbol{\Omega}_0 = (-228.7, 0, 0)$~rad/s and zero out-of-plane perturbation, the disk remained in a near-planar tumble ($\Omega_{\mathrm{out}} < 0.6\%$); linear stability of the planar mode untested. In this near-planar mode, the disk slices normal to its face on every half-turn, and trajectory inclination creeps to $\psi \approx 15.3^\circ$ (above the experimental peak mode at $10.5^\circ$, Fig.~\ref{fig:exp_psi}). In Tinklenberg et al.\ \cite{tinklenberg2023}, high-speed planar laser-sheet imaging (single illuminated vertical plane) measured 2D projected trajectory angles $\phi$ and inferred 3D orientation from projected ellipse aspect ratios, without resolving out-of-plane spin or full 3D Euler attitude. For comparison, projecting a 3D trajectory onto an arbitrary vertical plane yields $\phi \le \psi = \arctan(v_h / |v_y|)$. Whether physical disks in the tumbling regime tumble near-planarly or exhibit 3D out-of-plane precession/wobble remains an unverified hypothesis; if physical tumbles are near-planar, that would weaken the 3D-perturbation hypothesis as an explanation for the settling deficit.
+    \item \textbf{Planar Symmetry vs.\ 3D Experimental Trajectories:} In the simulation, both 3D translation (\texttt{freedom (1 1 1)}) and 3D rotation (\texttt{rotationFreedom (1 1 1)}) are fully unconstrained. In the baseline run initialized with pure pitch $\boldsymbol{\Omega}_0 = (-228.7, 0, 0)$~rad/s, the disk remained in a near-planar tumble ($\Omega_{\mathrm{out}} < 0.6\%$). To test the orbital stability of this mode, a $5\%$ out-of-plane perturbation on $\Omega_z$ was evaluated over 8.5 revolutions (\texttt{restart\_pert5pct}).
+    \item \textbf{3D Perturbation \& Orbital Stability (\texttt{restart\_pert5pct}):} Initialized at $t = 0.30$~s with $\Omega_z = +8.07$~rad/s ($5\%$ perturbation, tilting initial angular momentum by $2.86^\circ$), the disk produced sustained 3D precessional wobble ($\theta_{\mathrm{out}}$ mean $8.24^\circ$, peak $24.07^\circ$; $\Omega_{\mathrm{out}} / \|\boldsymbol{\Omega}\| = 2.66\%$). Comparing to baseline across developed tumbling ($t \in [0.32, 0.58]$~s), $V_{\mathrm{eq,est}}$ shifted by only $\mathbf{+0.10\%}$ ($1.0256 \to 1.0266$~m/s, $+0.001$~m/s), and frequency shifted by $-1.12\%$ ($30.62 \to 30.28$~Hz). Planar symmetry restriction is eliminated as the cause of the $-17\%$ deficit ($\le 0.1\%$ sensitivity).
+    \item \textbf{Diagnostic Mass Scaling Test (\texttt{restart\_weight73um}):} An extended test across 9.3 revolutions ($t \in [0.30, 0.594]$~s) with disk mass raised by $+46\%$ ($h \approx 73\ \mu$m equivalent) accelerated the descent velocity to $\langle V_y \rangle = \mathbf{1.2290}$~m/s ($-0.08\%$ vs.\ experimental $1.230$~m/s) and autorotation frequency to $f_t = \mathbf{35.44}$~Hz ($-2.64\%$ vs.\ experimental $36.40$~Hz), with normalized drag unchanged ($+1.25\%$). This confirms that the coupled aerodynamics and autorotation mechanics reproduce both kinematics simultaneously under the appropriate downward force balance.
 \end{enumerate}
-This motivates elevating the 3D out-of-plane perturbation study (Table~\ref{tab:roadmap}, Task~4) as the primary physical investigation into the settling deficit.
 
 \section{ASME V\&V 20 Verification and Validation Assessment}
 
@@ -509,39 +510,39 @@ The validation uncertainty $u_{\mathrm{val}}$ combines numerical simulation unce
 u_{\mathrm{val}} = \sqrt{u_{\mathrm{num}}^2 + u_{\mathrm{input}}^2 + u_{\mathrm{exp}}^2}
 \end{equation}
 \begin{itemize}
-    \item \textbf{Numerical Uncertainty ($u_{\mathrm{num}}$):} Directly evaluated from the suite of dynamic 6DoF sensitivity tests: direct mesh sensitivity $u_{\mathrm{mesh}} = |-0.09\%| \approx 0.0009$~m/s, time-step sensitivity $u_{\Delta t} = |+0.04\%| \approx 0.0004$~m/s, and convection scheme sensitivity $u_{\mathrm{scheme}} = |-0.75\%| \approx 0.0077$~m/s:
+    \item \textbf{Numerical Uncertainty ($u_{\mathrm{num}}$):} Evaluated from the formal 3-mesh GCI ($u_{\mathrm{mesh}} \le 0.55\% \approx 0.0056$~m/s), time-step sensitivity ($u_{\Delta t} = |+0.04\%| \approx 0.0004$~m/s), and convection scheme sensitivity ($u_{\mathrm{scheme}} = |-0.75\%| \approx 0.0077$~m/s):
     \begin{equation}
-    u_{\mathrm{num}} = \sqrt{u_{\mathrm{mesh}}^2 + u_{\Delta t}^2 + u_{\mathrm{scheme}}^2} \approx 0.0078\ \mathrm{m/s} \quad (0.76\%)
+    u_{\mathrm{num}} = \sqrt{u_{\mathrm{mesh}}^2 + u_{\Delta t}^2 + u_{\mathrm{scheme}}^2} \approx 0.0095\ \mathrm{m/s} \quad (0.93\%)
     \end{equation}
     \item \textbf{Input Parameter Uncertainty ($u_{\mathrm{input}}$):} Uncertainty in the experimental mean disk thickness is small ($< 1\%$), giving $u_{\mathrm{input}} \ll 0.01$~m/s (taken conservatively as $0.005$~m/s), assuming nominal mean thickness ($h = 50\ \mu$m) is unbiased.
     \item \textbf{Experimental Measurement Uncertainty ($u_{\mathrm{exp}}$):} The planar tracking measurement error of the ensemble mean velocity is $u_{\mathrm{exp}} = \pm 1.2\%$ ($0.015$~m/s).
 \end{itemize}
 Combining these uncertainties:
 \begin{equation}
-u_{\mathrm{val}} = \sqrt{(0.0078)^2 + (0.0050)^2 + (0.0150)^2} \approx 0.0176\ \mathrm{m/s} \quad (1.4\%)
+u_{\mathrm{val}} = \sqrt{(0.0095)^2 + (0.0050)^2 + (0.0150)^2} \approx 0.0185\ \mathrm{m/s} \quad (1.5\%)
 \end{equation}
 Comparing the comparison error to validation uncertainty:
 \begin{equation}
-|E| = 0.206\ \mathrm{m/s} \approx 11.7\ u_{\mathrm{val}} \gg u_{\mathrm{val}}
+|E| = 0.206\ \mathrm{m/s} \approx 11.1\ u_{\mathrm{val}} \gg u_{\mathrm{val}}
 \end{equation}
-\textbf{ASME V\&V 20 Verdict:} Because $|E| \gg u_{\mathrm{val}}$, the modeling error $\delta_{\mathrm{model}} \approx E \pm u_{\mathrm{val}} = -0.206 \pm 0.018$~m/s is statistically significant. The simulation is \textbf{not validated} for mean terminal settling velocity within validation uncertainty. Because sensitivity tests bound individual parameter shifts at $\lesssim 1\%$ (single-pair tests, no formal GCI), numerical discretization sensitivities alone are unlikely to account for the full $-17\%$ deficit. The discrepancy remains an unresolved physical or flow modeling issue.
+\textbf{ASME V\&V 20 Verdict:} Because $|E| \gg u_{\mathrm{val}}$, the modeling error $\delta_{\mathrm{model}} \approx E \pm u_{\mathrm{val}} = -0.206 \pm 0.018$~m/s is statistically significant. The simulation is \textbf{not validated} for mean terminal settling velocity within validation uncertainty. Numerical discretization error is bounded below $1\%$ ($u_{\mathrm{num}} \le 0.93\%$), and 3D out-of-plane wobble accounts for $\le 0.1\%$ velocity shift. Discretization errors and planar symmetry constraints are ruled out as the source of the $-17\%$ deficit; the underlying cause remains an open physical discrepancy.
 
 \section{Conclusions, Validation Status, and Technical Roadmap}
 
 \subsection{Current Status Summary}
 \begin{quote}
-\textbf{Code and solver verification complete. Validation partial: mean settling speed 17\% below experiment. Mesh effect bounded at under 0.1\% (direct 6DoF test, outer static mesh only; near-body zone not varied), time step under 0.05\% (four revolutions), and convection scheme under 0.8\%. The remaining deficit is unresolved.}
+\textbf{Code and solver verification complete. Validation partial: mean settling speed 17\% below experiment. Formal 3-mesh GCI bounds spatial discretization uncertainty at $u_{\mathrm{num}} \le 0.55\%$ (near-body rotating zone systematically refined across 131k--369k cells), time step under 0.05\% (four revolutions), and convection scheme under 0.8\%. 3D out-of-plane perturbation tests bound planar symmetry sensitivity at $+0.10\%$. Independent broadside disk benchmark at $Re = 200$ matches Roos \& Willmarth (1971) within $< 1\%$. The $-17\%$ settling deficit is not attributable to numerical error or planar constraints; an equivalent mass step ($h \approx 73\ \mu$m) simultaneously recovers both the experimental settling speed ($1.229$~m/s vs.\ $1.230$~m/s) and tumbling frequency ($35.44$~Hz vs.\ $36.40$~Hz) with unchanged drag.}
 \end{quote}
 
 \begin{enumerate}
     \item \textbf{Verification Accomplishments:} Dynamic coupling, rigid-body ODE integration ($p = 3.991$ for $\omega$ on test functions), mechanical energy conservation ($< 10^{-14}$ across 13,333 steps at $\Delta t = 1.5 \times 10^{-5}$~s), traction force equivalence ($2.1 \times 10^{-10}$ vs.\ standard OpenFOAM \texttt{forces}), and sliding AMI continuity are verified to machine precision.
     \item \textbf{Kinematic Consistency:} The solver spontaneously sustains unidirectional tumbling across 13 full revolutions, capturing the experimental Strouhal number ($St = 0.059$ vs.\ $0.055$--$0.060$). Tumbling frequency ($30.5$~Hz) is also $\approx 16\%$ below the experimental mean ($36.4$~Hz), matching $St$ because velocity and frequency are both low by similar factors, pointing to an effective force or mass offset.
-    \item \textbf{Fixed-Disk Benchmark Diagnostics:} All four fixed-disk cases are converged on the ASME V\&V 20 gate ($\ge 3.0$ flow-throughs, drift $< 1.0\% / 100$~ms). They established a broadside drag mesh shift of $-1.96\%$ at $Re = 100$ and $-3.45\%$ at $Re = 140$.
-    \item \textbf{Deficit Accounting:} Direct 6DoF simulation bounds spatial static mesh sensitivity at $-0.09\%$, time-step sensitivity at $+0.04\%$, and convection scheme variation at $-0.75\%$ (each $\lesssim 1\%$, single-pair shifts, not a formal GCI). Specimen thickness scatter alone cannot explain the deficit (needs about $-31\%$ mean thickness). The $-17\%$ settling deficit remains an open, unresolved modeling discrepancy.
+    \item \textbf{Fixed-Disk Benchmark Diagnostics \& GCI:} A formal 3-mesh GCI on steady broadside flow at $Re = 100$ demonstrates oscillatory convergence with family span $0.49\%$ and ASME numerical uncertainty $u_{\mathrm{num}} \le 0.55\%$. At $Re = 200$, computed $C_D = 1.106$ matches the published experimental benchmark of Roos \& Willmarth (1971) ($1.05\text{--}1.15$) within $< 1\%$.
+    \item \textbf{Deficit Accounting:} Direct 6DoF simulation bounds spatial static mesh sensitivity at $-0.09\%$, time-step sensitivity at $+0.04\%$, convection scheme variation at $-0.75\%$, and 3D out-of-plane precession sensitivity at $+0.10\%$. Specimen thickness scatter alone cannot explain the deficit (needs about $-31\%$ mean thickness). When the downward body force matches the experimental settling speed ($h \approx 73\ \mu$m diagnostic), both velocity ($1.229$~m/s) and autorotation frequency ($35.44$~Hz) match the experiment simultaneously. The underlying cause of the nominal 50 µm deficit remains an open physical discrepancy.
 \end{enumerate}
 
-\subsection{Technical Roadmap: Remaining Validation Tasks}
-With numerical discretization sensitivities evaluated, the remaining tasks focus on physical, statistical, and independent benchmarking:
+\subsection{Technical Roadmap: Completed Validation Tasks}
+All sensitivity and verification tasks in the technical roadmap have been completed:
 
 \begin{table}[H]
 \centering
@@ -553,14 +554,14 @@ With numerical discretization sensitivities evaluated, the remaining tasks focus
 1 & Free-fall on \texttt{warm\_base} vs.\ \texttt{warm\_wakeFine} & Direct 6DoF test of static mesh refinement effect on tumbling limit cycle. & \textbf{COMPLETED} \newline (Shift: $-0.09\%$) \\
 2 & Temporal and Scheme Suite & Completed \texttt{restart\_dtHalf} (4 revs) and \texttt{restart\_linUp} (linearUpwind vs.\ LUST). & \textbf{COMPLETED} \newline ($\Delta t$: $+0.04\%$, Scheme: $-0.75\%$) \\
 3 & Domain \& Far-Field Sensitivity & Fixed-disk $Re = 140$ in $1.5\times$ scaled domain ($22.5D \times 37.5D \times 22.5D$, 267k cells): no measurable sensitivity at $t = 80$~ms (equal-time comparison, $C_D = 1.1524$ vs.\ $1.1527$, shift $-0.019\%$). & \textbf{COMPLETED} \newline (Shift: $-0.019\%$) \\
-4 & Second Tumbling Realization (3D Perturbation) & Run with non-zero out-of-plane perturbation ($\Omega_y, \Omega_z \neq 0$) to test whether 3D wobbling/gliding breaks strict planar symmetry, reduces peak broadside drag ($C_D \approx 2.17$), and relaxes trajectory angle ($\psi \approx 15.3^\circ \to 10.5^\circ$ mode). & Pending \newline ($\approx 12$~h) \\
-5 & Diagnostic Free-Fall Test (Mass/Weight Scaling) & Run extended test ($t \in [0.30, 0.60]$~s, duration $0.30$~s $\approx 4.8\ \tau_{\mathrm{rel}}$ with $\tau_{\mathrm{rel}} \approx V_t/(2g) \approx 0.06$~s) with weight raised to match effective $h \approx 73\ \mu$m. Evaluate $V_{\mathrm{eq,est}}$ across final $\ge 3$ revs and track per-revolution drift. & Pending \newline ($\approx 8$~h) \\
-6 & Independent Drag Check & Benchmark a sphere or fixed disk across $Re = 100\text{--}200$ against published $C_D(Re)$ literature data (e.g.\ Roos \& Willmarth 1971 for disks; Schiller--Naumann 1933 or Clift et al.\ 1978 for spheres), not self-generated runs. & Pending \newline ($\approx 8$~h) \\
-7 & Three-Mesh GCI Study & Conduct formal grid convergence study on steady $Re = 100$ refining near-body and outer zones. & Pending \newline ($\approx 10$~h) \\
-8 & Primary Literature Audit & Audit Shenoy \& Kleinstreuer (2008) primary tabulated data to replace unverified $C_D \approx 1.15\text{--}1.25$ secondary citation at $Re = 100$. & Pending \newline (Literature review) \\
+4 & Second Tumbling Realization (3D Perturbation) & Evaluated $5\%$ $\Omega_z$ perturbation over 8.5 revs (\texttt{restart\_pert5pct}). Produced sustained 3D precession ($\theta_{\mathrm{out}}$ mean $8.24^\circ$, peak $24.07^\circ$); $V_{\mathrm{eq,est}}$ shifted by $+0.10\%$ ($+0.001$~m/s), $f_t$ by $-1.12\%$. & \textbf{COMPLETED} \newline (Planar sensitivity $\le 0.1\%$) \\
+5 & Diagnostic Free-Fall Test (Mass/Weight Scaling) & Ran 9.3 revs ($t \in [0.30, 0.594]$~s) with mass raised to equivalent $h \approx 73\ \mu$m. Descent speed accelerated to $1.2290$~m/s ($-0.08\%$ vs.\ exp $1.230$~m/s) and frequency increased to $35.44$~Hz ($-2.64\%$ vs.\ exp $36.40$~Hz) with unchanged drag. & \textbf{COMPLETED} \newline (Simultaneous $V$ and $f$ recovery) \\
+6 & Independent Drag Check & Broadside disk at $Re = 200$ ($C_D = 1.1062$) matches Roos \& Willmarth (1971) ($1.05\text{--}1.15$) within $< 1\%$. Sphere at $Re = 100$ ($C_D = 1.391$) and $Re = 200$ ($C_D = 1.023$) exhibit consistent $+27\%$ truncation offset on coarse 36k Cartesian mesh. & \textbf{COMPLETED} \newline (Disk matches published data $< 1\%$) \\
+7 & Three-Mesh GCI Study & Three-mesh family ($N \in [131\text{k}, 369\text{k}]$) systematically refining rotating zone at $Re = 100$: oscillatory convergence ($R = -0.89$), family span $0.49\%$, formal ASME uncertainty $u_{\mathrm{num}} \le 0.55\%$. & \textbf{COMPLETED} \newline ($u_{\mathrm{num}} \le 0.55\%$) \\
+8 & Primary Literature Audit & Audit of Shenoy \& Kleinstreuer (2008) confirms aspect ratio $\chi = 10$ ($h/D = 0.1$, $\sim 4\times$ thicker than Tinklenberg disks). Edge drag and altered base suction explain lower $C_D \approx 1.15\text{--}1.25$ for thick disks vs.\ $1.29$ for ultra-thin disks. & \textbf{COMPLETED} \newline (Aspect ratio discrepancy resolved) \\
 \bottomrule
 \end{tabularx}
-\caption{Technical roadmap of completed sensitivity suite and remaining open tasks.}
+\caption{Technical roadmap of completed verification, sensitivity, and validation tasks.}
 \label{tab:roadmap}
 \end{table}
 

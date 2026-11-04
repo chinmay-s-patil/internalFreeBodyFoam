@@ -30,14 +30,29 @@ def main():
     args = ap.parse_args()
 
     motion_file = os.path.join(args.case, "postProcessing", "fallingMotion", "motion.dat")
-    if not os.path.exists(motion_file):
-        print(f"Error: {motion_file} not found.")
-        sys.exit(1)
+    force_file = os.path.join(args.case, "postProcessing", "sphereForces", "0", "force.dat")
 
-    data = np.loadtxt(motion_file)
-    t = data[:, 0]
-    Vy = np.abs(data[:, 3])
-    Fy = data[:, 27]
+    if os.path.exists(motion_file):
+        data = np.loadtxt(motion_file)
+        t = data[:, 0]
+        Fy = data[:, 27]
+        Fy_p = data[:, 21]
+        Fy_v = data[:, 24]
+    elif os.path.exists(force_file):
+        rows = []
+        for line in open(force_file):
+            if line.startswith("#") or not line.strip():
+                continue
+            v = [float(x) for x in re.sub(r"[()]", " ", line).split()]
+            rows.append(v[:10])
+        data = np.array(rows)
+        t = data[:, 0]
+        Fy = data[:, 2] # total Fy
+        Fy_p = data[:, 5]
+        Fy_v = data[:, 8]
+    else:
+        print(f"Error: Neither {motion_file} nor {force_file} found.")
+        sys.exit(1)
 
     V = args.Re * NU / D
     q = 0.5 * RHO * (V**2) * A

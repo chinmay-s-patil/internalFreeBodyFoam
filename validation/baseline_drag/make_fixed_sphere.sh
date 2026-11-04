@@ -159,9 +159,8 @@ EOF
 cp "$SRC/0.orig/p_rgh" "$CASE/0/" 2>/dev/null || cp "$SRC/0/p_rgh" "$CASE/0/"
 cp "$SRC/0.orig/U" "$CASE/0/" 2>/dev/null || cp "$SRC/0/U" "$CASE/0/"
 
-# Warm start internalField U = (0 V 0)
+# Warm start internalField U = (0 V 0), leaving sphere boundary at (0 0 0)
 sed -i "s/internalField   uniform (0 0 0);/internalField   uniform (0 $V 0);/g" "$CASE/0/U"
-sed -i "s/value           uniform (0 0 0);/value           uniform (0 $V 0);/g" "$CASE/0/U"
 
 # 5. Create Allrun script
 cat > "$CASE/Allrun" <<'EOF'
