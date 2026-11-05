@@ -34,7 +34,6 @@ To make 3D rotation, roll, pitch, and yaw crystal clear in a single glance, the 
 ./Allclean
 ./Allrun
 ```
-During execution, `foamResiduals` automatically launches on `DISPLAY=:0` monitoring the live-streamed log `log.freeBody6DoFPimpleFoam`.
 
 ---
 

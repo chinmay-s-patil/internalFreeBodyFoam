@@ -13,18 +13,18 @@ Quantitative verification hierarchy, non-inertial reference frame coupling check
 
 | Area | Headline Result | Status |
 | :--- | :--- | :--- |
-| 6DoF rotational integrator | RK4 order p = 3.991; invariant drift < 1e-14 in vacuum | ✅ Verified (ω only) |
-| Non-inertial frame coupling | F_aero/mg = 99.97 % at terminal state | ✅ Verified (frame only, not drag) |
-| Sliding cyclicAMI | Interface flux leak < 4.8e-13 m³/s | ✅ Verified |
-| Numerical uncertainty | 3-mesh GCI; u_num ≤ 0.93 % (Re = 100) | 🟦 Bounded |
-| Tumbling kinematics | St = 0.0598 (exp. 0.055–0.060) | 🟨 Consistent |
-| Terminal settling velocity | −17 % vs. Tinklenberg et al. (2023) | ❌ Not validated |
-| Independent drag checks | Broadside disk matches < 1 % (Roos & Willmarth 1971) | 🟨 Consistent (Disk) / In progress (Sphere) |
-| Spectral sphere benchmark | Case A (G = 144, Re = 185) vs. Uhlmann & Dušek (2014) | ⏳ In execution |
-| Axisymmetric wakes | Test cases at Re = 100, 200 vs. Fernandes et al. (2007) | ⏳ In progress |
-| Domain sensitivity | Shift ΔC_D = −0.019 % in 1.5× domain (267k cells) | 🟦 Bounded |
-| Literature drag audit | Shenoy & Kleinstreuer (2008) audited (χ = 10) | 🔍 Audited |
-| Compressible solvers | freeBodyRho{Pimple,Central}Foam in source tree | ⚠️ Experimental (unvalidated) |
+| 6DoF rotational integrator | RK4 order p = 3.991; invariant drift < 1e-14 in vacuum | Verified (ω only) |
+| Non-inertial frame coupling | F_aero/mg = 99.97 % at terminal state | Verified (frame only, not drag) |
+| Sliding cyclicAMI | Interface flux leak < 4.8e-13 m³/s | Verified |
+| Numerical uncertainty | 3-mesh GCI; u_num ≤ 0.93 % (Re = 100) | Bounded |
+| Tumbling kinematics | St = 0.0598 (exp. 0.055–0.060) | Consistent |
+| Terminal settling velocity | −17 % vs. Tinklenberg et al. (2023) | Not validated |
+| Independent drag checks | Broadside disk matches < 1 % (Roos & Willmarth 1971) | Consistent (Disk) / In progress (Sphere) |
+| Spectral sphere benchmark | Case A (G = 144, Re = 185) vs. Uhlmann & Dušek (2014) | In execution |
+| Axisymmetric wakes | Test cases at Re = 100, 200 vs. Fernandes et al. (2007) | In progress |
+| Domain sensitivity | Shift ΔC_D = −0.019 % in 1.5× domain (267k cells) | Bounded |
+| Literature drag audit | Shenoy & Kleinstreuer (2008) audited (χ = 10) | Audited |
+| Compressible solvers | freeBodyRho{Pimple,Central}Foam in source tree | Experimental (unvalidated) |
 
 ---
 

@@ -13,13 +13,13 @@
 
 | Area | Headline result | Status |
 | :--- | :--- | :--- |
-| 6DoF rotational integrator | RK4 order p = 3.991; invariant drift < 1e-14 in vacuum | ✅ Verified (ω only) |
-| Non-inertial frame coupling | F_aero/mg = 99.97 % at terminal state | ✅ Verified (frame only, not drag) |
-| Sliding cyclicAMI | Interface flux leak < 4.8e-13 m³/s | ✅ Verified |
-| Numerical uncertainty | 3-mesh GCI; u_num ≤ 0.93 % (Re = 100) | 🟦 Bounded |
-| Tumbling kinematics | St = 0.0598 (exp. 0.055–0.060) | 🟨 Consistent |
-| Terminal settling velocity | −17 % vs. Tinklenberg et al. (2023) | ❌ Not validated |
-| Compressible solvers | No validation cases run | ⚠️ Experimental |
+| 6DoF rotational integrator | RK4 order p = 3.991; invariant drift < 1e-14 in vacuum | Verified (ω only) |
+| Non-inertial frame coupling | F_aero/mg = 99.97 % at terminal state | Verified (frame only, not drag) |
+| Sliding cyclicAMI | Interface flux leak < 4.8e-13 m³/s | Verified |
+| Numerical uncertainty | 3-mesh GCI; u_num ≤ 0.93 % (Re = 100) | Bounded (u_num ≤ 0.93 %) |
+| Tumbling kinematics | St = 0.0598 (exp. 0.055–0.060) | Consistent (St match) |
+| Terminal settling velocity | −17 % vs. Tinklenberg et al. (2023) | Not validated |
+| Compressible solvers | No validation cases run | Experimental (unvalidated) |
 
 Full evidence, numerical parameters, and open discrepancies are detailed in
 [docs/validation.md](docs/validation.md#1-validation-status--asme-v-v-20-overview).
@@ -194,9 +194,6 @@ cd tutorials/rodRoller
 cd tutorials/steelBallRun
 ./Allrun
 ```
-
-> [!TIP]
-> During all simulation runs, `foamResiduals` automatically launches on `DISPLAY=:0`, displaying live solver residuals directly from the real-time streamed log file.
 
 ---
 

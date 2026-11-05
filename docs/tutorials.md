@@ -105,4 +105,3 @@ cd tutorials/steelBallRun
 ./Allclean
 ./Allrun
 ```
-During execution, `foamResiduals` automatically launches on `DISPLAY=:0` with live solver residuals streaming directly to `log.freeBody6DoFPimpleFoam`.
