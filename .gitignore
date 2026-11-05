@@ -5,10 +5,11 @@ tutorials/propFall/
 
 
 # ==============================================================================
-# Old Validation Cases
+# Validation Cases & Telemetry Data
+# Keep verification scripts, analysis tools, plots, case dicts, and motion telemetry.
+# Full 3D time step volume fields and processor decomposition dumps (6.4 GB + 25 GB)
+# are deposited on Zenodo and excluded here.
 # ==============================================================================
-validation/thinDisk2mm/
-validation/thinDisk2mm_tumbling/
 validation/baseline_drag/*
 !validation/baseline_drag/*.py
 !validation/baseline_drag/*.sh
@@ -16,12 +17,22 @@ validation/baseline_drag.zip
 validation/mesh_convergence/*
 !validation/mesh_convergence/*.py
 !validation/mesh_convergence/*.sh
-validation/temporal_convergence/
-validation/code_verification/
-validation/validation_check
+
+# Exclude heavy intermediate meshing directories and unneeded binaries
+validation/thinDisk2mm/meshing/
+validation/thinDisk2mm_tumbling/meshing/
+validation/thinDisk2mm/case/0/cellToRegion
+validation/thinDisk2mm_tumbling/case/0/cellToRegion
+validation/thinDisk2mm/case/render/slowdown40.mp4
 validation/thinDiskValidationReport/
+validation/validation_check
 validation/check
 validation/Validation Report FreeBodyFoam.pdf
+validation/temporal_convergence/**/polyMesh/
+validation/temporal_convergence/**/[0-9]*/
+
+# Ensure motion telemetry required for ASME V&V 20 and verification reproducibility is tracked
+!validation/**/postProcessing/**/motion.dat
 
 
 # ==============================================================================
@@ -57,6 +68,12 @@ linux64GccDPInt32Opt/
 # ==============================================================================
 processor*
 postProcessing*/
+!validation/thinDisk2mm*/case/postProcessing/
+!validation/thinDisk2mm*/case/postProcessing/**/
+!validation/thinDisk2mm*/case/postProcessing/**/motion.dat
+!validation/temporal_convergence/**/postProcessing/
+!validation/temporal_convergence/**/postProcessing/**/
+!validation/temporal_convergence/**/postProcessing/**/motion.dat
 dynamicCode/
 
 

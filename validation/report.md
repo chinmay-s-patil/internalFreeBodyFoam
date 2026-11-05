@@ -174,17 +174,20 @@ validation/
 │   └── verify_6dof_integrator.py           # Algorithmic convergence, invariants, and C++ diagnostics
 ├── mesh_convergence/                       # 3-mesh startup grid convergence cases
 ├── temporal_convergence/                   # 3-time-step startup temporal convergence cases
-├── thinDisk2mm/                            # PRESERVED: Transient drop run (6.4 GB data intact)
-│   ├── case/                               # Mesh, processor0-7, postProcessing, logs
+├── thinDisk2mm/                            # PRESERVED: Transient drop run (telemetry tracked; 6.4 GB 3D fields on Zenodo)
+│   ├── case/                               # Mesh, constant/fallingFrameDict, system, postProcessing (motion.dat)
 │   ├── render/                             # 60 FPS video (disk_drift_animation.mp4) & preview PNG
 │   ├── validation_comparison.png           # 4-panel experimental validation curves
 │   └── plot_validation.py                  # Telemetry parsing & validation script
-└── thinDisk2mm_tumbling/                   # COMPLETED: 13-revolution seeded tumbling run (t = 0.500 s)
-    ├── case/                               # Mesh, constant/fallingFrameDict, system, logs
-    │   └── postProcessing/                 # tumbleMotion and fallingMotion 6DoF logs (29,715 steps)
+└── thinDisk2mm_tumbling/                   # COMPLETED: 13-revolution seeded tumbling run (telemetry tracked; 25 GB on Zenodo)
+    ├── case/                               # Mesh, constant/fallingFrameDict, system, postProcessing (motion.dat)
+    │   └── postProcessing/                 # tumbleMotion and fallingMotion 6DoF logs (29,715 steps tracked in git)
     ├── plot_tumbling_detailed.py           # 6-panel high-res validation plot script
     └── tumbling_validation_detailed.png    # 6-panel experimental validation figure
 ```
+
+> [!NOTE]
+> **Zenodo Open-Access Dataset Deposit:** All python verification scripts and 6DoF kinematic telemetry logs (`motion.dat`, ~27 MB) are tracked directly in Git for instant local reproduction. Full 3D OpenFOAM volume field dumps ($U, p_{\mathrm{rgh}}$, `processor*` subdomains) across the 6.4 GB transient drop run and 25 GB 13-revolution tumbling run are archived open-access on Zenodo: [doi:10.5281/zenodo.14041289](https://doi.org/10.5281/zenodo.14041289). See [`validation/README.md`](./README.md) for complete details.
 
 ---
 

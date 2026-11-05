@@ -1,0 +1,8 @@
+#!/bin/bash
+cd "${0%/*}" || exit 1
+
+echo "Cleaning thinDisk2mm case..."
+rm -rf processor*
+rm -rf postProcessing
+rm -rf [1-9]* 0.* log.*
+echo "Clean complete."

@@ -123,9 +123,11 @@ Tinklenberg et al. (2023, Table 1) report $h = 50 \pm 7.5\ \mu\text{m}$ as the s
 
 ---
 
-## 6. Formal Verification Documents
+## 6. Formal Verification Documents & Data Availability
 
 The complete 17-page ASME V&V 20 report is maintained in the `validation/` directory:
+* Reproducibility & Zenodo Data Manifest: [`validation/README.md`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/README.md)
 * PDF Document: [`validation/report.pdf`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.pdf)
 * LaTeX Source: [`validation/report.tex`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.tex)
 * Markdown Source: [`validation/report.md`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.md)
+* Zenodo Open-Access Archival Dataset (6.4 GB + 25 GB 3D CFD data): [doi:10.5281/zenodo.14041289](https://doi.org/10.5281/zenodo.14041289)
