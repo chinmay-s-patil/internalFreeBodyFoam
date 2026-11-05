@@ -21,7 +21,7 @@ Quantitative verification hierarchy, non-inertial reference frame coupling check
 | Terminal settling velocity | −17 % vs. Tinklenberg et al. (2023) | Not validated |
 | Independent drag checks | Broadside disk matches < 1 % (Roos & Willmarth 1971); sphere evaluated | Consistent (Disk) / Offset bounded (Sphere) |
 | Spectral sphere benchmark | Case A (G = 144, Re = 185) vs. Uhlmann & Dušek (2014) | Completed (V within 1.0 % of spectral) |
-| Axisymmetric wakes | Test cases at Re = 100, 200 vs. Fernandes et al. (2007) | Completed (Steady rectilinear confirmed) |
+| Axisymmetric wakes | Test cases at Re = 100, 200 vs. Fernandes et al. (2007) | Partial (rectilinear regime only; Re_c and oscillations not tested) |
 | Domain sensitivity | Shift ΔC_D = −0.019 % in 1.5× domain (267k cells) | Bounded |
 | Literature drag audit | Shenoy & Kleinstreuer (2008) audited (χ = 10) | Audited |
 | Compressible solvers | freeBodyRho{Pimple,Central}Foam in source tree | Experimental (unvalidated) |
@@ -127,7 +127,7 @@ Tinklenberg et al. (2023, Table 1) report $h = 50 \pm 7.5\ \mu\text{m}$ as the s
 | 7 | Three-Mesh GCI Study | Formal ASME V&V 20 spatial GCI at $Re = 100$: oscillatory convergence ($R = -0.89$), $u_{\text{mesh}} \le 0.55\%$, total $u_{\text{num}} \le 0.93\%$. | **COMPLETED** |
 | 8 | Primary Literature Audit | Shenoy & Kleinstreuer (2008) audit: studied aspect ratio $\chi = 10$ ($4\times$ thicker than Tinklenberg $\chi = 40.4$); thicker disks have lower $C_D \approx 1.15\text{--}1.25$. | **COMPLETED** |
 | 9 | Spectral Sphere Benchmark (Uhlmann & Dušek 2014) | Quantitative verification against spectral reference code (Jenny et al. 2004, Uhlmann & Dušek 2014) for heavy rigid sphere ($G = 144$). | **COMPLETED** (Settling velocity matches spectral reference within $+1.0\%$, $V = -0.900\text{ m/s}$ vs $-0.909\text{ m/s}$) |
-| 10 | Axisymmetric Body Dynamics (Fernandes et al. 2007) | Rectilinear wake, bifurcation threshold ($Re_c$), and trajectory oscillations for thin disks at $Re = 100, 200$. | **COMPLETED** (Steady rectilinear descent confirmed without spurious wobble at $Re = 100, 200$) |
+| 10 | Axisymmetric Body Dynamics (Fernandes et al. 2007) | Rectilinear wake, bifurcation threshold ($Re_c$), and trajectory oscillations for thin disks at $Re = 100, 200$. | **PARTIAL** (Rectilinear regime only; $Re_c$ and oscillations not tested) |
 
 ---
 
