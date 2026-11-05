@@ -24,8 +24,8 @@ acceleration        ( 0 -9.81 0 );
 // Body wall patch name(s) for aerodynamic force integration (wordList)
 patches             ( sphere );
 
-// Mass of the r=2m, depth=1m cylinder in mesh [kg] (scalar)
-// (Volume = pi * r^2 * depth = 12.566 m^3, steel density = 7800 kg/m^3)
+// Effective mass of the r=2m, depth=1m half-cylinder in half-symmetry mesh [kg]
+// (Half-volume = 6.283 m^3; balancing half-body drag against 98018 kg corresponds to rho_eff = 15600 kg/m^3 [~2x steel])
 mass                98018;
 
 // Reference atmospheric fluid density [kg/m^3] (scalar)

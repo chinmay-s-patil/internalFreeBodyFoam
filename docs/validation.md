@@ -53,8 +53,8 @@ The 6DoF rotational dynamics in [`freeBody6DoFPimpleFoam`](../src/solvers/freeBo
 The case [`tutorials/theRodDrop/theRodDrop-Denser`](../tutorials/theRodDrop/theRodDrop-Denser) verifies the non-inertial accelerating reference frame implementation under high-momentum hydrodynamic drag.
 
 ### 3.1 Case Parameters & Numerical Setup
-* **Geometry**: 2D planar half-cylinder of radius $R = 2.0\text{ m}$ (diameter $D = 4.0\text{ m}$), unit span $w = 1.0\text{ m}$, frontal half-area $A = R \cdot w = 2.0\text{ m}^2$ (with symmetry plane at $X = 0$).
-* **Body Mass**: $m = 98,018\text{ kg}$ (based on full cylinder volume $\pi R^2 w \approx 12.566\text{ m}^3$ at steel density $\rho_s = 7800\text{ kg/m}^3$, simulated in half-symmetry domain).
+* **Geometry**: 2D planar half-cylinder of radius $R = 2.0\text{ m}$ (diameter $D = 4.0\text{ m}$), unit span $w = 1.0\text{ m}$, frontal half-area $A = R \cdot w = 2.0\text{ m}^2$, half-volume $V = 6.283\text{ m}^3$ (modeled with a symmetry plane at $X = 0$).
+* **Body Mass**: Modeled as an effective-mass half-cylinder with $m = 98,018\text{ kg}$ ($\rho_{\mathrm{eff}} \approx 15,600\text{ kg/m}^3$, $\approx 2\times$ steel). Because the solver integrates aerodynamic force only across the modeled half-cylinder wall without symmetry multipliers, balancing this half-body drag against $98,018\text{ kg}$ makes the simulated half-cylinder effectively twice as dense as steel (a physical solid steel body with $\rho_s = 7800\text{ kg/m}^3$ would have $m_{\mathrm{half}} = 49,009\text{ kg}$ and terminal velocity $V_t \approx 68.1\text{ m/s}$).
 * **Scaled Fluid Parameters**: $\rho_f = 300\text{ kg/m}^3$, kinematic viscosity $\nu = 1.5 \times 10^{-5}\text{ m}^2\text{/s}$, planetary gravity $g = 9.81\text{ m/s}^2$ ($F_{\text{grav}} = 961,556.58\text{ N}$).
 * **Turbulence Model**: Reynolds-Averaged Navier-Stokes (RAS) with $k\text{--}\omega$ SST (`simulationType RAS; RASModel kOmegaSST;`).
 * **Reynolds Number**: $Re = \frac{V D}{\nu} = \frac{96.34 \times 4.0}{1.5 \times 10^{-5}} = 2.57 \times 10^7$.
@@ -76,6 +76,7 @@ $$\epsilon_V = \frac{96.340 - 96.359}{96.359} = \mathbf{-0.02\%}$$
 > **Scope & Limitations (Code Verification Only):**
 > 1. **Circularity**: Because $C_D = 0.3452$ is extracted from the simulation's own output, recovering $V_{\text{sim}} \approx V_t$ to within $0.02\%$ is a mathematical verification of the accelerating reference frame momentum coupling ($a_{\text{frame}} \to 0$ as $F_{\text{aero}} \to mg$). It does **not** validate aerodynamic drag coefficients; matching the transcritical cylinder drag band ($0.30 - 0.35$) without boundary-layer tripping or grid sensitivity is coincidental.
 > 2. **Buoyancy**: Because $p_{\text{rgh}}$ is integrated for $F_{\text{aero}}$, hydrostatic buoyancy is omitted. In this dense fluid ($\rho_f = 300\text{ kg/m}^3$), buoyancy would physically represent $\rho_f / \rho_s \approx 3.85\%$ of body weight. The setup is self-consistent for non-buoyant frame coupling verification, but does not model buoyant hydrodynamic bodies.
+> 3. **Half-Symmetry Mass Scaling**: The half-cylinder mesh models half the geometry with a symmetry boundary at $X = 0$. The solver balances the integrated half-model force directly against the dictionary mass $m = 98,018\text{ kg}$. The configuration is therefore an effective-mass half-cylinder ($\rho_{\mathrm{eff}} = 15,600\text{ kg/m}^3$); it verifies frame coupling mathematics identically, but should not be interpreted as a physical $\rho = 7800\text{ kg/m}^3$ steel cylinder.
 
 ---
 

@@ -18,9 +18,9 @@ Comprehensive guide and execution walkthrough for all official `freeBodyFoam` tu
 
 * **Case Path**: [`tutorials/theRodDrop/theRodDrop`](../tutorials/theRodDrop/theRodDrop) & [`tutorials/theRodDrop/theRodDrop-Denser`](../tutorials/theRodDrop/theRodDrop-Denser)
 * **Solver**: [`freeBodyPimpleFoam`](../src/solvers/freeBodyPimpleFoam/freeBodyPimpleFoam.C)
-* **Geometry**: 2D transverse half-cylinder with symmetry plane at $X = 0$ ($R = 2.0\text{ m}$, unit span $L = 1.0\text{ m}$, frontal half-area $A = R \cdot L = 2.0\text{ m}^2$)
+* **Geometry**: 2D transverse half-cylinder with symmetry plane at $X = 0$ ($R = 2.0\text{ m}$, unit span $L = 1.0\text{ m}$, frontal half-area $A = R \cdot L = 2.0\text{ m}^2$, half-volume $V = 6.283\text{ m}^3$)
 * **Medium**: Scaled dense fluid ($\rho_f = 300.0\text{ kg/m}^3$, $\nu = 1.5 \times 10^{-5}\text{ m}^2/\text{s}$, $g = 9.81\text{ m/s}^2$)
-* **Mass**: $m = 98,018.0\text{ kg}$ (based on full cylinder volume $\pi R^2 L = 12.566\text{ m}^3$ at steel density $\rho_s = 7800\text{ kg/m}^3$, simulated in half-symmetry domain)
+* **Mass**: Effective-mass half-cylinder with $m = 98,018.0\text{ kg}$ ($\rho_{\mathrm{eff}} \approx 15,600\text{ kg/m}^3$, $\approx 2\times$ steel). Note that the solver integrates aerodynamic force only on the modeled half-cylinder patch without doubling for symmetry; balancing this half-body drag against $98,018\text{ kg}$ makes the simulated half-cylinder effectively twice as dense as steel (a physical solid steel body with $\rho_s = 7800\text{ kg/m}^3$ would have $m_{\mathrm{half}} = 49,009\text{ kg}$ and terminal velocity $V_t \approx 68.1\text{ m/s}$).
 
 ### Physics & Analytical Benchmark
 At terminal velocity, the gravitational force balances the aerodynamic drag:
@@ -36,6 +36,7 @@ where simulated $C_D = 0.3452$ under $k\text{--}\omega$ SST URANS at transcritic
 > **Scope & Limitations (Code Verification Only):**
 > 1. **Circularity**: Because $C_D = 0.3452$ is extracted from the simulation's own output, recovering $V_{\text{sim}} \approx V_t$ to within $0.02\%$ is a mathematical verification of the accelerating reference frame momentum coupling ($a_{\text{frame}} \to 0$ as $F_{\text{aero}} \to mg$). It does **not** validate aerodynamic drag prediction.
 > 2. **Buoyancy**: Because $p_{\text{rgh}}$ is integrated for $F_{\text{aero}}$, hydrostatic buoyancy is omitted. In this dense fluid ($\rho_f = 300\text{ kg/m}^3$), buoyancy would physically represent $\rho_f / \rho_s \approx 3.85\%$ of body weight. The setup is self-consistent for non-buoyant frame coupling verification, but does not model buoyant hydrodynamic bodies.
+> 3. **Half-Symmetry Mass Scaling**: The half-cylinder mesh models half the geometry with a symmetry boundary at $X = 0$. The solver balances the integrated half-model force directly against the dictionary mass $m = 98,018\text{ kg}$. The configuration is therefore an effective-mass half-cylinder ($\rho_{\mathrm{eff}} = 15,600\text{ kg/m}^3$); it verifies frame coupling mathematics identically, but should not be interpreted as a physical $\rho = 7800\text{ kg/m}^3$ steel cylinder.
 
 <p align="center">
   <img src="images/theRodDrop_kinematics.png" alt="theRodDrop Kinematics" width="70%"/>
