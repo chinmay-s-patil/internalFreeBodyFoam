@@ -13,16 +13,12 @@ Traditional numerical modeling of atmospheric free-fall and projectile trajector
 * **Inertial World Frame** ($\mathcal{F}_I$):  
   Stationary coordinate system with planetary gravity $\mathbf{g} = (0, -g, 0)$:
 
-  $$
-  \mathcal{F}_I = \{\mathbf{O}_I; \hat{\mathbf{e}}_x, \hat{\mathbf{e}}_y, \hat{\mathbf{e}}_z\}
-  $$
+  $\mathcal{F}_I = \{\mathbf{O}_I; \hat{\mathbf{e}}_x, \hat{\mathbf{e}}_y, \hat{\mathbf{e}}_z\}$
 
 * **Body-Fixed Reference Frame** ($\mathcal{F}_B$):  
   Translating frame with velocity $\mathbf{V}_{\mathrm{frame}}(t)$ and acceleration $\mathbf{a}_{\mathrm{frame}}(t) = d\mathbf{V}_{\mathrm{frame}}/dt$:
 
-  $$
-  \mathcal{F}_B = \{\mathbf{O}_B; \hat{\mathbf{b}}_1, \hat{\mathbf{b}}_2, \hat{\mathbf{b}}_3\}
-  $$
+  $\mathcal{F}_B = \{\mathbf{O}_B; \hat{\mathbf{b}}_1, \hat{\mathbf{b}}_2, \hat{\mathbf{b}}_3\}$
 
 ### 1.2 Velocity and Acceleration Transformations
 
