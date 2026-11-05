@@ -220,8 +220,8 @@ Detailed reference documentation is maintained in the [`docs/`](docs/) directory
 * **Roache, P. J.** (1998). *Verification and Validation in Computational Science and Engineering*. Hermosa Publishers, Albuquerque, NM.
 * **Roos, F. W., & Willmarth, W. W.** (1971). "Some experimental results on sphere and disk drag". *AIAA Journal*, 9(2): 285–291.
 * **Schiller, L., & Naumann, A.** (1933). "A drag coefficient correlation". *VDI Zeitung*, 77: 318–320.
-* **Shenoy, A. V., & Kleinstreuer, C.** (2008). "Flow over a thin circular disk at low-to-moderate Reynolds numbers". *Journal of Fluid Mechanics*, 605: 253–262.
+* **Shenoy, A. R., & Kleinstreuer, C.** (2008). "Flow over a thin circular disk at low-to-moderate Reynolds numbers". *Journal of Fluid Mechanics*, 605: 253–262.
 * **Tinklenberg, A., Guala, M., & Coletti, F.** (2023). "Thin disks falling in air". *Journal of Fluid Mechanics*, 962: A3.
-* **Uhlmann, M., & Dušek, J.** (2014). "The motion of a single heavy sphere in ambient fluid: A benchmark for interface-resolved simulation". *International Journal of Multiphase Flow*, 59: 221–243.
+* **Uhlmann, M., & Dušek, J.** (2014). "The motion of a single heavy sphere in ambient fluid: A benchmark for interface-resolved particulate flow simulations with significant relative velocities". *International Journal of Multiphase Flow*, 59: 221–243.
 * **ASME V&V 20-2009**: *Standard for Verification and Validation in Computational Fluid Dynamics and Heat Transfer*. American Society of Mechanical Engineers, New York.
 
