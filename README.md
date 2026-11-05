@@ -11,20 +11,20 @@
 
 ### Claims-to-Evidence Summary
 
-| Category | Claimed Feature / Metric | Evidence / Verification Basis | Limitations & Open Discrepancies | Status |
+| Category | Claim / Metric | Evidence | Limitations / Findings | Status |
 | :--- | :--- | :--- | :--- | :--- |
-| **6DoF Rotational Kinematics** | 4th-order ODE convergence for $\boldsymbol{\omega}$; rigid-body invariants conserved in vacuum | Test function convergence: $p = 3.991$ for $\boldsymbol{\omega}$ using explicit RK4; kinetic energy drift $< 10^{-14}$ across 13,333 steps ($\Delta t = 1.5 \times 10^{-5}\text{ s}$, $T = 0.20\text{ s}$) | Explicit RK4 (not symplectic). Attitude update uses quaternion exponential map on $SO(3)$ (order unverified when $\boldsymbol{\omega}$ varies within a step). | **VERIFIED** (for $\boldsymbol{\omega}$) |
-| **Non-Inertial Reference Frame** | Dynamic D'Alembert frame coupling achieves steady terminal equilibrium | Planar cylinder test ([`tutorials/theRodDrop/theRodDrop-Denser`](tutorials/theRodDrop/theRodDrop-Denser)): $F_{\text{aero}}/mg = 99.97\%$ ($0.03\%$ residual), $a_y \to 0.0031\text{ m/s}^2$ | Verification of frame momentum coupling only. Does not validate aerodynamic drag coefficients (circular test). | **VERIFIED** (Frame coupling only) |
-| **Sliding CyclicAMI Interface** | Mass conservation across rotating spherical interface | Interface flux leak $< 4.81 \times 10^{-13}\text{ m}^3\text{/s}$ ($< 6.2 \times 10^{-10}$ rel. inflow) | Static outer mesh refined from 213k to 487k cells; inner rotating boundary layer mesh remained unrefined. | **VERIFIED** |
-| **Tumbling Kinematics** | Free 6DoF planar tumbling autorotation | Spontaneous limit-cycle autorotation sustained across 13 revs; $St = 0.0598$ matches experimental peak ($0.055 - 0.060$) | Sim frequency is $30.5\text{ Hz}$ vs. exp. mean $\sim 36.4\text{ Hz}$ (also $\sim 16\%$ low). $St$ matches because $V$ and $f$ are both low by similar factors, pointing to an effective force or mass offset. | **CONSISTENT** |
-| **Numerical Sensitivity** | Discretization sensitivities & formal 3-mesh GCI | Formal 3-mesh GCI at $Re = 100$ ($N \in [131\text{k}, 369\text{k}]$, rotating zone refined): oscillatory convergence ($R = -0.89$), family span $0.49\%$, $u_{\text{num,mesh}} \le 0.55\%$. Combined with temporal ($+0.04\%$) and scheme ($-0.75\%$), total $u_{\text{num}} \le 0.93\%$ | Replaces single-pair shifts with formal ASME V&V 20 spatial GCI with near-body zone systematically refined. | **BOUNDED** ($u_{\text{num}} \le 0.55\%$) |
-| **Terminal Settling Velocity** | Mean settling speed of thin disks falling in air | [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) $2.02\text{ mm}$ PET disk ($h = 50\ \mu\text{m}$, $\chi = 40.4$): $V_{\text{sim}} \approx 1.02\text{ m/s}$ vs. $V_{\text{exp}} = 1.23\text{ m/s}$ | Discrepancy of $-17\%$ ($|E| \approx 11.1\, u_{\text{val}}$) is unresolved. Specimen thickness scatter alone cannot explain it (needs about $-31\%$ mean thickness); cause unidentified. 3D perturbation tests bound planar symmetry sensitivity at $+0.10\%$. Diagnostic weight step ($h \approx 73\ \mu\text{m}$) recovers both $V$ ($1.229\text{ m/s}$) and $f$ ($35.44\text{ Hz}$) concurrently. | **NOT VALIDATED** |
-| **Planar Symmetry & 3D Stability** | Orbital stability of 2D planar tumbling mode | Free 6DoF with 5% $\Omega_z$ perturbation over 8.5 revs: sustained 3D precession ($\theta_{\text{out}}$ mean $8.24^\circ$, peak $24.07^\circ$); $V_{\text{eq,est}}$ shifts by $+0.10\%$ ($+0.001\text{ m/s}$), $f_t$ by $-1.12\%$ | Planar symmetry restriction bounds settling speed sensitivity at $\le 0.1\%$. Out-of-plane precessional wobble does not close the $-17\%$ deficit. | **BOUNDED** ($\le 0.1\%$ sensitivity) |
-| **Independent Drag Check** | Broadside disk & sphere drag against published literature | Published experimental correlations: Roos & Willmarth (1971) for disks; Schiller–Naumann (1933) / Clift et al. (1978) for spheres at $Re = 100\text{--}200$ | Broadside disk at $Re = 200$: $C_D = 1.106$ matches Roos & Willmarth (1971) benchmark ($1.05\text{--}1.15$, modal $1.10$) within $< 1\%$. Spheres at $Re = 100$ ($C_D = 1.391$) and $Re = 200$ ($C_D = 1.023$) show consistent $+27\%$ truncation offset on coarse 36k Cartesian mesh. | **CONSISTENT** (Disk matches $< 1\%$) |
-| **Axisymmetric Body Dynamics** | Rectilinear & oscillatory wakes ([Fernandes et al. 2007](https://doi.org/10.1017/S0022112006003685)) | Initial test cases set up at $Re = 100$ and $Re = 200$ | Fixed-disk runs compared against self-generated baselines. Release test had rotation locked. Critical $Re_c$, shedding frequencies, and amplitudes not yet validated. | **IN PROGRESS** |
-| **Domain & Far-Field Sensitivity** | Domain size and boundary blockage effects | Fixed-disk $Re = 140$ in $1.5\times$ scaled domain ($22.5D \times 37.5D \times 22.5D$, 267k cells) | No measurable sensitivity at $t = 80\text{ ms}$ (equal-time comparison, $C_D = 1.1524$ vs. $1.1527$, shift $-0.019\%$). Domain blockage does not explain the deficit. | **BOUNDED** |
-| **Literature Drag Sources** | Secondary citations for thin disk drag at $Re = 100$ | Range $C_D \approx 1.15\text{--}1.25$ commonly cited via Shenoy & Kleinstreuer (2008) | Primary audit confirms Shenoy & Kleinstreuer (2008) studied aspect ratio $\chi = 10$ ($h/D = 0.1$, $\sim 4\times$ thicker than Tinklenberg $\chi = 40.4$). Edge drag and altered base suction explain lower $C_D$ for thicker disks; ultra-thin disks produce $C_D \approx 1.27\text{--}1.30$. | **AUDITED** |
-| **Transonic / Compressible Solvers** | `freeBodyRhoPimpleFoam`, `freeBodyRhoCentralFoam` | Solver implementations completed in source tree | Zero quantitative verification or validation cases executed. | **UNVALIDATED** |
+| **6DoF Rotational<br/>Kinematics** | 4th-order ODE convergence for $\boldsymbol{\omega}$;<br/>invariants conserved in vacuum | Test convergence: $p = 3.991$ (RK4);<br/>energy drift $< 10^{-14}$ (13k steps) | Explicit RK4 (non-symplectic).<br/>Quaternion exp-map on $SO(3)$. | **VERIFIED**<br/>(for $\boldsymbol{\omega}$) |
+| **Non-Inertial<br/>Reference Frame** | Dynamic D'Alembert coupling<br/>reaches terminal equilibrium | Cylinder test ([`theRodDrop`](tutorials/theRodDrop/theRodDrop-Denser)):<br/>$F_{\text{aero}}/mg = 99.97\%$, $a_y \to 0.003\text{ m/s}^2$ | Frame coupling verified only.<br/>Does not validate $C_D$ (circular). | **VERIFIED**<br/>(Frame only) |
+| **Sliding cyclicAMI<br/>Interface** | Mass conservation across<br/>rotating spherical interface | Interface flux leak<br/>$< 4.81 \times 10^{-13}\text{ m}^3\text{/s}$ | Outer mesh refined (213k to 487k);<br/>inner boundary layer unrefined. | **VERIFIED** |
+| **Tumbling<br/>Kinematics** | Free 6DoF planar<br/>tumbling autorotation | Autorotation sustained 13 revs;<br/>$St = 0.0598$ matches exp. peak | Sim freq $30.5\text{ Hz}$ vs. exp $36.4\text{ Hz}$<br/>($\sim 16\%$ low, consistent with $V$). | **CONSISTENT** |
+| **Numerical<br/>Sensitivity** | Discretization sensitivities &<br/>formal 3-mesh GCI | 3-mesh GCI: $u_{\text{mesh}} \le 0.55\%$<br/>Total numerical: $u_{\text{num}} \le 0.93\%$ | Oscillatory convergence ($R = -0.89$);<br/>ASME V&V 20 spatial GCI bounded. | **BOUNDED**<br/>($u_{\text{num}} \le 0.55\%$) |
+| **Terminal Settling<br/>Velocity** | Settling speed of thin disks<br/>falling in air (Tinklenberg 2023) | PET disk ($D=2.02\text{ mm}$):<br/>$V_{\text{sim}} \approx 1.02\text{ m/s}$ vs. $1.23\text{ m/s}$ | $-17\%$ deficit ($11.1\,u_{\text{val}}$) unresolved.<br/>Scatter ($31\%$ needed) insufficient. | **NOT VALIDATED** |
+| **Planar Symmetry<br/>& 3D Stability** | Orbital stability of<br/>2D planar tumbling mode | 5% $\Omega_z$ perturbation over 8.5 revs:<br/>precession ($\bar{\theta}_{\text{out}} = 8.2^\circ$) | Settling speed shifts $+0.10\%$;<br/>3D wobble does not close deficit. | **BOUNDED**<br/>($\le 0.1\%$) |
+| **Independent<br/>Drag Check** | Broadside disk & sphere drag<br/>against published literature | Disk at $Re=200$: $C_D = 1.106$<br/>matches Roos & Willmarth ($< 1\%$) | Coarse Cartesian sphere mesh<br/>shows $+27\%$ truncation offset. | **CONSISTENT**<br/>(Disk $< 1\%$) |
+| **Axisymmetric<br/>Dynamics** | Rectilinear & oscillatory wakes<br/>([Fernandes 2007](https://doi.org/10.1017/S0022112006003685)) | Test cases configured at<br/>$Re = 100$ and $Re = 200$ | Rotation locked in release test.<br/>Bifurcation & oscillation in progress. | **IN PROGRESS** |
+| **Domain Size &<br/>Blockage** | Domain size & far-field<br/>boundary blockage effects | Fixed disk at $Re = 140$ in $1.5\times$<br/>domain ($22.5D \times 37.5D$, 267k) | Shift $\Delta C_D = -0.019\%$ at $80\text{ ms}$;<br/>blockage does not explain deficit. | **BOUNDED** |
+| **Literature Drag<br/>Sources** | Secondary drag citations<br/>for thin disks at $Re = 100$ | Shenoy & Kleinstreuer (2008)<br/>drag range $C_D \approx 1.15\text{--}1.25$ | Audit: $\chi=10$ ($4\times$ thicker);<br/>thinner disks yield $C_D \approx 1.27\text{--}1.30$. | **AUDITED** |
+| **Compressible<br/>Solvers** | Compressible & transonic<br/>solver formulations | Solvers in source tree:<br/>`freeBodyRho{Pimple,Central}Foam` | Zero quantitative verification or<br/>validation cases executed. | **UNVALIDATED** |
 
 ---
 
@@ -55,13 +55,15 @@ Traditional numerical methods for atmospheric free-fall require translating the 
 ## Benchmark Showcases & Validation
 
 ### 1. Non-Inertial Reference Frame Coupling (`theRodDrop`)
-A heavy half-cylinder ($R = 2.0\text{ m}$, span $w = 1.0\text{ m}$, frontal area $A = 2.0\text{ m}^2$, $m = 98,018\text{ kg}$) falling through scaled dense fluid ($\rho_f = 300\text{ kg/m}^3$, $\nu = 1.5 \times 10^{-5}\text{ m}^2\text{/s}$, $g = 9.81\text{ m/s}^2$) is benchmarked for dynamic frame momentum balance under $k$-$\omega$ SST URANS ($Re = 2.57 \times 10^7$):
+A heavy half-cylinder ($R = 2.0\text{ m}$, span $w = 1.0\text{ m}$, frontal area $A = 2.0\text{ m}^2$, $m = 98,018\text{ kg}$) falling through scaled dense fluid ($\rho_f = 300\text{ kg/m}^3$, $\nu = 1.5 \times 10^{-5}\text{ m}^2\text{/s}$, $g = 9.81\text{ m/s}^2$) is benchmarked for dynamic frame momentum balance under $k\text{--}\omega$ SST URANS ($Re = 2.57 \times 10^7$):
 * **Analytical Formulation**: Terminal balance $F_{\text{aero}} \approx mg \implies V_{t,\text{analytical}} = \sqrt{\frac{2mg}{\rho_f C_D A}} = 96.359\text{ m/s} \approx 96.36\text{ m/s}$ (using simulated $C_D = 0.3452$).
 * **Simulated Velocity**: $V_{\text{sim}} = 96.340\text{ m/s}$ (**$-0.02\%$ relative discrepancy**).
 * **Terminal Equilibrium**: $\frac{dV}{dt} = 0.0031\text{ m/s}^2$ ($99.968\%$ decay toward equilibrium; near-terminal force balance $F_{\text{aero}}/mg = 99.97\%$).
 * **Scope & Limitation**: Verifies non-inertial accelerating reference frame coupling ($F \approx mg$). Does not validate aerodynamic drag coefficients because $C_D$ was extracted from the simulation itself; matching the literature drag band at $Re = 2.6 \times 10^7$ without boundary-layer tripping or grid sensitivity is coincidental.
 
-![theRodDrop Kinematics](docs/images/theRodDrop_kinematics.png)
+<p align="center">
+  <img src="docs/images/theRodDrop_kinematics.png" alt="theRodDrop Kinematics" width="70%"/>
+</p>
 
 ### 2. Viscous Disk Flow ([Fernandes et al. 2007](https://doi.org/10.1017/S0022112006003685))
 * **Status**: Initial verification cases configured for thin disks ($\chi = 10$) in viscous liquid at $Re = 100$ and $Re = 200$.
@@ -75,9 +77,12 @@ The repository includes three production-ready, fully documented tutorials:
 
 ```
 tutorials/
-├── theRodDrop/     # 2D planar transverse cylinder fall & analytical terminal velocity verification
-├── rodRoller/      # 2D cylinder with axial Z-spin via circular sliding cyclicAMI (O-grid)
-└── steelBallRun/   # True 3D solid sphere with unconstrained 6DoF motion & 32-dot Fibonacci golf-ball markers
+├── theRodDrop/     # 2D planar transverse cylinder free-fall
+│                   # & analytical terminal velocity verification
+├── rodRoller/      # 2D cylinder with axial Z-spin via
+│                   # circular sliding cyclicAMI (O-grid)
+└── steelBallRun/   # True 3D solid sphere with unconstrained
+                    # 6DoF motion & 32-dot Fibonacci visual markers
 ```
 
 ### 3D 6DoF Showcase: `steelBallRun`
