@@ -130,4 +130,4 @@ The complete 17-page ASME V&V 20 report is maintained in the `validation/` direc
 * PDF Document: [`validation/report.pdf`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.pdf)
 * LaTeX Source: [`validation/report.tex`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.tex)
 * Markdown Source: [`validation/report.md`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.md)
-* Zenodo Open-Access Archival Dataset (6.4 GB + 25 GB 3D CFD data): [doi:10.5281/zenodo.14041289](https://doi.org/10.5281/zenodo.14041289)
+* Zenodo Open-Access Archival Dataset (6.4 GB + 25 GB 3D CFD data): `10.5281/zenodo.<PENDING_DEPOSIT_ID>` (Deposit Pending)

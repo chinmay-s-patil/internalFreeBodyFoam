@@ -40,7 +40,7 @@ This folder contains a consolidated collection of **symbolic links** to all repo
 > [!NOTE]
 > **Literature Reference Papers:** Original research articles and preprints (Tinklenberg et al. 2023, Meliga et al. 2009, Tian 2019, Varshney et al. 2012) are stored locally on disk under `validation/papers/` and are strictly excluded from git tracking via `.gitignore` to comply with copyright requirements. All equations, citations, and DOI links are fully documented in [`report.md`](./report.md) and [`report.tex`](./report.tex).
 >
-> **Zenodo Archival Dataset (6.4 GB + 25 GB 3D CFD Data):** All reproduction scripts and 6DoF telemetry logs (`motion.dat`, ~27 MB) are tracked directly in Git to allow immediate reproduction of verification numbers. Full 3D OpenFOAM volume field dumps ($U, p_{\mathrm{rgh}}$, `processor*` subdomains) across the 6.4 GB transient drop run and 25 GB 13-revolution tumbling run are archived open-access on Zenodo: [doi:10.5281/zenodo.14041289](https://doi.org/10.5281/zenodo.14041289). See [`validation/README.md`](../validation/README.md) for full download instructions and data manifest.
+> **Zenodo Archival Dataset (6.4 GB + 25 GB 3D CFD Data):** All reproduction scripts and 6DoF telemetry logs (`motion.dat`, ~27 MB) are tracked directly in Git to allow immediate reproduction of verification numbers. Full 3D OpenFOAM volume field dumps ($U, p_{\mathrm{rgh}}$, `processor*` subdomains) across the 6.4 GB transient drop run and 25 GB 13-revolution tumbling run can be deposited on Zenodo (`10.5281/zenodo.<PENDING_DEPOSIT_ID>`). See [`validation/README.md`](../validation/README.md) for packaging instructions and data manifest.
 
 ---
 

@@ -187,7 +187,7 @@ validation/
 ```
 
 > [!NOTE]
-> **Zenodo Open-Access Dataset Deposit:** All python verification scripts and 6DoF kinematic telemetry logs (`motion.dat`, ~27 MB) are tracked directly in Git for instant local reproduction. Full 3D OpenFOAM volume field dumps ($U, p_{\mathrm{rgh}}$, `processor*` subdomains) across the 6.4 GB transient drop run and 25 GB 13-revolution tumbling run are archived open-access on Zenodo: [doi:10.5281/zenodo.14041289](https://doi.org/10.5281/zenodo.14041289). See [`validation/README.md`](./README.md) for complete details.
+> **Zenodo Open-Access Dataset Deposit:** All python verification scripts and 6DoF kinematic telemetry logs (`motion.dat`, ~27 MB) are tracked directly in Git for instant local reproduction. Full 3D OpenFOAM volume field dumps ($U, p_{\mathrm{rgh}}$, `processor*` subdomains) across the 6.4 GB transient drop run and 25 GB 13-revolution tumbling run can be deposited on Zenodo (`10.5281/zenodo.<PENDING_DEPOSIT_ID>`). See [`validation/README.md`](./README.md) for complete packaging details.
 
 ---
 

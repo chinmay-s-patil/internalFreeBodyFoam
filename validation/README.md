@@ -131,32 +131,36 @@ Output: `validation/thinDisk2mm_tumbling/tumbling_validation_detailed.png`
 
 ## 3. Zenodo Archival Dataset (6.4 GB + 25 GB 3D CFD Data)
 
-For researchers requiring raw volumetric OpenFOAM fields ($U$, $p_{\mathrm{rgh}}$, $\phi$, dynamic mesh point displacements, and decomposed `processor*` directories) to perform 3D flow visualization, vortex identification ($Q$-criterion), or interface flux re-integration, full simulation archives are deposited on Zenodo.
+For researchers requiring raw volumetric OpenFOAM fields ($U$, $p_{\mathrm{rgh}}$, $\phi$, dynamic mesh point displacements, and decomposed `processor*` directories) to perform 3D flow visualization, vortex identification ($Q$-criterion), or interface flux re-integration, full simulation archives can be packaged and deposited on Zenodo.
 
-- **Zenodo Repository Title:** `6DoF CFD Validation Data for Falling Thin Disks in Air (freeBody6DoFPimpleFoam)`
-- **DOI:** [10.5281/zenodo.14041289](https://doi.org/10.5281/zenodo.14041289)
+- **Dataset Status:** Deposit Pending (Awaiting dataset upload to mint permanent DOI)
+- **Suggested Title:** `6DoF CFD Validation Data for Falling Thin Disks in Air (freeBody6DoFPimpleFoam)`
+- **DOI Placeholder:** `10.5281/zenodo.<PENDING_DEPOSIT_ID>`
 - **License:** Creative Commons Attribution 4.0 International (CC-BY 4.0)
 
 ### Archive Manifest
 
-| Archive File | Unpacked Size | Description |
+| Archive File | Unpacked Size | Contents |
 | :--- | :---: | :--- |
 | `thinDisk2mm_zeroSpin_transient_6.4GB.tar.gz` | **6.4 GB** | Preserved transient drop run ($t = 0 \to 0.235\text{ s}$). Contains `polyMesh`, all time directories, and `processor0–7`. |
 | `thinDisk2mm_tumbling_13rev_25GB.tar.gz` | **25.2 GB** | Continuous 13-revolution seeded tumbling run ($t = 0 \to 0.500\text{ s}$, 29,715 time steps). Contains complete checkpoint series and logs. |
 | `temporal_convergence_cases.tar.gz` | **293 MB** | Complete meshes and $t = 0.001\text{ s}$ volume states for `dt_baseline`, `dt_halved`, and `dt_quarter`. |
 
-### Download & Extraction Procedure
-To download and extract the full 3D fields into your local working tree:
+### Packaging the Dataset for Zenodo Upload
+To create the archive tarballs for uploading to Zenodo:
 
 ```bash
-# 1. Download transient drop dataset (6.4 GB)
-wget -c https://zenodo.org/records/14041289/files/thinDisk2mm_zeroSpin_transient_6.4GB.tar.gz
-tar -xzf thinDisk2mm_zeroSpin_transient_6.4GB.tar.gz -C validation/thinDisk2mm/case/
+# 1. Package 6.4 GB transient drop dataset
+tar -czf thinDisk2mm_zeroSpin_transient_6.4GB.tar.gz -C validation/thinDisk2mm case
 
-# 2. Download 13-revolution tumbling dataset (25 GB)
-wget -c https://zenodo.org/records/14041289/files/thinDisk2mm_tumbling_13rev_25GB.tar.gz
-tar -xzf thinDisk2mm_tumbling_13rev_25GB.tar.gz -C validation/thinDisk2mm_tumbling/case/
+# 2. Package 25 GB tumbling dataset
+tar -czf thinDisk2mm_tumbling_13rev_25GB.tar.gz -C validation/thinDisk2mm_tumbling case
+
+# 3. Package temporal convergence cases
+tar -czf temporal_convergence_cases.tar.gz -C validation temporal_convergence/dt_baseline temporal_convergence/dt_halved temporal_convergence/dt_quarter
 ```
+
+After uploading to Zenodo and reserving/publishing the record, replace `10.5281/zenodo.<PENDING_DEPOSIT_ID>` with your assigned DOI.
 
 ---
 
