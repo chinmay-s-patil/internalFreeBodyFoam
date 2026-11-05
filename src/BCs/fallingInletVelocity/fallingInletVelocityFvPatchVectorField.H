@@ -5,7 +5,7 @@
     \\  /    A nd           | www.openfoam.com
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
-    Copyright (C) 2026 AUTHOR,AFFILIATION
+    Copyright (C) 2026 Chinmay S. Patil
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.

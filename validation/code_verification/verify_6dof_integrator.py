@@ -150,12 +150,10 @@ def run_production_solver_diagnostics():
     script_dir = os.path.dirname(os.path.realpath(__file__))
     candidates = [
         "tumbling_solver.log",
-        "validation_check/tumbling_solver.log",
         os.path.join(script_dir, "../thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam"),
-        os.path.join(script_dir, "../../validation_check/tumbling_solver.log"),
+        os.path.join(script_dir, "../../validation/thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam"),
         "validation/thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam",
-        "../thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam",
-        os.path.expanduser("~/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam")
+        "../thinDisk2mm_tumbling/case/log.freeBody6DoFPimpleFoam"
     ]
     log_file = None
     for c in candidates:

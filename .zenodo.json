@@ -1,0 +1,38 @@
+{
+  "title": "freeBodyFoam: 6DoF Accelerating Reference Frame CFD Solver Suite for OpenFOAM",
+  "description": "A custom OpenFOAM solver suite for simulating free-falling bodies, projectile trajectories, atmospheric entry, and 6DoF tumbling dynamics in a body-fixed accelerating reference frame.",
+  "creators": [
+    {
+      "name": "Patil, Chinmay S.",
+      "affiliation": "TODO"
+    }
+  ],
+  "access_right": "open",
+  "license": "GPL-3.0-or-later",
+  "upload_type": "software",
+  "version": "0.1.0",
+  "publication_date": "2026-11-05",
+  "keywords": [
+    "OpenFOAM",
+    "CFD",
+    "6DoF",
+    "non-inertial reference frame",
+    "accelerating frame",
+    "rigid body dynamics",
+    "autorotation",
+    "tumbling",
+    "ASME V&V 20"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.1017/jfm.2023.209",
+      "relation": "cites",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.1017/S0022112006003685",
+      "relation": "cites",
+      "scheme": "doi"
+    }
+  ]
+}

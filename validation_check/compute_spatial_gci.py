@@ -1,1 +1,0 @@
-../validation/mesh_convergence/compute_gci.py

@@ -2,8 +2,10 @@
 import os
 import shutil
 
-base_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/temporal_convergence"
-src_case = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence/mediumMesh/case"
+script_dir = os.path.dirname(os.path.realpath(__file__))
+repo_dir = os.path.abspath(os.path.join(script_dir, "../.."))
+base_dir = script_dir
+src_case = os.path.join(repo_dir, "validation/mesh_convergence/mediumMesh/case")
 
 dt_configs = {
     "dt_baseline": 2.0e-5, # baseline dt

@@ -11,7 +11,8 @@ Both static domain and near-body rotating zone are systematically refined.
 """
 import os, shutil, subprocess
 
-BASE_DIR = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam"
+script_dir = os.path.dirname(os.path.realpath(__file__))
+BASE_DIR = os.path.abspath(os.path.join(script_dir, "../.."))
 SRC_CASE = os.path.join(BASE_DIR, "validation/thinDisk2mm_tumbling/case")
 MESH_DIR = os.path.join(BASE_DIR, "validation/mesh_convergence")
 

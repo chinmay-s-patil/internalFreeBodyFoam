@@ -7,7 +7,7 @@ Quantitative verification hierarchy, non-inertial reference frame coupling check
 ## 1. Validation Status & ASME V&V 20 Overview
 
 > **Status (ASME V&V 20)**: **Code Verification Complete | Validation Partial**.  
-> The 6DoF ODE integrator convergence, vacuum invariant conservation, non-inertial reference frame momentum coupling, and sliding cyclicAMI continuity are verified. Tumbling autorotation kinematics are dynamically consistent ($St \approx 0.0598$). However, terminal settling velocity against the experimental benchmark of [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) exhibits an unresolved **$-17\%$ deficit** ($1.02\text{ m/s}$ vs. $1.23\text{ m/s}$, $|E| \approx 11.7\, u_{\text{val}}$) and is **not validated**.
+> The 6DoF ODE integrator convergence, vacuum invariant conservation, non-inertial reference frame momentum coupling, and sliding cyclicAMI continuity are verified. Tumbling autorotation kinematics are dynamically consistent ($St \approx 0.0598$). However, terminal settling velocity against the experimental benchmark of [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) exhibits an unresolved **$-17\%$ deficit** ($1.02\text{ m/s}$ vs. $1.23\text{ m/s}$, $|E| \approx 11.1\, u_{\text{val}}$) and is **not validated**.
 
 ### Claims-to-Evidence Summary
 
@@ -32,7 +32,7 @@ Quantitative verification hierarchy, non-inertial reference frame coupling check
 ## 2. Code Verification (Rigid-Body Kinematics & sliding AMI)
 
 ### 2.1 6DoF Rotational ODE Integration
-The 6DoF rotational dynamics in [`freeBody6DoFPimpleFoam`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C) are integrated sequentially in [`correctRotorDynamics.H`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/solvers/freeBody6DoFPimpleFoam/correctRotorDynamics.H):
+The 6DoF rotational dynamics in [`freeBody6DoFPimpleFoam`](../src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C) are integrated sequentially in [`correctRotorDynamics.H`](../src/solvers/freeBody6DoFPimpleFoam/correctRotorDynamics.H):
 1. **Angular Velocity ($\boldsymbol{\omega}$)**: Solved using standard explicit 4th-order Runge-Kutta (RK4) on Euler's equations:
    $$\mathbf{J}_b \frac{d\boldsymbol{\omega}_b}{dt} + \boldsymbol{\omega}_b \times (\mathbf{J}_b \boldsymbol{\omega}_b) = \mathbf{M}_b$$
    Algorithmic convergence testing on asymmetric precession test functions demonstrates asymptotic convergence order $p = 3.9910$ (matching theoretical RK4).
@@ -50,7 +50,7 @@ The 6DoF rotational dynamics in [`freeBody6DoFPimpleFoam`](file:///home/lavender
 
 ## 3. Frame Coupling Verification: Planar Cylinder (`theRodDrop`)
 
-The case [`tutorials/theRodDrop/theRodDrop-Denser`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/tutorials/theRodDrop/theRodDrop-Denser) verifies the non-inertial accelerating reference frame implementation under high-momentum hydrodynamic drag.
+The case [`tutorials/theRodDrop/theRodDrop-Denser`](../tutorials/theRodDrop/theRodDrop-Denser) verifies the non-inertial accelerating reference frame implementation under high-momentum hydrodynamic drag.
 
 ### 3.1 Case Parameters & Numerical Setup
 * **Geometry**: 2D planar half-cylinder of radius $R = 2.0\text{ m}$ (diameter $D = 4.0\text{ m}$), unit span $w = 1.0\text{ m}$, frontal area $A = R \cdot w = 2.0\text{ m}^2$ (with symmetry plane at $X = 0$).
@@ -98,7 +98,7 @@ The primary experimental benchmark models a thin circular polyester disk ($D = 2
   - Input parameter uncertainty (mean thickness): $u_{\text{input}} \approx 0.0050\text{ m/s}$
   - Experimental measurement uncertainty: $u_{\text{exp}} = \pm 1.2\%$ ($0.0150\text{ m/s}$)
   - Combined validation uncertainty: $u_{\text{val}} = \sqrt{u_{\text{num}}^2 + u_{\text{input}}^2 + u_{\text{exp}}^2} \approx 0.0176\text{ m/s}$ ($1.4\%$)
-* **Verdict**: $|E| = 0.206\text{ m/s} \approx 11.7\, u_{\text{val}} \gg u_{\text{val}}$. The simulation is **not validated** for mean terminal settling velocity.
+* **Verdict**: $|E| = 0.206\text{ m/s} \approx 11.1\, u_{\text{val}} \gg u_{\text{val}}$. The simulation is **not validated** for mean terminal settling velocity.
 
 ### 4.3 Why Specimen Thickness Scatter Does Not Explain the Deficit
 Tinklenberg et al. (2023, Table 1) report $h = 50 \pm 7.5\ \mu\text{m}$ as the specimen-to-specimen standard deviation across the manufactured glitter batch.
@@ -126,8 +126,8 @@ Tinklenberg et al. (2023, Table 1) report $h = 50 \pm 7.5\ \mu\text{m}$ as the s
 ## 6. Formal Verification Documents & Data Availability
 
 The complete 17-page ASME V&V 20 report is maintained in the `validation/` directory:
-* Reproducibility & Zenodo Data Manifest: [`validation/README.md`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/README.md)
-* PDF Document: [`validation/report.pdf`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.pdf)
-* LaTeX Source: [`validation/report.tex`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.tex)
-* Markdown Source: [`validation/report.md`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/report.md)
+* Reproducibility & Zenodo Data Manifest: [`validation/README.md`](../validation/README.md)
+* PDF Document: [`validation/report.pdf`](../validation/report.pdf)
+* LaTeX Source: [`validation/report.tex`](../validation/report.tex)
+* Markdown Source: [`validation/report.md`](../validation/report.md)
 * Zenodo Open-Access Archival Dataset (6.4 GB + 25 GB 3D CFD data): `10.5281/zenodo.<PENDING_DEPOSIT_ID>` (Deposit Pending)

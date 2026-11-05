@@ -2,8 +2,10 @@
 import os
 import shutil
 
-base_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence"
-src_case = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case"
+script_dir = os.path.dirname(os.path.realpath(__file__))
+repo_dir = os.path.abspath(os.path.join(script_dir, "../.."))
+base_dir = script_dir
+src_case = os.path.join(repo_dir, "validation/thinDisk2mm/case")
 
 cases = {
     "coarse": os.path.join(base_dir, "coarseMesh", "case"),

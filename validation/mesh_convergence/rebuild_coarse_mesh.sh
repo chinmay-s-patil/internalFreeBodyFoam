@@ -1,7 +1,9 @@
 #!/bin/bash
 . /usr/lib/openfoam/openfoam2412/etc/bashrc
 
-BASE="/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence/coarseMesh"
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+REPO_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
+BASE="$SCRIPT_DIR/coarseMesh"
 
 echo "=== 1. Rebuilding coarse staticMesh with smooth AMI ==="
 cd "$BASE/staticMesh"
@@ -15,12 +17,11 @@ echo "=== 2. Re-assembling coarse case ==="
 rm -rf "$BASE/case"
 mkdir -p "$BASE/case/constant"
 cp -r "$BASE/staticMesh/constant/polyMesh" "$BASE/case/constant/"
-cp -r /home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case/system "$BASE/case/"
-cp /home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case/constant/transportProperties "$BASE/case/constant/"
-cp /home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case/constant/turbulenceProperties "$BASE/case/constant/"
-cp /home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case/constant/fallingFrameDict "$BASE/case/constant/"
-cp /home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case/0 "$BASE/case/" 2>/dev/null || true
-cp -r /home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case/0 "$BASE/case/"
+cp -r "$REPO_DIR/validation/thinDisk2mm/case/system" "$BASE/case/"
+cp "$REPO_DIR/validation/thinDisk2mm/case/constant/transportProperties" "$BASE/case/constant/"
+cp "$REPO_DIR/validation/thinDisk2mm/case/constant/turbulenceProperties" "$BASE/case/constant/"
+cp "$REPO_DIR/validation/thinDisk2mm/case/constant/fallingFrameDict" "$BASE/case/constant/"
+cp -r "$REPO_DIR/validation/thinDisk2mm/case/0" "$BASE/case/" 2>/dev/null || true
 
 # Set controlDict for 100 steps
 sed -i 's/endTime         0.5;/endTime         0.002;/g' "$BASE/case/system/controlDict"
@@ -28,7 +29,7 @@ sed -i 's/adjustTimeStep  yes;/adjustTimeStep  no;/g' "$BASE/case/system/control
 sed -i 's/writeInterval   0.005;/writeInterval   0.002;/g' "$BASE/case/system/controlDict"
 
 # Use robust topoSetDict
-cp /home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence/coarseMesh/case/system/topoSetDict "$BASE/case/system/" 2>/dev/null || true
+cp "$SCRIPT_DIR/coarseMesh/case/system/topoSetDict" "$BASE/case/system/" 2>/dev/null || true
 
 cd "$BASE/case"
 mergeMeshes . ../rotatingMesh -overwrite

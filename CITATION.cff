@@ -1,0 +1,54 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+type: software
+title: "freeBodyFoam: 6DoF Accelerating Reference Frame CFD Solver Suite for OpenFOAM"
+abstract: "A custom OpenFOAM solver suite for simulating free-falling bodies, projectile trajectories, atmospheric entry, and 6DoF tumbling dynamics in a body-fixed accelerating reference frame."
+authors:
+  - family-names: Patil
+    given-names: Chinmay S.
+    orcid: "TODO"
+    affiliation: "TODO"
+version: 0.1.0
+date-released: "2026-11-05"
+license: GPL-3.0-or-later
+repository-code: "TODO"
+url: "TODO"
+keywords:
+  - openfoam
+  - cfd
+  - "6dof"
+  - "accelerating-reference-frame"
+  - "non-inertial"
+  - "rigid-body-dynamics"
+  - "autorotation"
+  - "tumbling"
+  - "asme-vv20"
+references:
+  - type: article
+    authors:
+      - family-names: Tinklenberg
+        given-names: Amy
+      - family-names: Guala
+        given-names: Michele
+      - family-names: Coletti
+        given-names: Filippo
+    title: "Thin disks falling in air"
+    journal: "Journal of Fluid Mechanics"
+    volume: 962
+    year: 2023
+    doi: "10.1017/jfm.2023.209"
+  - type: article
+    authors:
+      - family-names: Fernandes
+        given-names: P. C.
+      - family-names: Risso
+        given-names: F.
+      - family-names: Ern
+        given-names: P.
+      - family-names: Magnaudet
+        given-names: J.
+    title: "Oscillatory motion and wake of a freely rising or falling cylinder"
+    journal: "Journal of Fluid Mechanics"
+    volume: 573
+    year: 2007
+    doi: "10.1017/S0022112006003685"

@@ -11,9 +11,11 @@ def run_cmd(cmd, cwd):
         raise RuntimeError(f"Command failed: {cmd}\n{res.stderr}")
     return res.stdout
 
-target_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence/coarseMesh"
-src_mesh_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/meshing"
-case_sys_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/case/system"
+script_dir = os.path.dirname(os.path.realpath(__file__))
+repo_dir = os.path.abspath(os.path.join(script_dir, "../.."))
+target_dir = os.path.join(script_dir, "coarseMesh")
+src_mesh_dir = os.path.join(repo_dir, "validation/thinDisk2mm/meshing")
+case_sys_dir = os.path.join(repo_dir, "validation/thinDisk2mm/case/system")
 
 os.makedirs(target_dir, exist_ok=True)
 rot_dir = os.path.join(target_dir, "rotatingMesh")

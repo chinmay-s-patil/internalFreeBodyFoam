@@ -1,1 +1,0 @@
-../validation/baseline_drag/make_wakeFine_case.sh

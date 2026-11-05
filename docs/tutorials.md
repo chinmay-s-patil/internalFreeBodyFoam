@@ -16,8 +16,8 @@ Comprehensive guide and execution walkthrough for all official `freeBodyFoam` tu
 
 ## 1. `theRodDrop`
 
-* **Case Path**: [`tutorials/theRodDrop/theRodDrop`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/tutorials/theRodDrop/theRodDrop) & [`tutorials/theRodDrop/theRodDrop-Denser`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/tutorials/theRodDrop/theRodDrop-Denser)
-* **Solver**: [`freeBodyPimpleFoam`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/solvers/freeBodyPimpleFoam/freeBodyPimpleFoam.C)
+* **Case Path**: [`tutorials/theRodDrop/theRodDrop`](../tutorials/theRodDrop/theRodDrop) & [`tutorials/theRodDrop/theRodDrop-Denser`](../tutorials/theRodDrop/theRodDrop-Denser)
+* **Solver**: [`freeBodyPimpleFoam`](../src/solvers/freeBodyPimpleFoam/freeBodyPimpleFoam.C)
 * **Geometry**: Transverse circular cylinder / rod ($R = 2.0\text{ m}$, span $L = 1.0\text{ m}$)
 * **Medium**: Air ($\rho_f = 1.225\text{ kg/m}^3$, $\nu = 1.5 \times 10^{-5}\text{ m}^2/\text{s}$)
 * **Mass**: $m = 1000.0\text{ kg}$
@@ -46,8 +46,8 @@ python3 plot_motion.py
 
 ## 2. `rodRoller`
 
-* **Case Path**: [`tutorials/rodRoller`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/tutorials/rodRoller)
-* **Solver**: [`freeBody6DoFPimpleFoam`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C)
+* **Case Path**: [`tutorials/rodRoller`](../tutorials/rodRoller)
+* **Solver**: [`freeBody6DoFPimpleFoam`](../src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C)
 * **Geometry**: Solid steel transverse rod ($D = 0.04\text{ m}$, $L = 0.05\text{ m}$, mass $m = 0.4932\text{ kg}$)
 * **Kinematics**:
   - Vertical translation along $Y$ (`freedom (0 1 0);`).
@@ -56,7 +56,7 @@ python3 plot_motion.py
   - Axial moment of inertia: $I_{zz} = \frac{1}{2} m R^2 = 9.864 \times 10^{-5}\text{ kg}\cdot\text{m}^2$.
 
 ### Mesh Topology
-A 2D concentric cylindrical O-grid generated via [`system/generate_mesh.py`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/tutorials/rodRoller/system/generate_mesh.py) features a circular sliding interface (`cyclicAMI`) separating the inner rotating zone (`rotatingZone`, 1,920 cells) from the outer rectangular domain (3,200 cells). Block vertices follow radial-first right-handed indexing to guarantee positive Jacobian determinants.
+A 2D concentric cylindrical O-grid generated via [`system/generate_mesh.py`](../tutorials/rodRoller/system/generate_mesh.py) features a circular sliding interface (`cyclicAMI`) separating the inner rotating zone (`rotatingZone`, 1,920 cells) from the outer rectangular domain (3,200 cells). Block vertices follow radial-first right-handed indexing to guarantee positive Jacobian determinants.
 
 ![rodRoller Kinematics](images/rodRoller_kinematics.png)
 
@@ -72,8 +72,8 @@ python3 plot_motion.py
 
 ## 3. `steelBallRun`
 
-* **Case Path**: [`tutorials/steelBallRun`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/tutorials/steelBallRun)
-* **Solver**: [`freeBody6DoFPimpleFoam`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C)
+* **Case Path**: [`tutorials/steelBallRun`](../tutorials/steelBallRun)
+* **Solver**: [`freeBody6DoFPimpleFoam`](../src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C)
 * **Geometry**: True solid steel sphere ($R = 25\text{ mm}$, $D = 50\text{ mm}$, $\rho_s = 7800\text{ kg/m}^3$)
 * **Kinematics**:
   - Full 3D translation (`freedom (1 1 1);`).
@@ -83,7 +83,7 @@ python3 plot_motion.py
 
 ### Mesh & Golf-Ball Marker System
 - **Mesh**: 36,280 cells comprising an inner rotating spherical mesh enclosed by a spherical `cyclicAMI` interface ($R_{\text{AMI}} = 45\text{ mm}$) and an external computational wind tunnel.
-- **Visual Markers**: 32 high-contrast crimson surface dots distributed via Fibonacci spherical spiral ([`golf_dots.json`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/tutorials/steelBallRun/golf_dots.json)). Rotating with the body's instantaneous quaternion $\mathbf{R}(t)$, they make 3D roll, pitch, and yaw crystal clear in every frame.
+- **Visual Markers**: 32 high-contrast crimson surface dots distributed via Fibonacci spherical spiral ([`golf_dots.json`](../tutorials/steelBallRun/golf_dots.json)). Rotating with the body's instantaneous quaternion $\mathbf{R}(t)$, they make 3D roll, pitch, and yaw crystal clear in every frame.
 
 ![steelBallRun Kinematics](images/steelBallRun_kinematics.png)
 

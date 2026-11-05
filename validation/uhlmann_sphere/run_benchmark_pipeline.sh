@@ -9,8 +9,9 @@
 # ==============================================================================
 set -eo pipefail
 
-BASE_DIR="/home/lavender/OpenFoamUbu/solvers/freeBodyFoam"
-UHLMANN_DIR="$BASE_DIR/validation/uhlmann_sphere"
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+BASE_DIR=$(cd "$SCRIPT_DIR/../.." && pwd)
+UHLMANN_DIR="$SCRIPT_DIR"
 LOG_FILE="$UHLMANN_DIR/pipeline.log"
 
 if [ -z "${WM_PROJECT_DIR:-}" ]; then

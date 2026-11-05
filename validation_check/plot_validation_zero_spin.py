@@ -1,1 +1,0 @@
-../validation/thinDisk2mm/plot_validation.py

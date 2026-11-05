@@ -3,8 +3,10 @@ import os
 import shutil
 import subprocess
 
-target_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence/fineMesh"
-src_mesh_dir = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/thinDisk2mm/meshing"
+script_dir = os.path.dirname(os.path.realpath(__file__))
+repo_dir = os.path.abspath(os.path.join(script_dir, "../.."))
+target_dir = os.path.join(script_dir, "fineMesh")
+src_mesh_dir = os.path.join(repo_dir, "validation/thinDisk2mm/meshing")
 
 os.makedirs(target_dir, exist_ok=True)
 rot_dir = os.path.join(target_dir, "rotatingMesh")

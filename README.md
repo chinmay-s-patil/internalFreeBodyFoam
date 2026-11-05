@@ -2,12 +2,12 @@
 
 [![OpenFOAM](https://img.shields.io/badge/openfoam-v2412-informational)](https://www.openfoam.com)
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-green.svg)](LICENSE)
-[![Verification: ASME V&V 20](https://img.shields.io/badge/verification-ASME%20V%26V%2020-blue.svg)](docs/validation.md)
+[![Verification: Complete | Validation: Partial](https://img.shields.io/badge/verification-complete_%7C_validation_partial-blue.svg)](docs/validation.md)
 
 `freeBodyFoam` is a custom OpenFOAM solver suite for simulating free-falling bodies, projectile trajectories, atmospheric entry, and 6DoF tumbling dynamics in a **body-fixed accelerating reference frame**. By solving fluid dynamics in the non-inertial frame of the falling object, trajectory descents across kilometers of physical altitude are resolved within a compact, stationary computational domain.
 
 > **Status (ASME V&V 20)**: **Code Verification Complete | Validation Partial**.  
-> Kinematic autorotation ($St \approx 0.0598$) and non-inertial reference frame momentum coupling ($F_{\text{aero}} \approx mg$) are verified. Terminal settling velocity against the [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) experimental benchmark exhibits a **$-17\%$ velocity deficit ($1.02\text{ m/s}$ vs. $1.23\text{ m/s}$, $|E| \approx 11.7\, u_{\text{val}}$)** which remains an open, unresolved modeling discrepancy.
+> Kinematic autorotation ($St \approx 0.0598$) and non-inertial reference frame momentum coupling ($F_{\text{aero}} \approx mg$) are verified. Terminal settling velocity against the [Tinklenberg et al. (2023)](https://doi.org/10.1017/jfm.2023.209) experimental benchmark exhibits a **$-17\%$ velocity deficit ($1.02\text{ m/s}$ vs. $1.23\text{ m/s}$, $|E| \approx 11.1\, u_{\text{val}}$)** which remains an open, unresolved modeling discrepancy.
 
 ### Claims-to-Evidence Summary
 

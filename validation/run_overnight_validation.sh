@@ -20,7 +20,8 @@
 # ==============================================================================
 set -eo pipefail
 
-BASE_DIR="/home/lavender/OpenFoamUbu/solvers/freeBodyFoam"
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+BASE_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 LOG="$BASE_DIR/validation/overnight_pipeline.log"
 exec > >(tee -a "$LOG") 2>&1
 

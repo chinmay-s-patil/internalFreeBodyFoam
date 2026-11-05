@@ -196,5 +196,4 @@ validation/
 ├── baseline_drag/                      # Fixed broadside disk & sphere drag benchmarks
 │   ├── analyze_fixed_disk.py           # Force coefficient & stability analyzer
 │   └── compare_variants.py             # Developed-state restart variant comparator
-└── validation_check/                   # Flat symlink package for rapid reproduction
 ```

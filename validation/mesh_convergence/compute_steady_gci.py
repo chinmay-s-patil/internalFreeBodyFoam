@@ -11,7 +11,7 @@ Evaluates solutions across Coarse, Medium, Fine grids for steady broadside disk 
 import os, sys
 import numpy as np
 
-MESH_DIR = "/home/lavender/OpenFoamUbu/solvers/freeBodyFoam/validation/mesh_convergence"
+MESH_DIR = os.path.dirname(os.path.realpath(__file__))
 D = 2.02e-3
 RHO = 1.200
 NU = 1.5e-5

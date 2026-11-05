@@ -46,7 +46,7 @@ Located at `constant/fallingFrameDict`.
 
 ### 2.2 Rotational Subdictionary: `rotor`
 
-The optional `rotor` subdictionary enables 6DoF rotational kinetics in [`freeBody6DoFPimpleFoam`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C):
+The optional `rotor` subdictionary enables 6DoF rotational kinetics in [`freeBody6DoFPimpleFoam`](../src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C):
 
 | Keyword | Type | Default | Description |
 | :--- | :--- | :--- | :--- |

@@ -63,7 +63,7 @@ where $E = e + \frac{1}{2}|\mathbf{U}|^2$.
 
 ## 3. Boundary Conditions: `fallingInletVelocity`
 
-At the domain outer boundaries, fluid enters with velocity equal to the negative of the instantaneous frame velocity $\mathbf{V}_{\text{frame}}(t)$. The custom boundary condition [`fallingInletVelocity`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/BCs/fallingInletVelocity/fallingInletVelocityFvPatchVectorField.H) automatically couples with `fallingFrameDict`:
+At the domain outer boundaries, fluid enters with velocity equal to the negative of the instantaneous frame velocity $\mathbf{V}_{\text{frame}}(t)$. The custom boundary condition [`fallingInletVelocity`](../src/BCs/fallingInletVelocity/fallingInletVelocityFvPatchVectorField.H) automatically couples with `fallingFrameDict`:
 
 $$\mathbf{U}_{\text{inlet}}(t) = - \mathbf{V}_{\text{frame}}(t)$$
 
@@ -77,7 +77,7 @@ $$\phi_{\text{test}} = \mathbf{S}_f \cdot \mathbf{U}_{\text{inlet}}$$
 
 ## 4. 6DoF Kinematics & Rotor Dynamics
 
-In [`freeBody6DoFPimpleFoam`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C), the body kinematics comprise 3 translational degrees of freedom and 3 rotational degrees of freedom.
+In [`freeBody6DoFPimpleFoam`](../src/solvers/freeBody6DoFPimpleFoam/freeBody6DoFPimpleFoam.C), the body kinematics comprise 3 translational degrees of freedom and 3 rotational degrees of freedom.
 
 ### 4.1 Translational Dynamics
 The frame acceleration is governed by Newton's second law:
@@ -121,7 +121,7 @@ $$\mathbf{R}(\mathbf{q}) = \begin{bmatrix}
 ## 5. Sliding Mesh Coupling (`cyclicAMI` & `rotatingZone`)
 
 For rotating bodies (`rodRoller`, `steelBallRun`), `freeBodyFoam` utilizes Arbitrary Mesh Interface (`cyclicAMI`) coupling:
-1. **Dynamic Mesh Zone (`rotatingZone`)**: Surrounds the body and undergoes rigid-body rotation driven by [`libfreeBodyRotationalMotion.so`](file:///home/lavender/OpenFoamUbu/solvers/freeBodyFoam/src/motion/freeBodyRotationalMotion).
+1. **Dynamic Mesh Zone (`rotatingZone`)**: Surrounds the body and undergoes rigid-body rotation driven by [`libfreeBodyRotationalMotion.so`](../src/motion/freeBodyRotationalMotion).
 2. **Stationary Far-Field Domain**: Discretizes the external wind-tunnel domain.
 3. **AMI Interface**: Interpolates fluxes conservatively across non-conformal faces:
    $$\phi_{\text{target}} = \sum_j w_{ij} \phi_{\text{source}, j}, \quad \sum_j w_{ij} = 1$$
