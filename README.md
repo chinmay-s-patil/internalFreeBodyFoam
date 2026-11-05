@@ -65,7 +65,7 @@ A heavy half-cylinder ($R = 2.0\text{ m}$, span $w = 1.0\text{ m}$, frontal half
 
 ### 2. Viscous Disk Flow ([Fernandes et al. 2007](https://doi.org/10.1017/S0022112006003685))
 * **Status**: Initial verification cases configured for thin disks ($\chi = 10$) in viscous liquid at $Re = 100$ and $Re = 200$.
-* **Validation Scope**: Rectilinear wake development and dynamic release were tested with rotation locked; validation against published Fernandes et al. bifurcation thresholds ($Re_c$), vortex shedding frequencies, and trajectory oscillations is currently in progress.
+* **Validation Scope**: Rectilinear wake development and dynamic release were tested with rotation locked; extension to oblique/oscillatory bifurcation thresholds ($Re_c$) and trajectory oscillations is planned in the roadmap.
 
 ---
 
