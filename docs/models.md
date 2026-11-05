@@ -34,10 +34,10 @@ $$\frac{\partial \mathbf{U}}{\partial t} + \nabla \cdot (\mathbf{U} \mathbf{U}) 
 
 In free-fall where planetary gravity drives the descent, the effective net body acceleration is $\mathbf{g} - \mathbf{a}_{\text{frame}}$.
 
-### 2.2 Hydrostatic-Reduced Pressure Formulation ($p_{\text{rgh}}$)
-When integrating surface forces on an asymmetric or rotating body, the uniform body acceleration field $\mathbf{f}_{\text{frame}} = \mathbf{g} - \mathbf{a}_{\text{frame}}$ induces an apparent hydrostatic gradient $\nabla p_{\text{hydro}} = \rho_f \mathbf{f}_{\text{frame}}$. 
+### 2.2 Hydrostatic-Reduced Pressure Formulation ($p_{\text{rgh}}$) & Buoyancy
+When integrating surface forces on an asymmetric or rotating body, the uniform net frame acceleration field $\mathbf{f}_{\text{frame}} = \mathbf{g} - \mathbf{a}_{\text{frame}}$ induces an apparent hydrostatic gradient $\nabla p_{\text{hydro}} = \rho_f \mathbf{f}_{\text{frame}}$. 
 
-Integrating the total pressure $p$ around an asymmetric body introduces spurious non-zero moments that cause numerical instability in 6DoF coupling. `freeBody6DoFPimpleFoam` overcomes this by decomposing total kinematic pressure into hydrostatic-reduced kinematic pressure $p_{\text{rgh}}$:
+`freeBody6DoFPimpleFoam` decomposes total kinematic pressure into hydrostatic-reduced kinematic pressure $p_{\text{rgh}}$:
 
 $$p_{\text{rgh}} = p - \rho_f (\mathbf{f}_{\text{frame}} \cdot \mathbf{r})$$
 
@@ -46,7 +46,12 @@ $$\nabla p = \nabla p_{\text{rgh}} + \rho_f \mathbf{f}_{\text{frame}}$$
 Substituting into the momentum equation yields:
 $$\frac{\partial \mathbf{U}}{\partial t} + \nabla \cdot (\mathbf{U} \mathbf{U}) - \nabla \cdot (\nu_{\text{eff}} \nabla \mathbf{U}) = -\frac{1}{\rho_f} \nabla p_{\text{rgh}}$$
 
-Aerodynamic force and torque evaluation directly integrates $p_{\text{rgh}}$ and viscous shear stress $\boldsymbol{\tau}$, eliminating fictitious hydrostatic contributions.
+Aerodynamic force $\mathbf{F}_{\text{aero}}$ and torque $\mathbf{M}_{\text{aero}}$ are evaluated by directly integrating $p_{\text{rgh}}$ and viscous shear stress $\boldsymbol{\tau}$ over specified body patches.
+
+> [!NOTE]
+> **Physical Implications of $p_{\text{rgh}}$ Force and Moment Integration:**
+> 1. **Buoyancy Omission**: By integrating $p_{\text{rgh}}$ instead of total pressure $p$, the Archimedean hydrostatic buoyancy force $\rho_f V_{\text{body}} \mathbf{g}$ and the acceleration-dependent apparent buoyancy $\rho_f V_{\text{body}} \mathbf{a}_{\text{frame}}$ are omitted from $\mathbf{F}_{\text{aero}}$. In atmospheric descent where $\rho_f / \rho_{\text{body}} \ll 1$ (e.g. air at $1.2\text{ kg/m}^3$ vs. polyester at $1380\text{ kg/m}^3$, ratio $\approx 0.09\%$), this buoyancy neglect is physically negligible. In dense liquid simulations (such as `theRodDrop-Denser` with $\rho_f = 300\text{ kg/m}^3$), buoyancy physically accounts for $\approx 3.85\%$ of body weight; the solver remains self-consistent for validating reference frame momentum coupling ($a_{\text{frame}} \to 0$ as $F_{\text{aero}} \to mg$), but this assumes a non-buoyant body.
+> 2. **Hydrostatic Moments**: The hydrostatic torque about the rotation center (hub) is $\mathbf{M}_{\text{hydro}} = (\mathbf{r}_{\text{CB}} - \mathbf{r}_{\text{hub}}) \times \rho_f V_{\text{body}} \mathbf{f}_{\text{frame}}$. Eliminating this term via $p_{\text{rgh}}$ is strictly physical when the hub coincides with the body's center of buoyancy ($\mathbf{r}_{\text{hub}} = \mathbf{r}_{\text{CB}}$) or for homogeneous bodies where center of mass equals center of buoyancy. If the hub is offset from the center of buoyancy in a dense fluid, a physical hydrostatic righting/capsizing moment exists and would need explicit tracking.
 
 ### 2.3 Compressible Formulations (`freeBodyRhoPimpleFoam`, `freeBodyRhoCentralFoam`)
 For transonic and supersonic descent, density varies with pressure and temperature. The continuity, momentum, and total energy equations become:

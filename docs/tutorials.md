@@ -8,7 +8,7 @@ Comprehensive guide and execution walkthrough for all official `freeBodyFoam` tu
 
 | Tutorial | Regime | Dimensions | Translation | Rotation | Dynamic Mesh | Key Verification Metric |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| [`theRodDrop`](#1-theroddrop) | Transcritical | 2D Planar | Vertical $Y$ | None | `staticFvMesh` | Analytical terminal velocity ($-0.05\%$ error) |
+| [`theRodDrop`](#1-theroddrop) | Transcritical URANS | 2D Planar | Vertical $Y$ | None | `staticFvMesh` | Frame coupling balance ($-0.02\%$ from simulated $C_D$) |
 | [`rodRoller`](#2-rodroller) | Laminar / Transient | 2D Planar | Vertical $Y$ | Axial $Z$ | `cyclicAMI` (O-Grid) | Constrained 6DoF torque & spin coupling |
 | [`steelBallRun`](#3-steelballrun) | Subsonic 6DoF | True 3D | Full 3D | Full 3D | Spherical `cyclicAMI` | 32-dot Fibonacci golf-ball 3D tumble tracking |
 
@@ -18,21 +18,28 @@ Comprehensive guide and execution walkthrough for all official `freeBodyFoam` tu
 
 * **Case Path**: [`tutorials/theRodDrop/theRodDrop`](../tutorials/theRodDrop/theRodDrop) & [`tutorials/theRodDrop/theRodDrop-Denser`](../tutorials/theRodDrop/theRodDrop-Denser)
 * **Solver**: [`freeBodyPimpleFoam`](../src/solvers/freeBodyPimpleFoam/freeBodyPimpleFoam.C)
-* **Geometry**: Transverse circular cylinder / rod ($R = 2.0\text{ m}$, span $L = 1.0\text{ m}$)
-* **Medium**: Air ($\rho_f = 1.225\text{ kg/m}^3$, $\nu = 1.5 \times 10^{-5}\text{ m}^2/\text{s}$)
-* **Mass**: $m = 1000.0\text{ kg}$
+* **Geometry**: 2D transverse half-cylinder with symmetry plane at $X = 0$ ($R = 2.0\text{ m}$, unit span $L = 1.0\text{ m}$, frontal half-area $A = R \cdot L = 2.0\text{ m}^2$)
+* **Medium**: Scaled dense fluid ($\rho_f = 300.0\text{ kg/m}^3$, $\nu = 1.5 \times 10^{-5}\text{ m}^2/\text{s}$, $g = 9.81\text{ m/s}^2$)
+* **Mass**: $m = 98,018.0\text{ kg}$ (based on full cylinder volume $\pi R^2 L = 12.566\text{ m}^3$ at steel density $\rho_s = 7800\text{ kg/m}^3$, simulated in half-symmetry domain)
 
 ### Physics & Analytical Benchmark
 At terminal velocity, the gravitational force balances the aerodynamic drag:
 $$m g = \frac{1}{2} \rho_f V_t^2 C_D A$$
-$$V_{t,\text{analytical}} = \sqrt{\frac{2 m g}{\rho_f C_D A}} = 96.39\text{ m/s}$$
-where $C_D = 0.3452$ at transcritical cylinder Reynolds number $Re = 2.57 \times 10^7$, and frontal area $A = 2 R L = 4.0\text{ m}^2$.
+$$V_{t,\text{analytical}} = \sqrt{\frac{2 m g}{\rho_f C_D A}} = \sqrt{\frac{2 \times 98018 \times 9.81}{300 \times 0.3452 \times 2.0}} = 96.359\text{ m/s} \approx 96.36\text{ m/s}$$
+where simulated $C_D = 0.3452$ under $k\text{--}\omega$ SST URANS at transcritical Reynolds number $Re = 2.57 \times 10^7$.
 
 ### Results
-* **Simulated Terminal Velocity**: $V_{\text{sim}} = 96.34\text{ m/s}$ (Relative error: **$-0.05\%$**).
-* **Force Equilibrium**: Aerodynamic drag balances weight to within $99.968\%$.
+* **Simulated Terminal Velocity**: $V_{\text{sim}} = 96.340\text{ m/s}$ (Relative discrepancy: **$-0.02\%$**).
+* **Force Equilibrium**: Aerodynamic drag balances weight to within $99.968\%$ ($F_{\text{aero}}/mg = 99.97\%$, residual decay $\frac{dV}{dt} = 0.0031\text{ m/s}^2$).
 
-![theRodDrop Kinematics](images/theRodDrop_kinematics.png)
+> [!WARNING]
+> **Scope & Limitations (Code Verification Only):**
+> 1. **Circularity**: Because $C_D = 0.3452$ is extracted from the simulation's own output, recovering $V_{\text{sim}} \approx V_t$ to within $0.02\%$ is a mathematical verification of the accelerating reference frame momentum coupling ($a_{\text{frame}} \to 0$ as $F_{\text{aero}} \to mg$). It does **not** validate aerodynamic drag prediction.
+> 2. **Buoyancy**: Because $p_{\text{rgh}}$ is integrated for $F_{\text{aero}}$, hydrostatic buoyancy is omitted. In this dense fluid ($\rho_f = 300\text{ kg/m}^3$), buoyancy would physically represent $\rho_f / \rho_s \approx 3.85\%$ of body weight. The setup is self-consistent for non-buoyant frame coupling verification, but does not model buoyant hydrodynamic bodies.
+
+<p align="center">
+  <img src="images/theRodDrop_kinematics.png" alt="theRodDrop Kinematics" width="70%"/>
+</p>
 
 ### Execution
 ```bash

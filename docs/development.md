@@ -122,3 +122,42 @@ To remove all intermediate compilation object files (`Make/linux*`, `lnInclude/`
 ```bash
 ./Allwclean
 ```
+
+---
+
+## 4. Developer Extensions & Implementing Custom Models
+
+`freeBodyFoam` provides run-time selectable model hierarchies that allow developers to implement custom physical models without modifying solver source code.
+
+### 4.1 Custom Mean Flow Models (`meanFlowModel`)
+To implement an atmospheric wind profile or custom shear layer:
+1. Inherit from `Foam::meanFlowModel` in `src/models/meanFlowModel/`.
+2. Implement the virtual method:
+   ```cpp
+   virtual vector value(const point& p, const scalar t) const;
+   ```
+3. Register using the run-time selection macro:
+   ```cpp
+   addToRunTimeSelectionTable(meanFlowModel, myCustomWindModel, dictionary);
+   ```
+
+### 4.2 Custom External Force Models (`externalForceModel`)
+To couple active propulsion, parachute deceleration, or control surface aerodynamics:
+1. Inherit from `Foam::externalForceModel` in `src/models/externalForces/`.
+2. Implement:
+   ```cpp
+   virtual vector force(const scalar t, const vector& v, const point& pos) const;
+   virtual vector moment(const scalar t, const vector& v, const point& pos) const;
+   ```
+3. Register using `addToRunTimeSelectionTable`.
+
+### 4.3 Custom Boundary Conditions
+To create specialized far-field or body-mounted boundary conditions:
+1. Inherit from `mixedFvPatchField<vector>` or `fixedValueFvPatchField<vector>`.
+2. Read the uniform frame kinematics registered in `runTime`:
+   ```cpp
+   const uniformDimensionedVectorField& frameVel =
+       db().lookupObject<uniformDimensionedVectorField>("frameVelocity");
+   ```
+3. Implement `updateCoeffs()` to evaluate patch-face relative velocity and apply directional inflow/outflow switching.
+
