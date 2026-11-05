@@ -16,8 +16,9 @@ src/
 │   └── freeBodyRotationalMotion/       # 6DoF coupled solid-body motion solver (libfreeBodyRotationalMotion.so)
 │       ├── freeBodyRotationalMotion.C
 │       └── freeBodyRotationalMotion.H
-├── models/                             # Shared atmospheric and wind models (libfreeFallingModels.so)
-│   └── meanFlowModel/                  # Inflow profiles (constant, powerLaw, tabulated)
+├── models/                             # Shared physical models (libfreeFallingModels.so)
+│   ├── meanFlowModel/                  # Inflow profiles (constant, powerLaw, tabulated)
+│   └── externalForces/                 # Active external loads (constant, tabulated, thrust, sixDoFThrust)
 ├── functionObjects/                    # Diagnostic and logging function objects
 │   └── fallingMotion/                  # Runtime trajectory and force monitor (libfreeFallingFunctionObjects.so)
 ├── solvers/                            # Free-falling dynamic solvers
@@ -130,11 +131,11 @@ To remove all intermediate compilation object files (`Make/linux*`, `lnInclude/`
 `freeBodyFoam` provides run-time selectable model hierarchies that allow developers to implement custom physical models without modifying solver source code.
 
 ### 4.1 Custom Mean Flow Models (`meanFlowModel`)
-To implement an atmospheric wind profile or custom shear layer:
+To implement an atmospheric wind profile or custom altitude-dependent shear layer:
 1. Inherit from `Foam::meanFlowModel` in `src/models/meanFlowModel/`.
 2. Implement the virtual method:
    ```cpp
-   virtual vector value(const point& p, const scalar t) const;
+   virtual vector velocity(const scalar altitude) const = 0;
    ```
 3. Register using the run-time selection macro:
    ```cpp
@@ -144,12 +145,23 @@ To implement an atmospheric wind profile or custom shear layer:
 ### 4.2 Custom External Force Models (`externalForceModel`)
 To couple active propulsion, parachute deceleration, or control surface aerodynamics:
 1. Inherit from `Foam::externalForceModel` in `src/models/externalForces/`.
-2. Implement:
+2. Implement the evaluation method returning a `bodyLoad` container (holding global-frame `force` and `moment`):
    ```cpp
-   virtual vector force(const scalar t, const vector& v, const point& pos) const;
-   virtual vector moment(const scalar t, const vector& v, const point& pos) const;
+   virtual bodyLoad evaluate
+   (
+       const scalar t,
+       const quaternion& q = quaternion::I
+   ) const = 0;
    ```
-3. Register using `addToRunTimeSelectionTable`.
+   where `bodyLoad` provides:
+   ```cpp
+   vector force;   // Total force in global reference frame [N]
+   vector moment;  // Total moment about centre of mass in global frame [N*m]
+   ```
+3. Register using the run-time selection macro:
+   ```cpp
+   addToRunTimeSelectionTable(externalForceModel, myCustomForceModel, dictionary);
+   ```
 
 ### 4.3 Custom Boundary Conditions
 To create specialized far-field or body-mounted boundary conditions:

@@ -104,7 +104,7 @@ The primary experimental benchmark models a thin circular polyester disk ($D = 2
   - Combined validation uncertainty:
     $$u_{\text{val}} = \sqrt{u_{\text{num}}^2 + u_{\text{input}}^2 + u_{\text{exp}}^2} = \sqrt{0.0095^2 + 0.0050^2 + 0.0150^2} \approx 0.0185\text{ m/s}\ (1.50\%)$$
 * **Verdict**:
-  $$\frac{|E|}{u_{\text{val}}} = \frac{0.206\text{ m/s}}{0.01845\text{ m/s}} \approx 11.2\quad (\approx 11.1\text{ with unrounded components}) \gg 1$$
+  $$\frac{|E|}{u_{\text{val}}} = \frac{0.206\text{ m/s}}{0.0185\text{ m/s}} \approx 11.2 \gg 1$$
   The simulation is **not validated** for mean terminal settling velocity.
 
 ### 4.3 Why Specimen Thickness Scatter Does Not Explain the Deficit

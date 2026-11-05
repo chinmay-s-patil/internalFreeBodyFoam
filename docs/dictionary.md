@@ -93,15 +93,15 @@ Located at `constant/dynamicMeshDict`. Controls dynamic mesh motion and rotating
 
 ## 4. Minimal Working Templates
 
-### 4.1 Template 1: Static Mesh Vertical Fall (`theRodDrop`)
+### 4.1 Template 1: Generic Template (Static Mesh Vertical Fall)
 
-For symmetric or non-rotating bodies falling along a single axis without dynamic mesh deformation:
+For symmetric or non-rotating bodies falling along a single axis without dynamic mesh deformation (e.g. 1D descent in `theRodDrop`):
 
 ```foam
 // constant/fallingFrameDict
 u0                  ( 0 0 0 );
 acceleration        ( 0 -9.81 0 );
-patches             ( cylinder );
+patches             ( body );
 mass                1000.0;
 freedom             ( 0 1 0 );
 rhoInf              1.204;
